@@ -1,0 +1,72 @@
+{
+  "itemList": [
+    {
+      "type": 1,
+      "facePos": 2,
+      "scaleWidthOffset": 0.6,
+      "scaleHeightOffset": 0,
+      "scaleXOffset": 0.0,
+      "scaleYOffset": 0.3,
+      "alignPos": 0,
+      "alignX": 0,
+      "alignY": 0,
+      "frameFolder": "F_cheek",
+      "frameNum": 36,
+      "frameDuration": 100,
+      "frameWidth": 160,
+      "frameHeight": 67,
+      "trigerType": 0
+    },
+    {
+      "type": 1,
+      "facePos": 2,
+      "scaleWidthOffset": 1.4,
+      "scaleHeightOffset": 0,
+      "scaleXOffset": 0.0,
+      "scaleYOffset": -1.0,
+      "alignPos": 0,
+      "alignX": 0,
+      "alignY": 0,
+      "frameFolder": "F_ear",
+      "frameNum": 73,
+      "frameDuration": 100,
+      "frameWidth": 385,
+      "frameHeight": 197,
+      "trigerType": 0
+    },
+    {
+      "type": 1,
+      "facePos": 2,
+      "scaleWidthOffset": -0.3,
+      "scaleHeightOffset": 0,
+      "scaleXOffset": -0.0,
+      "scaleYOffset": -0.6,
+      "alignPos": 0,
+      "alignX": 0,
+      "alignY": 0,
+      "frameFolder": "F_nose",
+      "frameNum": 73,
+      "frameDuration": 100,
+      "frameWidth": 110,
+      "frameHeight": 383,
+      "trigerType": 0
+    },
+    {
+      "type": 1,
+      "facePos": 2,
+      "scaleWidthOffset": 0.6,
+      "scaleHeightOffset": 0,
+      "scaleXOffset": 0.0,
+      "scaleYOffset": 0.3,
+      "alignPos": 0,
+      "alignX": 0,
+      "alignY": 0,
+      "frameFolder": "F_pkwhisker",
+      "frameNum": 37,
+      "frameDuration": 100,
+      "frameWidth": 280,
+      "frameHeight": 105,
+      "trigerType": 0
+    }
+  ]
+}

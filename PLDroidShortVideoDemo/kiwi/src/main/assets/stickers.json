@@ -1,0 +1,540 @@
+{
+  "stickers": [
+    {
+      "name": "baixiaomaohuxu",
+      "dir": "baixiaomaohuxu",
+      "category": "default",
+      "thumb": "baixiaomaohuxu_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "bear_eat_fish",
+      "dir": "bear_eat_fish",
+      "category": "default",
+      "thumb": "bear_eat_fish_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "bear_headgear",
+      "dir": "bear_headgear",
+      "category": "default",
+      "thumb": "bear_headgear_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "big_eyes",
+      "dir": "big_eyes",
+      "category": "default",
+      "thumb": "big_eyes_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "birthday",
+      "dir": "birthday",
+      "category": "default",
+      "thumb": "birthday_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "buliaoxiaomao",
+      "dir": "buliaoxiaomao",
+      "category": "default",
+      "thumb": "buliaoxiaomao_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cat_claw",
+      "dir": "cat_claw",
+      "category": "default",
+      "thumb": "cat_claw_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cat_fa_qia",
+      "dir": "cat_fa_qia",
+      "category": "default",
+      "thumb": "cat_fa_qia_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cat_on_the_head",
+      "dir": "cat_on_the_head",
+      "category": "default",
+      "thumb": "cat_on_the_head_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cidinmaozi",
+      "dir": "cidinmaozi",
+      "category": "default",
+      "thumb": "cidinmaozi_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cream_cake",
+      "dir": "cream_cake",
+      "category": "default",
+      "thumb": "cream_cake_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cut_hair",
+      "dir": "cut_hair",
+      "category": "default",
+      "thumb": "cut_hair_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "cute_cat",
+      "dir": "cute_cat",
+      "category": "default",
+      "thumb": "cute_cat_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "dahudiejie",
+      "dir": "dahudiejie",
+      "category": "default",
+      "thumb": "dahudiejie_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "damengyanjing",
+      "dir": "damengyanjing",
+      "category": "default",
+      "thumb": "damengyanjing_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "dayuanerduo",
+      "dir": "dayuanerduo",
+      "category": "default",
+      "thumb": "dayuanerduo_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "dog_tongue",
+      "dir": "dog_tongue",
+      "category": "default",
+      "thumb": "dog_tongue_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "duboji",
+      "dir": "duboji",
+      "category": "default",
+      "thumb": "duboji_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "fannao",
+      "dir": "fannao",
+      "category": "default",
+      "thumb": "fannao_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "fashion_laddy",
+      "dir": "fashion_laddy",
+      "category": "default",
+      "thumb": "fashion_laddy_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "feidie",
+      "dir": "feidie",
+      "category": "default",
+      "thumb": "feidie_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "fengying",
+      "dir": "fengying",
+      "category": "default",
+      "thumb": "fengying_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "flower",
+      "dir": "flower",
+      "category": "default",
+      "thumb": "flower_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "Gentleman_hat",
+      "dir": "Gentleman_hat",
+      "category": "default",
+      "thumb": "Gentleman_hat_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "glasses_space",
+      "dir": "glasses_space",
+      "category": "default",
+      "thumb": "glasses_space_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "goux",
+      "dir": "goux",
+      "category": "default",
+      "thumb": "goux_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "hdj",
+      "dir": "hdj",
+      "category": "default",
+      "thumb": "hdj_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "heart_explode",
+      "dir": "heart_explode",
+      "category": "default",
+      "thumb": "heart_explode_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "hello_baby",
+      "dir": "hello_baby",
+      "category": "default",
+      "thumb": "hello_baby_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "hello_glasses",
+      "dir": "hello_glasses",
+      "category": "default",
+      "thumb": "hello_glasses_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "hongtoushi",
+      "dir": "hongtoushi",
+      "category": "default",
+      "thumb": "hongtoushi_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "huangm",
+      "dir": "huangm",
+      "category": "default",
+      "thumb": "huangm_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "jianbixiaoheimao",
+      "dir": "jianbixiaoheimao",
+      "category": "default",
+      "thumb": "jianbixiaoheimao_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "jiandanxiaomaomi",
+      "dir": "jiandanxiaomaomi",
+      "category": "default",
+      "thumb": "jiandanxiaomaomi_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "jiandanzhuangshi",
+      "dir": "jiandanzhuangshi",
+      "category": "default",
+      "thumb": "jiandanzhuangshi_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "kitty",
+      "dir": "kitty",
+      "category": "default",
+      "thumb": "kitty_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "laser",
+      "dir": "laser",
+      "category": "default",
+      "thumb": "laser_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "laugh",
+      "dir": "laugh",
+      "category": "default",
+      "thumb": "laugh_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "lecher",
+      "dir": "lecher",
+      "category": "default",
+      "thumb": "lecher_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "liangshanaixinmao",
+      "dir": "liangshanaixinmao",
+      "category": "default",
+      "thumb": "liangshanaixinmao_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "little_bear",
+      "dir": "little_bear",
+      "category": "default",
+      "thumb": "little_bear_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "long_ear_dog",
+      "dir": "long_ear_dog",
+      "category": "default",
+      "thumb": "long_ear_dog_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "long_ear_rabbit",
+      "dir": "long_ear_rabbit",
+      "category": "default",
+      "thumb": "long_ear_rabbit_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "love_bubbles",
+      "dir": "love_bubbles",
+      "category": "default",
+      "thumb": "love_bubbles_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "love_gestures",
+      "dir": "love_gestures",
+      "category": "default",
+      "thumb": "love_gestures_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "maogou",
+      "dir": "maogou",
+      "category": "default",
+      "thumb": "maogou_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "myqueen",
+      "dir": "myqueen",
+      "category": "default",
+      "thumb": "myqueen_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "noodles",
+      "dir": "noodles",
+      "category": "default",
+      "thumb": "noodles_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "pop_glasses",
+      "dir": "pop_glasses",
+      "category": "default",
+      "thumb": "pop_glasses_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "prison",
+      "dir": "prison",
+      "category": "default",
+      "thumb": "prison_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "qifei",
+      "dir": "qifei",
+      "category": "default",
+      "thumb": "qifei_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "rabbit_blush",
+      "dir": "rabbit_blush",
+      "category": "default",
+      "thumb": "rabbit_blush_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "rabbit_face",
+      "dir": "rabbit_face",
+      "category": "default",
+      "thumb": "rabbit_face_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "rabbit_holding_face",
+      "dir": "rabbit_holding_face",
+      "category": "default",
+      "thumb": "rabbit_holding_face_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "red_glasses",
+      "dir": "red_glasses",
+      "category": "default",
+      "thumb": "red_glasses_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "sheep",
+      "dir": "sheep",
+      "category": "default",
+      "thumb": "sheep_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "shizitou",
+      "dir": "shizitou",
+      "category": "default",
+      "thumb": "shizitou_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "sunflower_glasses",
+      "dir": "sunflower_glasses",
+      "category": "default",
+      "thumb": "sunflower_glasses_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "tears",
+      "dir": "tears",
+      "category": "default",
+      "thumb": "tears_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "touhua",
+      "dir": "touhua",
+      "category": "default",
+      "thumb": "touhua_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "toy_dog",
+      "dir": "toy_dog",
+      "category": "default",
+      "thumb": "toy_dog_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "toy_rabbit_ear_tie",
+      "dir": "toy_rabbit_ear_tie",
+      "category": "default",
+      "thumb": "toy_rabbit_ear_tie_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "under_water_glasses",
+      "dir": "under_water_glasses",
+      "category": "default",
+      "thumb": "under_water_glasses_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "uniform2",
+      "dir": "uniform2",
+      "category": "default",
+      "thumb": "uniform2_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "xianzi",
+      "dir": "xianzi",
+      "category": "default",
+      "thumb": "xianzi_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "xingxing",
+      "dir": "xingxing",
+      "category": "default",
+      "thumb": "xingxing_icon.png",
+      "voiced": false,
+      "downloaded": false
+    },
+    {
+      "name": "ygt",
+      "dir": "ygt",
+      "category": "default",
+      "thumb": "ygt_icon.png",
+      "voiced": false,
+      "downloaded": false
+    }
+  ]
+}
