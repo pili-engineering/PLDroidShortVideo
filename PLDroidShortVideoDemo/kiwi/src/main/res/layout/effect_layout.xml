@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_filter_tab"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/half_transparent_black"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+
+    <com.kiwi.ui.widget.StickerView
+        android:id="@+id/sticker_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:visibility="gone" />
+
+    <com.kiwi.ui.widget.EyeAndThinView
+        android:id="@+id/eye_thin_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:visibility="gone" />
+
+    <com.kiwi.ui.widget.FaceBeautyView
+        android:id="@+id/face_beauty_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:visibility="gone" />
+
+    <RadioGroup
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <RadioButton
+            android:id="@+id/btn_bar_sticker"
+            style="@style/bottom_btn"
+            android:drawableTop="@drawable/sticker_radio" />
+
+        <RadioButton
+            android:id="@+id/btn_bar_eye_and_thin"
+            style="@style/bottom_btn"
+            android:drawableTop="@drawable/eye_and_thin_radio" />
+
+        <RadioButton
+            android:id="@+id/btn_bar_face_beauty"
+            style="@style/bottom_btn"
+            android:drawableTop="@drawable/beauty_face_radio" />
+
+    </RadioGroup>
+
+</LinearLayout>

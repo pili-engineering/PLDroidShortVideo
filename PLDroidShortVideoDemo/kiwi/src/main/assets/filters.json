@@ -1,0 +1,274 @@
+{
+  "filters": [
+    {
+      "name": "nofilter",
+      "dir": "nofilter",
+      "category": "inner"
+    },
+    {
+      "name": "sierra",
+      "dir": "sierra",
+      "category": "inner"
+    },
+    {
+      "name": "harvest",
+      "dir": "harvest",
+      "category": "default"
+    },
+    {
+      "name": "sunrise",
+      "dir": "sunrise",
+      "category": "inner"
+    },
+    {
+      "name": "sunset",
+      "dir": "sunset",
+      "category": "inner"
+    },
+    {
+      "name": "romance",
+      "dir": "romance",
+      "category": "inner"
+    },
+    {
+      "name": "latte",
+      "dir": "latte",
+      "category": "inner"
+    },
+    {
+      "name": "brooklyn",
+      "dir": "brooklyn",
+      "category": "inner"
+    },
+    {
+      "name": "earlybird",
+      "dir": "earlybird",
+      "category": "inner"
+    },
+    {
+      "name": "elegance",
+      "dir": "elegance",
+      "category": "default"
+    },
+    {
+      "name": "emerald",
+      "dir": "emerald",
+      "category": "inner"
+    },
+    {
+      "name": "evergreen",
+      "dir": "evergreen",
+      "category": "inner"
+    },
+    {
+      "name": "habana",
+      "dir": "habana",
+      "category": "default"
+    },
+    {
+      "name": "healthy",
+      "dir": "healthy",
+      "category": "inner"
+    },
+    {
+      "name": "kevin",
+      "dir": "kevin",
+      "category": "inner"
+    },
+    {
+      "name": "skinwhiten",
+      "dir": "skinwhiten",
+      "category": "inner"
+    },
+    {
+      "name": "tender",
+      "dir": "tender",
+      "category": "inner"
+    },
+    {
+      "name": "toutong",
+      "dir": "toutong",
+      "category": "default"
+    },
+    {
+      "name": "waltz",
+      "dir": "waltz",
+      "category": "default"
+    },
+    {
+      "name": "warm",
+      "dir": "warm",
+      "category": "inner"
+    },
+    {
+      "name": "hefe",
+      "dir": "hefe",
+      "category": "inner"
+    },
+    {
+      "name": "1977",
+      "dir": "1977",
+      "category": "inner"
+    },
+    {
+      "name": "toaster2",
+      "dir": "toaster2",
+      "category": "inner"
+    },
+    {
+      "name": "happy",
+      "dir": "happy",
+      "category": "default"
+    },
+    {
+      "name": "dreamy",
+      "dir": "dreamy",
+      "category": "default"
+    },
+    {
+      "name": "pixar",
+      "dir": "pixar",
+      "category": "inner"
+    },
+    {
+      "name": "valencia",
+      "dir": "valencia",
+      "category": "inner"
+    },
+    {
+      "name": "walden",
+      "dir": "walden",
+      "category": "inner"
+    },
+    {
+      "name": "freud",
+      "dir": "freud",
+      "category": "inner"
+    },
+    {
+      "name": "fairytale",
+      "dir": "fairytale",
+      "category": "inner"
+    },
+    {
+      "name": "blueberry",
+      "dir": "blueberry",
+      "category": "default"
+    },
+    {
+      "name": "blackcat",
+      "dir": "blackcat",
+      "category": "inner"
+    },
+    {
+      "name": "calm",
+      "dir": "calm",
+      "category": "inner"
+    },
+    {
+      "name": "cool",
+      "dir": "cool",
+      "category": "inner"
+    },
+    {
+      "name": "hudson",
+      "dir": "hudson",
+      "category": "inner"
+    },
+    {
+      "name": "misty",
+      "dir": "misty",
+      "category": "default"
+    },
+    {
+      "name": "miss",
+      "dir": "miss",
+      "category": "default"
+    },
+    {
+      "name": "nostalgia",
+      "dir": "nostalgia",
+      "category": "inner"
+    },
+    {
+      "name": "rise",
+      "dir": "rise",
+      "category": "inner"
+    },
+    {
+      "name": "sakura",
+      "dir": "sakura",
+      "category": "inner"
+    },
+    {
+      "name": "sutro",
+      "dir": "sutro",
+      "category": "inner"
+    },
+    {
+      "name": "whitecat",
+      "dir": "whitecat",
+      "category": "inner"
+    },
+    {
+      "name": "spring",
+      "dir": "spring",
+      "category": "default"
+    },
+    {
+      "name": "inkwell",
+      "dir": "inkwell",
+      "category": "inner"
+    },
+    {
+      "name": "antique",
+      "dir": "antique",
+      "category": "inner"
+    },
+    {
+      "name": "brannan",
+      "dir": "brannan",
+      "category": "inner"
+    },
+    {
+      "name": "funky",
+      "dir": "funky",
+      "category": "default"
+    },
+    {
+      "name": "xibu",
+      "dir": "xibu",
+      "category": "default"
+    },
+    {
+      "name": "amaro",
+      "dir": "amaro",
+      "category": "inner"
+    },
+    {
+      "name": "nashville",
+      "dir": "nashville",
+      "category": "inner"
+    },
+    {
+      "name": "crayon",
+      "dir": "crayon",
+      "category": "inner"
+    },
+    {
+      "name": "sketch",
+      "dir": "sketch",
+      "category": "inner"
+    },
+    {
+      "name": "lomo",
+      "dir": "lomo",
+      "category": "inner"
+    },
+    {
+      "name": "xproll",
+      "dir": "xproll",
+      "category": "inner"
+    }
+  ]
+}

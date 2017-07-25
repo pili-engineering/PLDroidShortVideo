@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PLDroidShortVideoDemo</string>
+    <string name="upload">上传</string>
+    <string name="cancel_upload">取消上传</string>
+    <string name="if_edit_video">是否编辑视频</string>
+    <string name="dlg_yes">是</string>
+    <string name="dlg_no">否</string>
+</resources>
