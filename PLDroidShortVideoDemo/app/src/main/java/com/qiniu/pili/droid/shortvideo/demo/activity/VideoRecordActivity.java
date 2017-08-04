@@ -1,7 +1,6 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
@@ -21,7 +20,6 @@ import com.kiwi.ui.widget.KwControlView;
 import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLCameraSetting;
 import com.qiniu.pili.droid.shortvideo.PLCaptureFrameListener;
-import com.qiniu.pili.droid.shortvideo.PLConcatStateListener;
 import com.qiniu.pili.droid.shortvideo.PLErrorCode;
 import com.qiniu.pili.droid.shortvideo.PLFaceBeautySetting;
 import com.qiniu.pili.droid.shortvideo.PLFocusListener;
@@ -32,19 +30,21 @@ import com.qiniu.pili.droid.shortvideo.PLShortVideoRecorder;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoFilterListener;
 import com.qiniu.pili.droid.shortvideo.PLVideoFrame;
+import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.KiwiTrackWrapper;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.FocusIndicator;
+import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class VideoRecordActivity extends Activity implements PLRecordStateListener, PLConcatStateListener, PLFocusListener {
+public class VideoRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener, PLFocusListener {
     private static final String TAG = "VideoRecordActivity";
 
     /**
@@ -55,7 +55,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     private PLShortVideoRecorder mShortVideoRecorder;
 
     private SectionProgressBar mSectionProgressBar;
-    private ProgressDialog mProcessingDialog;
+    private CustomProgressDialog mProcessingDialog;
     private View mRecordBtn;
     private View mDeleteBtn;
     private View mConcatBtn;
@@ -96,9 +96,13 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         mFocusIndicator = (FocusIndicator) findViewById(R.id.focus_indicator);
         mAdjustBrightnessSeekBar = (SeekBar) findViewById(R.id.adjust_brightness);
 
-        mProcessingDialog = new ProgressDialog(this);
-        mProcessingDialog.setMessage("处理中...");
-        mProcessingDialog.setCancelable(false);
+        mProcessingDialog = new CustomProgressDialog(this);
+        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mShortVideoRecorder.cancelConcat();
+            }
+        });
 
         mShortVideoRecorder = new PLShortVideoRecorder();
         mShortVideoRecorder.setRecordStateListener(this);
@@ -184,15 +188,13 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
                     if (mShortVideoRecorder.beginSection()) {
-                        mSwitchCameraBtn.setEnabled(false);
-                        v.setActivated(true);
+                        updateRecordingBtns(true);
                     } else {
                         ToastUtils.s(VideoRecordActivity.this, "无法开始视频段录制");
                     }
                 } else if (action == MotionEvent.ACTION_UP) {
                     mShortVideoRecorder.endSection();
-                    mSwitchCameraBtn.setEnabled(true);
-                    v.setActivated(false);
+                    updateRecordingBtns(false);
                 }
 
                 return false;
@@ -215,6 +217,11 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             }
         });
         onSectionCountChanged(0, 0);
+    }
+
+    private void updateRecordingBtns(boolean isRecording) {
+        mSwitchCameraBtn.setEnabled(!isRecording);
+        mRecordBtn.setActivated(isRecording);
     }
 
     public void onCaptureFrame(View v) {
@@ -262,6 +269,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         if (mKiwiTrackWrapper != null) {
             mKiwiTrackWrapper.onPause(this);
         }
+        updateRecordingBtns(false);
         mShortVideoRecorder.pause();
     }
 
@@ -376,12 +384,12 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     }
 
     @Override
-    public void onConcatProgressUpdate(int num, int sectionCount) {
-
+    public void onProgressUpdate(float percentage) {
+        mProcessingDialog.setProgress((int) (100 * percentage));
     }
 
     @Override
-    public void onConcatFailed(final int errorCode) {
+    public void onSaveVideoFailed(final int errorCode) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -392,7 +400,12 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     }
 
     @Override
-    public void onConcatSuccess(final String filePath) {
+    public void onSaveVideoCanceled() {
+        mProcessingDialog.dismiss();
+    }
+
+    @Override
+    public void onSaveVideoSuccess(final String filePath) {
         Log.i(TAG, "concat sections success filePath: " + filePath);
         runOnUiThread(new Runnable() {
             @Override

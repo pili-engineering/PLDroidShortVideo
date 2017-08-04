@@ -88,6 +88,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickScreenRecord(View v) {
+        PermissionChecker checker = new PermissionChecker(this);
+        boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
+        if (!isPermissionOK) {
+            ToastUtils.s(this, "Some permissions is not approved !!!");
+        } else {
+            jumpToScreenRecordActivity();
+        }
+    }
+
     private void jumpToImportActivity() {
         Intent intent = new Intent(MainActivity.this, VideoTrimActivity.class);
         startActivity(intent);
@@ -95,6 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void jumpToTranscodeActivity() {
         Intent intent = new Intent(MainActivity.this, VideoTranscodeActivity.class);
+        startActivity(intent);
+    }
+
+    private void jumpToScreenRecordActivity() {
+        Intent intent = new Intent(MainActivity.this, ScreenRecordActivity.class);
         startActivity(intent);
     }
 

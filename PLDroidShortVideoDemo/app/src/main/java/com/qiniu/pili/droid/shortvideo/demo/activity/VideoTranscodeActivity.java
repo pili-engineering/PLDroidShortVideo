@@ -1,7 +1,7 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
+import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.io.File;
 
@@ -30,7 +31,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private Spinner mTranscodingBitrateLevelSpinner;
     private EditText mTranscodingWidthEditText;
     private EditText mTranscodingHeightEditText;
-    private ProgressDialog mProcessingDialog;
+    private CustomProgressDialog mProcessingDialog;
 
     private PLShortVideoTranscoder mShortVideoTranscoder;
     private TextView mVideoFilePathText;
@@ -55,9 +56,13 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         mTranscodingBitrateLevelSpinner.setAdapter(adapter4);
         mTranscodingBitrateLevelSpinner.setSelection(2);
 
-        mProcessingDialog = new ProgressDialog(this);
-        mProcessingDialog.setMessage("处理中...");
-        mProcessingDialog.setCancelable(false);
+        mProcessingDialog = new CustomProgressDialog(this);
+        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mShortVideoTranscoder.cancelTranscode();
+            }
+        });
 
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
@@ -123,6 +128,16 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                         ToastUtils.s(VideoTranscodeActivity.this, "transcode failed: " + errorCode);
                     }
                 });
+            }
+
+            @Override
+            public void onSaveVideoCanceled() {
+                mProcessingDialog.dismiss();
+            }
+
+            @Override
+            public void onProgressUpdate(float percentage) {
+                mProcessingDialog.setProgress((int) (100 * percentage));
             }
         });
     }

@@ -1,8 +1,8 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,6 +32,7 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.AudioMixSettingDialog;
+import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private GLSurfaceView mPreviewView;
     private RecyclerView mFiltersList;
-    private ProgressDialog mProcessingDialog;
+    private CustomProgressDialog mProcessingDialog;
     private ImageButton mMuteButton;
     private AudioMixSettingDialog mAudioMixSettingDialog;
 
@@ -76,9 +77,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         setContentView(R.layout.activity_editor);
         mPreviewView = (GLSurfaceView) findViewById(R.id.preview);
         mFiltersList = (RecyclerView) findViewById(R.id.recycler_view);
-        mProcessingDialog = new ProgressDialog(this);
-        mProcessingDialog.setMessage("处理中...");
-        mProcessingDialog.setCancelable(false);
+
+        mProcessingDialog = new CustomProgressDialog(this);
+        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mShortVideoEditor.cancelSave();
+            }
+        });
 
         mMuteButton = (ImageButton) findViewById(R.id.mute_button);
         mMuteButton.setImageResource(R.mipmap.btn_unmute);
@@ -227,6 +233,16 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         Log.e(TAG, "save edit failed errorCode:" + errorCode);
         mProcessingDialog.dismiss();
         ToastUtils.s(this, "save edit failed: " + errorCode);
+    }
+
+    @Override
+    public void onSaveVideoCanceled() {
+        mProcessingDialog.dismiss();
+    }
+
+    @Override
+    public void onProgressUpdate(float percentage) {
+        mProcessingDialog.setProgress((int) (100 * percentage));
     }
 
     private class FilterItemViewHolder extends RecyclerView.ViewHolder {
