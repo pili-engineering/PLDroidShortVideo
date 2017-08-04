@@ -1,7 +1,7 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -29,6 +29,7 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +45,7 @@ public class VideoTrimActivity extends Activity {
     private View mHandlerLeft;
     private View mHandlerRight;
 
-    private ProgressDialog mProcessingDialog;
+    private CustomProgressDialog mProcessingDialog;
     private VideoView mPreview;
 
     private long mSelectedBeginMs;
@@ -63,9 +64,13 @@ public class VideoTrimActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        mProcessingDialog = new ProgressDialog(this);
-        mProcessingDialog.setMessage("处理中...");
-        mProcessingDialog.setCancelable(false);
+        mProcessingDialog = new CustomProgressDialog(this);
+        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mShortVideoTrimmer.cancelTrim();
+            }
+        });
 
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
@@ -82,7 +87,7 @@ public class VideoTrimActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        play(mSelectedBeginMs);
+        play();
     }
 
     @Override
@@ -116,9 +121,9 @@ public class VideoTrimActivity extends Activity {
         mHandler.removeCallbacksAndMessages(null);
     }
 
-    private void play(long seekTo) {
+    private void play() {
         if (mPreview != null) {
-            mPreview.seekTo((int) seekTo);
+            mPreview.seekTo((int) mSelectedBeginMs);
             mPreview.start();
             startTrackPlayProgress();
         }
@@ -142,7 +147,7 @@ public class VideoTrimActivity extends Activity {
         mPreview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                play(mSelectedBeginMs);
+                play();
             }
         });
 
@@ -282,22 +287,21 @@ public class VideoTrimActivity extends Activity {
         }
     }
 
-    private void calculateRange() {
-        float beginPercent = 1.0f * (mHandlerLeft.getX() - mFrameListView.getX()) / mSlicesTotalLength;
-        float endPercent = 1.0f * (mHandlerRight.getX() - mFrameListView.getX()) / mSlicesTotalLength;
-        if (beginPercent < 0) {
-            beginPercent = 0;
+    private float clamp(float origin) {
+        if (origin < 0) {
+            return 0;
         }
-        if (beginPercent > 1) {
-            beginPercent = 1;
+        if (origin > 1) {
+            return 1;
         }
+        return origin;
+    }
 
-        if (endPercent < 0) {
-            endPercent = 0;
-        }
-        if (endPercent > 1) {
-            endPercent = 1;
-        }
+    private void calculateRange() {
+        float beginPercent = 1.0f * ((mHandlerLeft.getX() + mHandlerLeft.getWidth() / 2) - mFrameListView.getX()) / mSlicesTotalLength;
+        float endPercent = 1.0f * ((mHandlerRight.getX() + mHandlerRight.getWidth() / 2) - mFrameListView.getX()) / mSlicesTotalLength;
+        beginPercent = clamp(beginPercent);
+        endPercent = clamp(endPercent);
 
         Log.i(TAG, "begin percent: " + beginPercent + " end percent: " + endPercent);
 
@@ -306,7 +310,7 @@ public class VideoTrimActivity extends Activity {
 
         Log.i(TAG, "new range: " + mSelectedBeginMs + "-" + mSelectedEndMs);
         updateRangeText();
-        play(mSelectedBeginMs);
+        play();
     }
 
     public void onDone(View v) {
@@ -323,6 +327,16 @@ public class VideoTrimActivity extends Activity {
             public void onSaveVideoFailed(int errorCode) {
                 mProcessingDialog.dismiss();
                 Log.e(TAG, "trim video failed, error code: " + errorCode);
+            }
+
+            @Override
+            public void onSaveVideoCanceled() {
+                mProcessingDialog.dismiss();
+            }
+
+            @Override
+            public void onProgressUpdate(float percentage) {
+                mProcessingDialog.setProgress((int) (100 * percentage));
             }
         });
     }

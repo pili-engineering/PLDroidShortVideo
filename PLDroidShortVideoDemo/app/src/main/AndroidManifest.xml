@@ -41,6 +41,9 @@
         <activity
             android:name=".activity.PlaybackActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ScreenRecordActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

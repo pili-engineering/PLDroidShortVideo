@@ -30,6 +30,13 @@
             android:onClick="onClickTranscode"
             android:text="视频转码" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickScreenRecord"
+            android:text="屏幕录制" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
