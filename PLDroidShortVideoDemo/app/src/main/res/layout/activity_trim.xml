@@ -57,7 +57,7 @@
         android:layout_weight="1">
 
         <LinearLayout
-            android:id="@+id/key_frames"
+            android:id="@+id/video_frame_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"

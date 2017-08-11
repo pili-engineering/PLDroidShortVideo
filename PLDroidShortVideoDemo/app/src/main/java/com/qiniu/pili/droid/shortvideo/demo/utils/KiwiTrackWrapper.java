@@ -11,9 +11,9 @@ import com.kiwi.tracker.KwFilterType;
 import com.kiwi.tracker.KwTrackerManager;
 import com.kiwi.tracker.KwTrackerSettings;
 import com.kiwi.tracker.bean.conf.StickerConfig;
+import com.kiwi.tracker.common.Config;
 import com.kiwi.ui.OnViewEventListener;
 import com.kiwi.ui.ResourceHelper;
-import com.kiwi.tracker.common.Config;
 import com.kiwi.ui.SharedPreferenceManager;
 
 import static com.kiwi.ui.widget.KwControlView.BEAUTY_BIG_EYE_TYPE;
@@ -109,18 +109,14 @@ public class KiwiTrackWrapper {
      * @return 特效处理后的纹理
      */
     public int onDrawFrame(int texId, int texWidth, int texHeight) {
-        Log.e("tracker", "isNeedTrack:" + mKwTrackerSettings.isNeedTrack());
-        Log.e(TAG, "width" + texWidth + "-----height" + texHeight);
-
         int newTexId = texId;
         int filterTexId = mKwTrackerManager.onDrawTexture2D(texId, texWidth, texHeight, 1);
-        Log.e(TAG, "filterTexId: " + filterTexId);
         if (filterTexId != -1) {
             newTexId = filterTexId;
         }
         int error = GLES20.glGetError(); //请勿删除当前行获取opengl错误代码
         if (error != GLES20.GL_NO_ERROR) {
-            Log.d("Tracker", "glError:" + error);
+            Log.e(TAG, "glError:" + error);
         }
         return newTexId;
     }

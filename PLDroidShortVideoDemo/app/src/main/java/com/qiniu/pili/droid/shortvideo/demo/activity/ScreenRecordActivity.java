@@ -1,7 +1,6 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,13 +13,11 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLErrorCode;
 import com.qiniu.pili.droid.shortvideo.PLMicrophoneSetting;
 import com.qiniu.pili.droid.shortvideo.PLScreenRecordStateListener;
 import com.qiniu.pili.droid.shortvideo.PLScreenRecorder;
 import com.qiniu.pili.droid.shortvideo.PLScreenRecorderSetting;
-import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
@@ -31,13 +28,6 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
 
     private PLScreenRecorder mScreenRecorder;
     private TextView mTipTextView;
-
-    private void playMp4(String dstFile) {
-        Uri uri = Uri.parse(dstFile);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "video/*");
-        startActivity(intent);
-    }
 
     private void requestScreenRecord() {
         if (mScreenRecorder == null) {
@@ -108,7 +98,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
                     return;
                 }
 
-                playMp4(Config.SCREEN_RECORD_FILE_PATH);
+                PlaybackActivity.start(ScreenRecordActivity.this, Config.SCREEN_RECORD_FILE_PATH);
             }
         });
     }

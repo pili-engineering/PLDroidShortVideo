@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,7 +53,7 @@ public class VideoTrimActivity extends Activity {
     private long mSelectedEndMs;
     private long mDurationMs;
 
-    private int mKeyFrameCount;
+    private int mVideoFrameCount;
     private int mSlicesTotalLength;
 
     private Handler mHandler = new Handler();
@@ -140,8 +141,8 @@ public class VideoTrimActivity extends Activity {
         duration.setText("时长: " + formatTime(mDurationMs));
         Log.i(TAG, "video duration: " + mDurationMs);
 
-        mKeyFrameCount = mShortVideoTrimmer.getKeyFrameCount();
-        Log.i(TAG, "video key frame count: " + mKeyFrameCount);
+        mVideoFrameCount = mShortVideoTrimmer.getVideoFrameCount(false);
+        Log.i(TAG, "video frame count: " + mVideoFrameCount);
 
         mPreview.setVideoPath(videoPath);
         mPreview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -151,11 +152,11 @@ public class VideoTrimActivity extends Activity {
             }
         });
 
-        initKeyFrameList();
+        initVideoFrameList();
     }
 
-    private void initKeyFrameList() {
-        mFrameListView = (LinearLayout) findViewById(R.id.key_frames);
+    private void initVideoFrameList() {
+        mFrameListView = (LinearLayout) findViewById(R.id.video_frame_list);
         mHandlerLeft = findViewById(R.id.handler_left);
         mHandlerRight = findViewById(R.id.handler_right);
 
@@ -198,51 +199,45 @@ public class VideoTrimActivity extends Activity {
             public void onGlobalLayout() {
                 mFrameListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                int sliceEdge = mFrameListView.getWidth() / SLICE_COUNT;
+                final int sliceEdge = mFrameListView.getWidth() / SLICE_COUNT;
+                mSlicesTotalLength = sliceEdge * SLICE_COUNT;
                 Log.i(TAG, "slice edge: " + sliceEdge);
+                final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
 
-                int keyFrameInterval = mKeyFrameCount / SLICE_COUNT;
-                if (keyFrameInterval == 0) {
-                    keyFrameInterval = 1;
-                }
-                Log.i(TAG, "key frame interval: " + keyFrameInterval);
-                int keyFrameIndex = 0;
-
-                float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
-                for (int i = 0; i < SLICE_COUNT; ++i) {
-                    PLVideoFrame frame = mShortVideoTrimmer.getKeyFrame(keyFrameIndex);
-
-                    if (frame != null) {
-                        View root = LayoutInflater.from(VideoTrimActivity.this).inflate(R.layout.frame_item, null);
-
-                        int rotation = frame.getRotation();
-                        ImageView thumbnail = (ImageView) root.findViewById(R.id.thumbnail);
-                        thumbnail.setImageBitmap(frame.toBitmap());
-                        thumbnail.setRotation(rotation);
-                        FrameLayout.LayoutParams thumbnailLP = (FrameLayout.LayoutParams) thumbnail.getLayoutParams();
-                        if (rotation == 90 || rotation == 270) {
-                            thumbnailLP.leftMargin = thumbnailLP.rightMargin = (int) px;
-                        } else {
-                            thumbnailLP.topMargin = thumbnailLP.bottomMargin = (int) px;
+                new AsyncTask<Void, PLVideoFrame, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... v) {
+                        for (int i = 0; i < SLICE_COUNT; ++i) {
+                            PLVideoFrame frame = mShortVideoTrimmer.getVideoFrameByTime((long) ((1.0f * i / SLICE_COUNT) * mDurationMs), false, sliceEdge, sliceEdge);
+                            publishProgress(frame);
                         }
-                        thumbnail.setLayoutParams(thumbnailLP);
-
-                        LinearLayout.LayoutParams rootLP = new LinearLayout.LayoutParams(sliceEdge, sliceEdge);
-                        mFrameListView.addView(root, rootLP);
+                        return null;
                     }
 
-                    keyFrameIndex += keyFrameInterval;
-                    if (keyFrameIndex == mKeyFrameCount) {
-                        break;
+                    @Override
+                    protected void onProgressUpdate(PLVideoFrame... values) {
+                        super.onProgressUpdate(values);
+                        PLVideoFrame frame = values[0];
+                        if (frame != null) {
+                            View root = LayoutInflater.from(VideoTrimActivity.this).inflate(R.layout.frame_item, null);
+
+                            int rotation = frame.getRotation();
+                            ImageView thumbnail = (ImageView) root.findViewById(R.id.thumbnail);
+                            thumbnail.setImageBitmap(frame.toBitmap());
+                            thumbnail.setRotation(rotation);
+                            FrameLayout.LayoutParams thumbnailLP = (FrameLayout.LayoutParams) thumbnail.getLayoutParams();
+                            if (rotation == 90 || rotation == 270) {
+                                thumbnailLP.leftMargin = thumbnailLP.rightMargin = (int) px;
+                            } else {
+                                thumbnailLP.topMargin = thumbnailLP.bottomMargin = (int) px;
+                            }
+                            thumbnail.setLayoutParams(thumbnailLP);
+
+                            LinearLayout.LayoutParams rootLP = new LinearLayout.LayoutParams(sliceEdge, sliceEdge);
+                            mFrameListView.addView(root, rootLP);
+                        }
                     }
-                }
-
-                int usedSliceCount = mFrameListView.getChildCount();
-                mSlicesTotalLength = usedSliceCount * sliceEdge;
-                Log.i(TAG, "used slice count: " + usedSliceCount + " total slices length: " + mSlicesTotalLength);
-
-                updateHandlerRightPosition(mFrameListView.getWidth());
-                calculateRange();
+                }.execute();
             }
         });
     }
