@@ -36,8 +36,8 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.KiwiTrackWrapper;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
-import com.qiniu.pili.droid.shortvideo.demo.view.FocusIndicator;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
+import com.qiniu.pili.droid.shortvideo.demo.view.FocusIndicator;
 import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
 
 import java.io.FileNotFoundException;
@@ -180,7 +180,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         }
 
         mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
-        mSectionProgressBar.setTotalTime(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+        mSectionProgressBar.setTotalTime(this, RecordSettings.DEFAULT_MAX_RECORD_DURATION);
 
         mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override

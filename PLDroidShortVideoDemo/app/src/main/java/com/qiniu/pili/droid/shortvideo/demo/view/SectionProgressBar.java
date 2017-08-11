@@ -110,11 +110,7 @@ public class SectionProgressBar extends View {
         mBreakPointPaint.setStyle(Paint.Style.FILL);
         mBreakPointPaint.setColor(Color.parseColor("#000000"));
 
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) paramContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mPixelUnit = dm.widthPixels / mTotalTime;
-
-        mPixelsPerMilliSecond = mPixelUnit;
+        setTotalTime(paramContext, DEFAULT_TOTAL_TIME);
     }
 
     /**
@@ -137,10 +133,17 @@ public class SectionProgressBar extends View {
     /**
      * Sets total time in millisecond
      *
+     * @param context the context
      * @param millisecond the millisecond
      */
-    public void setTotalTime(long millisecond) {
+    public void setTotalTime(Context context, long millisecond) {
         mTotalTime = millisecond;
+
+        DisplayMetrics dm = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mPixelUnit = dm.widthPixels / mTotalTime;
+
+        mPixelsPerMilliSecond = mPixelUnit;
     }
 
     /**
