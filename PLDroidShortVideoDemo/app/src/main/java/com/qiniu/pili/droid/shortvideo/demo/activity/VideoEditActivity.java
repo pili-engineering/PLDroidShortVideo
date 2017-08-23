@@ -59,6 +59,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private boolean mIsMuted = false;
     private boolean mIsMixAudio = false;
     private boolean mIsAudioMixDialogShown = false;
+    private boolean mIsUseWatermark = true;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
@@ -182,6 +183,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         finish();
     }
 
+    public void onClickToggleWatermark(View v) {
+        mIsUseWatermark = !mIsUseWatermark;
+        mShortVideoEditor.setWatermark(mIsUseWatermark ? mWatermarkSetting : null);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -206,7 +212,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     protected void onResume() {
         super.onResume();
         mShortVideoEditor.setBuiltinFilter(mSelectedFilter);
-        mShortVideoEditor.setWatermark(mWatermarkSetting);
+        mShortVideoEditor.setWatermark(mIsUseWatermark ? mWatermarkSetting : null);
         mShortVideoEditor.startPlayback();
         if (mIsMuted) {
             mFgVolume = 0;

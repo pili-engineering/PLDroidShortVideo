@@ -13,5 +13,6 @@ public class Config {
     public static final String TRIM_FILE_PATH = VIDEO_STORAGE_DIR + "/trimmed.mp4";
     public static final String TRANSCODE_FILE_PATH = VIDEO_STORAGE_DIR + "/transcoded.mp4";
     public static final String CAPTURED_FRAME_FILE_PATH = VIDEO_STORAGE_DIR + "/captured_frame.jpg";
+    public static final String GIF_SAVE_PATH = VIDEO_STORAGE_DIR + "/generated.gif";
     public static final String SCREEN_RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "/screen_record.mp4";
 }

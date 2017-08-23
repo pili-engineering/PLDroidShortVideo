@@ -78,6 +78,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/preview"
         android:background="@android:color/background_dark"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar
@@ -121,6 +122,16 @@
                 android:onClick="onClickConcat" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btn_camera_effect"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="onClickShowKiwi"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_camera_effect"
+            android:visibility="gone" />
 
         <com.kiwi.ui.widget.KwControlView
             android:id="@+id/kiwi_control_layout"

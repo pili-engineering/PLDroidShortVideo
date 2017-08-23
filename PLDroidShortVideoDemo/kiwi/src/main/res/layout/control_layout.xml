@@ -5,16 +5,9 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/layout_toolbar"
-        layout="@layout/control_bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp" />
-
-    <include
         android:id="@+id/layout_effect"
         layout="@layout/effect_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

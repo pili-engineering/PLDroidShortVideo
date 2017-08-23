@@ -2,6 +2,7 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -47,6 +48,12 @@ import java.io.IOException;
 public class VideoRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener, PLFocusListener {
     private static final String TAG = "VideoRecordActivity";
 
+    public static final String PREVIEW_SIZE_RATIO = "PreviewSizeRatio";
+    public static final String PREVIEW_SIZE_LEVEL = "PreviewSizeLevel";
+    public static final String ENCODING_SIZE_LEVEL = "EncodingSizeLevel";
+    public static final String ENCODING_BITRATE_LEVEL = "EncodingBitrateLevel";
+    public static final String RECORD_ORIENTATION_LANDSCAPE = "RecordOrientationPortrait";
+
     /**
      * NOTICE: KIWI needs extra cost
      */
@@ -80,6 +87,9 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().getBooleanExtra(RECORD_ORIENTATION_LANDSCAPE, false)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -108,10 +118,10 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         mShortVideoRecorder.setRecordStateListener(this);
         mShortVideoRecorder.setFocusListener(this);
 
-        int previewSizeRatio = getIntent().getIntExtra("PreviewSizeRatio", 0);
-        int previewSizeLevel = getIntent().getIntExtra("PreviewSizeLevel", 0);
-        int encodingSizeLevel = getIntent().getIntExtra("EncodingSizeLevel", 0);
-        int encodingBitrateLevel = getIntent().getIntExtra("EncodingBitrateLevel", 0);
+        int previewSizeRatio = getIntent().getIntExtra(PREVIEW_SIZE_RATIO, 0);
+        int previewSizeLevel = getIntent().getIntExtra(PREVIEW_SIZE_LEVEL, 0);
+        int encodingSizeLevel = getIntent().getIntExtra(ENCODING_SIZE_LEVEL, 0);
+        int encodingBitrateLevel = getIntent().getIntExtra(ENCODING_BITRATE_LEVEL, 0);
 
         mCameraSetting = new PLCameraSetting();
         PLCameraSetting.CAMERA_FACING_ID facingId = chooseCameraFacingId();
@@ -140,12 +150,19 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         if (USE_KIWI) {
             StickerConfigMgr.setSelectedStickerConfig(null);
 
-            mKiwiTrackWrapper = new KiwiTrackWrapper(this, mCameraSetting.getCameraId());
+            mKiwiTrackWrapper = new KiwiTrackWrapper(this, mCameraSetting.getCameraId().ordinal());
             mKiwiTrackWrapper.onCreate(this);
+
+            findViewById(R.id.btn_camera_effect).setVisibility(View.VISIBLE);
 
             mControlView = (KwControlView) findViewById(R.id.kiwi_control_layout);
             mControlView.setOnEventListener(mKiwiTrackWrapper.initUIEventListener());
-            mControlView.setVisibility(View.VISIBLE);
+            mControlView.setOnPanelCloseListener(new KwControlView.OnPanelCloseListener() {
+                @Override
+                public void onClosed() {
+                    switchKiwiPanel(false);
+                }
+            });
 
             mShortVideoRecorder.setVideoFilterListener(new PLVideoFilterListener() {
                 private int surfaceWidth;
@@ -169,7 +186,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 }
 
                 @Override
-                public int onDrawFrame(int texId, int texWidth, int texHeight, long l) {
+                public int onDrawFrame(int texId, int texWidth, int texHeight, long timeStampNs, float[] transformMatrix) {
                     if (!isTrackerOnSurfaceChangedCalled) {
                         isTrackerOnSurfaceChangedCalled = true;
                         mKiwiTrackWrapper.onSurfaceChanged(surfaceWidth, surfaceHeight, texWidth, texHeight);
@@ -288,6 +305,16 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         }
     }
 
+    public void onClickShowKiwi(View v) {
+        switchKiwiPanel(true);
+    }
+
+    private void switchKiwiPanel(boolean show) {
+        findViewById(R.id.btns).setVisibility(show ? View.GONE : View.VISIBLE);
+        findViewById(R.id.btn_camera_effect).setVisibility(show ? View.GONE : View.VISIBLE);
+        mControlView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     public void onClickConcat(View v) {
         mProcessingDialog.show();
         showChooseDialog();
@@ -295,7 +322,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     public void onClickSwitchCamera(View v) {
         if (mKiwiTrackWrapper != null) {
-            mKiwiTrackWrapper.switchCamera(mCameraSetting.getCameraId());
+            mKiwiTrackWrapper.switchCamera(mCameraSetting.getCameraId().ordinal());
         }
         mShortVideoRecorder.switchCamera();
 

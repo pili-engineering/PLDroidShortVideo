@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.VideoView;
 
 public class SquareRelativeLayout extends RelativeLayout {
     private static final String TAG = "SquareRelativeLayout";

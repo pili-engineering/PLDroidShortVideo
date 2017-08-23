@@ -34,6 +34,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:onClick="onClickMakeGIF"
+            android:text="制作 GIF" />
+      
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:onClick="onClickScreenRecord"
             android:text="屏幕录制" />
 
@@ -49,6 +56,19 @@
             android:text="录制参数配置"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="录制方向"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/RecordOrientationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
 
         <TextView
             android:layout_width="match_parent"
