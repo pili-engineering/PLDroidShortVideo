@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false">
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.FocusIndicator
+            android:id="@+id/focus_indicator"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:onClick="onCaptureFrame"
+            android:src="@drawable/btn_capture_frame" />
+
+        <ImageView
+            android:id="@+id/switch_camera"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="onClickSwitchCamera"
+            android:src="@drawable/btn_switch_camera" />
+
+        <ImageView
+            android:id="@+id/switch_flash"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="onClickSwitchFlash"
+            android:src="@drawable/btn_flash_selector"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar
+        android:id="@+id/record_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_alignParentBottom="true" />
+
+    <LinearLayout
+        android:id="@+id/brightness_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/record_progressbar"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="亮度调整"
+            android:textColor="#fff" />
+
+        <SeekBar
+            android:id="@+id/adjust_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/concat"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/btn_concat"
+            android:clickable="true"
+            android:onClick="onClickConcat" />
+
+        <ImageView
+            android:id="@+id/record"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:src="@drawable/btn_record" />
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_delete"
+            android:clickable="true"
+            android:onClick="onClickDelete" />
+
+        <ImageView
+            android:id="@+id/btn_camera_effect"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:onClick="onClickShowKiwi"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_camera_effect"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <com.kiwi.ui.widget.KwControlView
+        android:id="@+id/kiwi_control_layout"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

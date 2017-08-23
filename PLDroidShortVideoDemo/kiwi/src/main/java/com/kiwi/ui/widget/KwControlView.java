@@ -1,11 +1,11 @@
 package com.kiwi.ui.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.blankj.utilcode.utils.Utils;
@@ -22,8 +22,6 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
     public static final int SKIN_TONE_SATURATION = 4;//饱和
     public static final int SKIN_SHINNING_TENDERNESS = 5;  //粉嫩
 
-    private LinearLayout mToolBarLayout;
-
     //特效面板
     private View mEffectView;
     private StickerView mStickerView;
@@ -31,6 +29,11 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
     private FaceBeautyView mFaceBeautyView;
 
     private OnViewEventListener onEventListener;
+    private OnPanelCloseListener mOnPanelCloseListener;
+
+    public interface OnPanelCloseListener {
+        void onClosed();
+    }
 
     public KwControlView(Context context) {
         super(context);
@@ -47,6 +50,10 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
         init(attrs, defStyle);
     }
 
+    public void setOnPanelCloseListener(OnPanelCloseListener onPanelCloseListener) {
+        this.mOnPanelCloseListener = onPanelCloseListener;
+    }
+
     /**
      * 初始化加载布局
      *
@@ -59,8 +66,6 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
 
         // 加载布局
         LayoutInflater.from(getContext()).inflate(getContentLayoutId(), this);
-        mToolBarLayout = (LinearLayout) findViewById(R.id.layout_toolbar);
-        findViewById(R.id.btn_camera_effect).setOnClickListener(this);
         findViewById(R.id.close_effect).setOnClickListener(this);
 
         initEffectView();
@@ -76,21 +81,21 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
      */
     @Override
     public void onClick(View v) {
-        /*贴纸以及美颜、瘦脸*/
-        if (v.getId() == R.id.btn_camera_effect) {
-            mToolBarLayout.setVisibility(GONE);
-            mEffectView.setVisibility(VISIBLE);
-            findViewById(R.id.btn_bar_sticker).performClick();
-        }
-
         if (v.getId() == R.id.close_effect) {
-            mEffectView.setVisibility(GONE);
-            mToolBarLayout.setVisibility(View.VISIBLE);
+            mOnPanelCloseListener.onClosed();
         }
     }
 
     public void setOnEventListener(OnViewEventListener onEventListener) {
         this.onEventListener = onEventListener;
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == View.VISIBLE) {
+            findViewById(R.id.btn_bar_sticker).performClick();
+        }
     }
 
     private void initEffectView() {
@@ -113,12 +118,10 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
 
                 if (id == R.id.btn_bar_eye_and_thin) {
                     mEyeAndThinView.setOnEventListener(onEventListener);
-                    mEyeAndThinView.setVisibility(VISIBLE);
                     setViewVisual(false, true, false);
                 }
 
                 if (id == R.id.btn_bar_face_beauty) {
-                    mFaceBeautyView.setVisibility(VISIBLE);
                     mFaceBeautyView.setOnEventListener(onEventListener);
                     setViewVisual(false, false, true);
                 }

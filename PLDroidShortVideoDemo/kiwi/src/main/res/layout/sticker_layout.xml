@@ -14,20 +14,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="6dp"
             android:text="@string/sticker"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="6dp" />
+            android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/close_effect"
-            android:src="@drawable/btn_close"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/btn_close" />
 
     </RelativeLayout>
-
 
 
     <android.support.v7.widget.RecyclerView

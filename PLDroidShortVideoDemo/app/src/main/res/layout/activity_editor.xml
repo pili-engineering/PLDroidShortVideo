@@ -86,6 +86,14 @@
             android:layout_weight="1"
             android:onClick="onClickMute"
             android:background="#000" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClickToggleWatermark"
+            android:src="@mipmap/btn_watermark"
+            android:background="#000" />
     </LinearLayout>
 
 </RelativeLayout>

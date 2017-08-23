@@ -8,6 +8,10 @@ public class RecordSettings {
     public static final int DEFAULT_MIN_RECORD_DURATION = 3 * 1000;
     public static final int DEFAULT_MAX_RECORD_DURATION = 10 * 1000;
 
+    public static final String[] RECORD_ORIENTATION_TIPS_ARRAY = {
+            "竖屏", "横屏"
+    };
+
     public static final String[] PREVIEW_SIZE_RATIO_TIPS_ARRAY = {
             "4:3", "16:9"
     };

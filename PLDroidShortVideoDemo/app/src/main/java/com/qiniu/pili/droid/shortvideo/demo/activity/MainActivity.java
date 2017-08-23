@@ -23,6 +23,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    private Spinner mRecordOrientationSpinner;
     private Spinner mPreviewSizeRatioSpinner;
     private Spinner mPreviewSizeLevelSpinner;
     private Spinner mEncodingSizeLevelSpinner;
@@ -37,10 +38,14 @@ public class MainActivity extends AppCompatActivity {
         String info = "版本号：" + getVersionDescription() + "，编译时间：" + getBuildTimeDescription();
         versionInfoTextView.setText(info);
 
+        mRecordOrientationSpinner = (Spinner) findViewById(R.id.RecordOrientationSpinner);
         mPreviewSizeRatioSpinner = (Spinner) findViewById(R.id.PreviewSizeRatioSpinner);
         mPreviewSizeLevelSpinner = (Spinner) findViewById(R.id.PreviewSizeLevelSpinner);
         mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
+
+        ArrayAdapter<String> adapter0 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
+        mRecordOrientationSpinner.setAdapter(adapter0);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
         mPreviewSizeRatioSpinner.setAdapter(adapter1);
@@ -58,42 +63,41 @@ public class MainActivity extends AppCompatActivity {
         mEncodingBitrateLevelSpinner.setSelection(2);
     }
 
-    public void onClickCapture(View v) {
+    private boolean isPermissionOK() {
         PermissionChecker checker = new PermissionChecker(this);
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
         if (!isPermissionOK) {
             ToastUtils.s(this, "Some permissions is not approved !!!");
-        } else {
-            jumpToCaptureActivity(VideoRecordActivity.class);
+        }
+        return isPermissionOK;
+    }
+
+    public void onClickCapture(View v) {
+        if (isPermissionOK()) {
+            jumpToCaptureActivity();
         }
     }
 
     public void onClickImport(View v) {
-        PermissionChecker checker = new PermissionChecker(this);
-        boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
-        if (!isPermissionOK) {
-            ToastUtils.s(this, "Some permissions is not approved !!!");
-        } else {
+        if (isPermissionOK()) {
             jumpToImportActivity();
         }
     }
 
     public void onClickTranscode(View v) {
-        PermissionChecker checker = new PermissionChecker(this);
-        boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
-        if (!isPermissionOK) {
-            ToastUtils.s(this, "Some permissions is not approved !!!");
-        } else {
+        if (isPermissionOK()) {
             jumpToTranscodeActivity();
         }
     }
 
+    public void onClickMakeGIF(View v) {
+        if (isPermissionOK()) {
+            jumpToMakeGIFActivity();
+        }
+    }
+  
     public void onClickScreenRecord(View v) {
-        PermissionChecker checker = new PermissionChecker(this);
-        boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
-        if (!isPermissionOK) {
-            ToastUtils.s(this, "Some permissions is not approved !!!");
-        } else {
+        if (isPermissionOK()) {
             jumpToScreenRecordActivity();
         }
     }
@@ -108,17 +112,23 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void jumpToMakeGIFActivity() {
+        Intent intent = new Intent(MainActivity.this, MakeGIFActivity.class);
+        startActivity(intent);
+    }
+  
     private void jumpToScreenRecordActivity() {
         Intent intent = new Intent(MainActivity.this, ScreenRecordActivity.class);
         startActivity(intent);
     }
 
-    public void jumpToCaptureActivity(Class<?> cls) {
-        Intent intent = new Intent(MainActivity.this, cls);
-        intent.putExtra("PreviewSizeRatio", mPreviewSizeRatioSpinner.getSelectedItemPosition());
-        intent.putExtra("PreviewSizeLevel", mPreviewSizeLevelSpinner.getSelectedItemPosition());
-        intent.putExtra("EncodingSizeLevel", mEncodingSizeLevelSpinner.getSelectedItemPosition());
-        intent.putExtra("EncodingBitrateLevel", mEncodingBitrateLevelSpinner.getSelectedItemPosition());
+    public void jumpToCaptureActivity() {
+        Intent intent = new Intent(MainActivity.this, VideoRecordActivity.class);
+        intent.putExtra(VideoRecordActivity.RECORD_ORIENTATION_LANDSCAPE, mRecordOrientationSpinner.getSelectedItemPosition() == 1);
+        intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_RATIO, mPreviewSizeRatioSpinner.getSelectedItemPosition());
+        intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_LEVEL, mPreviewSizeLevelSpinner.getSelectedItemPosition());
+        intent.putExtra(VideoRecordActivity.ENCODING_SIZE_LEVEL, mEncodingSizeLevelSpinner.getSelectedItemPosition());
+        intent.putExtra(VideoRecordActivity.ENCODING_BITRATE_LEVEL, mEncodingBitrateLevelSpinner.getSelectedItemPosition());
         startActivity(intent);
     }
 

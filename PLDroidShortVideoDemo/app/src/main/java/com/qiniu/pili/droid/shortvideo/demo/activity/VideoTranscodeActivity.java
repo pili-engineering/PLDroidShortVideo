@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.qiniu.android.utils.StringUtils;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
@@ -82,10 +83,13 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
-            if (selectedFilepath != null && !"".equals(selectedFilepath)) {
+            if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
                 onVideoFileSelected(selectedFilepath);
+                return;
             }
         }
+
+        finish();
     }
 
     private void onVideoFileSelected(String filepath) {

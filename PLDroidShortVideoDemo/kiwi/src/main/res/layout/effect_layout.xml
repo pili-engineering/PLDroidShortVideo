@@ -1,37 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_filter_tab"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/half_transparent_black"
-    android:baselineAligned="false"
-    android:orientation="vertical">
-
-    <com.kiwi.ui.widget.StickerView
-        android:id="@+id/sticker_view"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:visibility="gone" />
-
-    <com.kiwi.ui.widget.EyeAndThinView
-        android:id="@+id/eye_thin_view"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:visibility="gone" />
-
-    <com.kiwi.ui.widget.FaceBeautyView
-        android:id="@+id/face_beauty_view"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:visibility="gone" />
+    android:background="@color/half_transparent_black">
 
     <RadioGroup
         android:id="@+id/bottom_view"
         android:layout_width="match_parent"
         android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
         android:background="@android:color/black"
-        android:orientation="horizontal"
-        android:gravity="center_vertical" >
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/btn_bar_sticker"
@@ -50,4 +31,25 @@
 
     </RadioGroup>
 
-</LinearLayout>
+    <com.kiwi.ui.widget.StickerView
+        android:id="@+id/sticker_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_view"
+        android:visibility="gone" />
+
+    <com.kiwi.ui.widget.EyeAndThinView
+        android:id="@+id/eye_thin_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_view"
+        android:visibility="gone" />
+
+    <com.kiwi.ui.widget.FaceBeautyView
+        android:id="@+id/face_beauty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_view"
+        android:visibility="gone" />
+
+</RelativeLayout>
