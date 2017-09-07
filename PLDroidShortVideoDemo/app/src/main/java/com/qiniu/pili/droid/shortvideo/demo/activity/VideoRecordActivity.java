@@ -53,6 +53,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     public static final String ENCODING_SIZE_LEVEL = "EncodingSizeLevel";
     public static final String ENCODING_BITRATE_LEVEL = "EncodingBitrateLevel";
     public static final String RECORD_ORIENTATION_LANDSCAPE = "RecordOrientationPortrait";
+    public static final String RECORD_SPEED_LEVEL = "RecordSpeedLevel";
 
     /**
      * NOTICE: KIWI needs extra cost
@@ -84,6 +85,8 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     private int mFocusIndicatorX;
     private int mFocusIndicatorY;
+
+    private double mRecordSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +125,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         int previewSizeLevel = getIntent().getIntExtra(PREVIEW_SIZE_LEVEL, 0);
         int encodingSizeLevel = getIntent().getIntExtra(ENCODING_SIZE_LEVEL, 0);
         int encodingBitrateLevel = getIntent().getIntExtra(ENCODING_BITRATE_LEVEL, 0);
+        int recordSpeedLevel = getIntent().getIntExtra(RECORD_SPEED_LEVEL, 0);
 
         mCameraSetting = new PLCameraSetting();
         PLCameraSetting.CAMERA_FACING_ID facingId = chooseCameraFacingId();
@@ -137,8 +141,9 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
         PLAudioEncodeSetting audioEncodeSetting = new PLAudioEncodeSetting();
 
+        mRecordSpeed = getRecordSpeed(recordSpeedLevel);
         PLRecordSetting recordSetting = new PLRecordSetting();
-        recordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+        recordSetting.setMaxRecordDuration((long) (RecordSettings.DEFAULT_MAX_RECORD_DURATION * mRecordSpeed));
         recordSetting.setVideoCacheDir(Config.VIDEO_STORAGE_DIR);
         recordSetting.setVideoFilepath(Config.RECORD_FILE_PATH);
 
@@ -146,6 +151,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
         mShortVideoRecorder.prepare(preview, mCameraSetting, microphoneSetting, videoEncodeSetting,
                 audioEncodeSetting, USE_KIWI ? null : faceBeautySetting, recordSetting);
+        mShortVideoRecorder.setRecordSpeed(mRecordSpeed);
 
         if (USE_KIWI) {
             StickerConfigMgr.setSelectedStickerConfig(null);
@@ -196,8 +202,8 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             });
         }
 
-        mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
-        mSectionProgressBar.setTotalTime(this, RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+        mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+        mSectionProgressBar.setTotalTime(this, recordSetting.getMaxRecordDuration());
 
         mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -483,7 +489,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             @Override
             public void run() {
                 mDeleteBtn.setEnabled(count > 0);
-                mConcatBtn.setEnabled(totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+                mConcatBtn.setEnabled(totalTime >= (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
             }
         });
     }
@@ -502,6 +508,10 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     private int getEncodingBitrateLevel(int position) {
         return RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[position];
+    }
+
+    private double getRecordSpeed(int position) {
+        return RecordSettings.RECORD_SPEED_ARRAY[position];
     }
 
     private PLCameraSetting.CAMERA_FACING_ID chooseCameraFacingId() {

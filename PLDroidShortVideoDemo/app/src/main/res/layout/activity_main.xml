@@ -61,6 +61,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
+            android:text="倍数拍摄"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/RecordSpeedLevelSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
             android:text="录制方向"
             android:textStyle="bold" />
 

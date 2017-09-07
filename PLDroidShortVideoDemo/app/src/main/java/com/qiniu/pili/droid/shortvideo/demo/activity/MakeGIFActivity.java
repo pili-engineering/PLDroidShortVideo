@@ -3,6 +3,7 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -144,6 +145,8 @@ public class MakeGIFActivity extends AppCompatActivity {
         mProcessingDialog = new ProgressDialog(MakeGIFActivity.this);
         mProcessingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProcessingDialog.setCancelable(false);
+        mProcessingDialog.setCanceledOnTouchOutside(false);
+        mProcessingDialog.setMessage("正在生成");
     }
 
     public void onClickMakeGIF(View v) {
@@ -152,36 +155,48 @@ public class MakeGIFActivity extends AppCompatActivity {
             mProcessingDialog.dismiss();
             return;
         }
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
-        for (int i = 0; i < mSelectedFrameIndex.size(); i++) {
-            bitmaps.add(mTrimmer.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
-        }
-        mProcessingDialog.setMessage("正在生成");
         mProcessingDialog.show();
-        mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onSaveVideoSuccess(String s) {
-                mProcessingDialog.dismiss();
-                startActivity(new Intent(MakeGIFActivity.this, ShowGIFActivity.class));
-                finish();
+            public void run() {
+                ArrayList<Bitmap> bitmaps = new ArrayList<>();
+                for (int i = 0; i < mSelectedFrameIndex.size(); i++) {
+                    bitmaps.add(mTrimmer.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
+                }
+                mProcessingDialog.setCancelable(true);
+                mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        mShortVideoComposer.cancelComposeToGIF();
+                    }
+                });
+                mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
+                    @Override
+                    public void onSaveVideoSuccess(String s) {
+                        mProcessingDialog.dismiss();
+                        startActivity(new Intent(MakeGIFActivity.this, ShowGIFActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onSaveVideoFailed(int i) {
+                        mProcessingDialog.dismiss();
+                        ToastUtils.s(MakeGIFActivity.this, "Failed");
+                    }
+
+                    @Override
+                    public void onSaveVideoCanceled() {
+                        ToastUtils.s(MakeGIFActivity.this, "Canceled");
+
+                    }
+
+                    @Override
+                    public void onProgressUpdate(float v) {
+
+                    }
+                });
             }
-
-            @Override
-            public void onSaveVideoFailed(int i) {
-                mProcessingDialog.dismiss();
-                ToastUtils.s(MakeGIFActivity.this, "Failed");
-            }
-
-            @Override
-            public void onSaveVideoCanceled() {
-
-            }
-
-            @Override
-            public void onProgressUpdate(float v) {
-
-            }
-        });
+        }).start();
     }
 
     private class FrameAdapter extends BaseAdapter {

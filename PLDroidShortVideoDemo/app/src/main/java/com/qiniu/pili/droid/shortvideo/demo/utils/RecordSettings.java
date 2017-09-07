@@ -5,11 +5,21 @@ import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 
 public class RecordSettings {
 
-    public static final int DEFAULT_MIN_RECORD_DURATION = 3 * 1000;
-    public static final int DEFAULT_MAX_RECORD_DURATION = 10 * 1000;
+    public static final long DEFAULT_MIN_RECORD_DURATION = 3 * 1000;
+    public static final long DEFAULT_MAX_RECORD_DURATION = 10 * 1000;
 
     public static final String[] RECORD_ORIENTATION_TIPS_ARRAY = {
             "竖屏", "横屏"
+    };
+
+    public static final String[] RECORD_SPEED_LEVEL_TIPS_ARRAY = {
+            "0.125x",
+            "0.25x",
+            "0.5x",
+            "1.0x",
+            "2.0x",
+            "4.0x",
+            "8.0x",
     };
 
     public static final String[] PREVIEW_SIZE_RATIO_TIPS_ARRAY = {
@@ -171,5 +181,15 @@ public class RecordSettings {
         2500 * 1000,
         4000 * 1000,
         8000 * 1000,
+    };
+
+    public static final double[] RECORD_SPEED_ARRAY = {
+        0.125,
+        0.25,
+        0.5,
+        1,
+        2,
+        4,
+        8
     };
 }
