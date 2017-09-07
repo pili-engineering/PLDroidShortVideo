@@ -23,6 +23,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    private Spinner mRecordSpeedLevelSpinner;
     private Spinner mRecordOrientationSpinner;
     private Spinner mPreviewSizeRatioSpinner;
     private Spinner mPreviewSizeLevelSpinner;
@@ -38,28 +39,33 @@ public class MainActivity extends AppCompatActivity {
         String info = "版本号：" + getVersionDescription() + "，编译时间：" + getBuildTimeDescription();
         versionInfoTextView.setText(info);
 
+        mRecordSpeedLevelSpinner = (Spinner) findViewById(R.id.RecordSpeedLevelSpinner);
         mRecordOrientationSpinner = (Spinner) findViewById(R.id.RecordOrientationSpinner);
         mPreviewSizeRatioSpinner = (Spinner) findViewById(R.id.PreviewSizeRatioSpinner);
         mPreviewSizeLevelSpinner = (Spinner) findViewById(R.id.PreviewSizeLevelSpinner);
         mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
 
-        ArrayAdapter<String> adapter0 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
-        mRecordOrientationSpinner.setAdapter(adapter0);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_SPEED_LEVEL_TIPS_ARRAY);
+        mRecordSpeedLevelSpinner.setAdapter(adapter);
+        mRecordSpeedLevelSpinner.setSelection(3);
 
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
-        mPreviewSizeRatioSpinner.setAdapter(adapter1);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
+        mRecordOrientationSpinner.setAdapter(adapter);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_LEVEL_TIPS_ARRAY);
-        mPreviewSizeLevelSpinner.setAdapter(adapter2);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
+        mPreviewSizeRatioSpinner.setAdapter(adapter);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_LEVEL_TIPS_ARRAY);
+        mPreviewSizeLevelSpinner.setAdapter(adapter);
         mPreviewSizeLevelSpinner.setSelection(3);
 
-        ArrayAdapter<String> adapter3= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
-        mEncodingSizeLevelSpinner.setAdapter(adapter3);
+        adapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
+        mEncodingSizeLevelSpinner.setAdapter(adapter);
         mEncodingSizeLevelSpinner.setSelection(10);
 
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
-        mEncodingBitrateLevelSpinner.setAdapter(adapter4);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
+        mEncodingBitrateLevelSpinner.setAdapter(adapter);
         mEncodingBitrateLevelSpinner.setSelection(2);
     }
 
@@ -124,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpToCaptureActivity() {
         Intent intent = new Intent(MainActivity.this, VideoRecordActivity.class);
+        intent.putExtra(VideoRecordActivity.RECORD_SPEED_LEVEL, mRecordSpeedLevelSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.RECORD_ORIENTATION_LANDSCAPE, mRecordOrientationSpinner.getSelectedItemPosition() == 1);
         intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_RATIO, mPreviewSizeRatioSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_LEVEL, mPreviewSizeLevelSpinner.getSelectedItemPosition());

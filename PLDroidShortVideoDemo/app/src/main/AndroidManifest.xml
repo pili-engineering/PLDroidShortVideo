@@ -49,7 +49,7 @@
         <activity
             android:name=".activity.ScreenRecordActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ShowGIFActivity"></activity>
+        <activity android:name=".activity.ShowGIFActivity"/>
     </application>
 
 </manifest>
