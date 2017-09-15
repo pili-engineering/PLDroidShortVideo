@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -55,6 +56,14 @@ public class MakeGIFActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
+
+        setTitle(R.string.title_gif);
+
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -65,6 +74,17 @@ public class MakeGIFActivity extends AppCompatActivity {
             intent.setType("video/*");
         }
         startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

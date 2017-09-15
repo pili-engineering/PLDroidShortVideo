@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -45,6 +46,13 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         setTitle("VideoTranscode");
         setContentView(R.layout.activity_transcode);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
+
+        setTitle(R.string.title_transcode);
+
         mVideoFilePathText = (TextView) findViewById(R.id.SrcVideoPathText);
         mVideoSizeText = (TextView) findViewById(R.id.SrcVideoSizeText);
         mVideoBitrateText = (TextView) findViewById(R.id.SrcVideoBitrateText);
@@ -75,6 +83,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
             intent.setType("video/*");
         }
         startActivityForResult(Intent.createChooser(intent, "选择要转码的视频"), 0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

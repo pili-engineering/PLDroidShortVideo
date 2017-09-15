@@ -15,4 +15,5 @@ public class Config {
     public static final String CAPTURED_FRAME_FILE_PATH = VIDEO_STORAGE_DIR + "/captured_frame.jpg";
     public static final String GIF_SAVE_PATH = VIDEO_STORAGE_DIR + "/generated.gif";
     public static final String SCREEN_RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "/screen_record.mp4";
+    public static final String COMPOSE_FILE_PATH = VIDEO_STORAGE_DIR + "/composed.mp4";
 }

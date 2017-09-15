@@ -13,11 +13,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
-import com.pili.pldroid.player.widget.PLVideoView;
+import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoUploader;
 import com.qiniu.pili.droid.shortvideo.PLUploadProgressListener;
 import com.qiniu.pili.droid.shortvideo.PLUploadResultListener;
@@ -31,10 +30,11 @@ import com.qiniu.pili.droid.shortvideo.demo.view.MediaController.OnClickSpeedAdj
 public class PlaybackActivity extends Activity implements
         PLUploadResultListener,
         PLUploadProgressListener {
+
     private static final String TAG = "PlaybackActivity";
     private static final String MP4_PATH = "MP4_PATH";
 
-    private PLVideoView mVideoView;
+    private PLVideoTextureView mVideoView;
     private Button mUploadBtn;
     private PLShortVideoUploader mVideoUploadManager;
     private ProgressBar mProgressBarDeterminate;
@@ -66,7 +66,7 @@ public class PlaybackActivity extends Activity implements
         mUploadBtn.setOnClickListener(new UploadOnClickListener());
         mProgressBarDeterminate = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBarDeterminate.setMax(100);
-        mVideoView = (PLVideoView) findViewById(R.id.video);
+        mVideoView = (PLVideoTextureView) findViewById(R.id.video);
         mVideoPath = getIntent().getStringExtra(MP4_PATH);
         mVideoView.setLooping(true);
         mVideoView.setAVOptions(new AVOptions());
@@ -215,6 +215,10 @@ public class PlaybackActivity extends Activity implements
                     break;
                 case PLMediaPlayer.MEDIA_INFO_CONNECTED:
                     Log.i(TAG, "Connected !");
+                    break;
+                case PLMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                    Log.i(TAG, "Rotation Changed: " + extra);
+                    mVideoView.setDisplayOrientation(360 - extra);
                     break;
                 default:
                     break;
