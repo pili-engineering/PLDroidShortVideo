@@ -27,7 +27,6 @@ public class RecordSettings {
     };
 
     public static final String[] PREVIEW_SIZE_LEVEL_TIPS_ARRAY = {
-            "120P",
             "240P",
             "360P",
             "480P",
@@ -38,11 +37,8 @@ public class RecordSettings {
     };
 
     public static final String[] ENCODING_SIZE_LEVEL_TIPS_ARRAY = {
-            "120x120",
-            "160x120",
             "240x240",
             "320x240",
-            "424x240",
             "352x352",
             "640x352",
             "360x360",
@@ -78,7 +74,6 @@ public class RecordSettings {
     };
 
     public static final PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL[] PREVIEW_SIZE_LEVEL_ARRAY = {
-            PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL.PREVIEW_SIZE_LEVEL_120P,
             PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL.PREVIEW_SIZE_LEVEL_240P,
             PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL.PREVIEW_SIZE_LEVEL_360P,
             PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL.PREVIEW_SIZE_LEVEL_480P,
@@ -90,14 +85,6 @@ public class RecordSettings {
 
     public static final PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL[] ENCODING_SIZE_LEVEL_ARRAY = {
             /**
-             * 120x120
-            */
-            PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_120P_1,
-            /**
-             * 160x120
-            */
-            PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_120P_2,
-            /**
              * 240x240
             */
             PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_240P_1,
@@ -105,10 +92,6 @@ public class RecordSettings {
              * 320x240
             */
             PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_240P_2,
-            /**
-             * 424x240
-            */
-            PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_240P_3,
             /**
              * 352x352
             */

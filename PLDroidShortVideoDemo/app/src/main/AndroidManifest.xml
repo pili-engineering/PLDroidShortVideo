@@ -48,8 +48,14 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ScreenRecordActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".activity.ShowGIFActivity"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.ShowGIFActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.VideoComposeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

@@ -50,21 +50,21 @@ public class MainActivity extends AppCompatActivity {
         mRecordSpeedLevelSpinner.setAdapter(adapter);
         mRecordSpeedLevelSpinner.setSelection(3);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
         mRecordOrientationSpinner.setAdapter(adapter);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
         mPreviewSizeRatioSpinner.setAdapter(adapter);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_LEVEL_TIPS_ARRAY);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_LEVEL_TIPS_ARRAY);
         mPreviewSizeLevelSpinner.setAdapter(adapter);
         mPreviewSizeLevelSpinner.setSelection(3);
 
-        adapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
+        adapter= new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter);
-        mEncodingSizeLevelSpinner.setSelection(10);
+        mEncodingSizeLevelSpinner.setSelection(7);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
         mEncodingBitrateLevelSpinner.setAdapter(adapter);
         mEncodingBitrateLevelSpinner.setSelection(2);
     }
@@ -86,45 +86,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickImport(View v) {
         if (isPermissionOK()) {
-            jumpToImportActivity();
+            jumpToActivity(VideoTrimActivity.class);
         }
     }
 
     public void onClickTranscode(View v) {
         if (isPermissionOK()) {
-            jumpToTranscodeActivity();
+            jumpToActivity(VideoTranscodeActivity.class);
         }
     }
 
     public void onClickMakeGIF(View v) {
         if (isPermissionOK()) {
-            jumpToMakeGIFActivity();
+            jumpToActivity(MakeGIFActivity.class);
         }
     }
   
     public void onClickScreenRecord(View v) {
         if (isPermissionOK()) {
-            jumpToScreenRecordActivity();
+            jumpToActivity(ScreenRecordActivity.class);
         }
     }
 
-    private void jumpToImportActivity() {
-        Intent intent = new Intent(MainActivity.this, VideoTrimActivity.class);
-        startActivity(intent);
+    public void onClickVideoCompose(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(VideoComposeActivity.class);
+        }
     }
 
-    private void jumpToTranscodeActivity() {
-        Intent intent = new Intent(MainActivity.this, VideoTranscodeActivity.class);
-        startActivity(intent);
-    }
-
-    private void jumpToMakeGIFActivity() {
-        Intent intent = new Intent(MainActivity.this, MakeGIFActivity.class);
-        startActivity(intent);
-    }
-  
-    private void jumpToScreenRecordActivity() {
-        Intent intent = new Intent(MainActivity.this, ScreenRecordActivity.class);
+    private void jumpToActivity(Class<?> cls) {
+        Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
     }
 

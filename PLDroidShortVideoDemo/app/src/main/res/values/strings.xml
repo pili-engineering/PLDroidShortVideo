@@ -1,8 +1,18 @@
 <resources>
-    <string name="app_name">PLDroidShortVideoDemo</string>
+    <string name="app_name">七牛短视频</string>
     <string name="upload">上传</string>
     <string name="cancel_upload">取消上传</string>
     <string name="if_edit_video">是否编辑视频</string>
     <string name="dlg_yes">是</string>
     <string name="dlg_no">否</string>
+
+    <string name="title_record">视频拍摄</string>
+    <string name="title_compose">视频拼接</string>
+    <string name="title_player">视频播放</string>
+    <string name="title_screen_record">屏幕录制</string>
+    <string name="title_transcode">视频转码</string>
+    <string name="title_trim">视频剪辑</string>
+    <string name="title_gif">制作GIF动画</string>
+    <string name="title_show_gif">显示GIF动画</string>
+
 </resources>
