@@ -14,8 +14,8 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 9
-        versionName "1.5.0"
+        versionCode 10
+        versionName "1.5.1"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
     }
@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    compile 'com.qiniu:qiniu-android-sdk:7.3.3'
-    compile files('libs/pldroid-shortvideo-1.5.0.jar')
+    compile 'com.qiniu:qiniu-android-sdk:7.3.10'
+    compile files('libs/pldroid-shortvideo-1.5.1.jar')
     compile files('libs/pldroid-player-2.0.1.jar')
 
     compile 'com.android.support:multidex:1.0.1'
