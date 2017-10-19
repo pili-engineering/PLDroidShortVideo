@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark">
+    android:background="@android:color/background_dark"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onClickBack"
-            android:background="@mipmap/btn_back" />
+            android:background="@mipmap/btn_back"
+            android:onClick="onClickBack" />
 
         <TextView
             android:layout_width="0dp"
@@ -29,71 +30,132 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onSaveEdit"
-            android:background="@mipmap/btn_next" />
+            android:background="@mipmap/btn_next"
+            android:onClick="onSaveEdit" />
     </LinearLayout>
 
-    <com.qiniu.pili.droid.shortvideo.demo.view.SquareGLSurfaceView
-        android:id="@+id/preview"
+    <com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout
+        android:id="@+id/preview_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_layout"/>
+        android:layout_below="@id/title_layout">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        <com.qiniu.pili.droid.shortvideo.demo.view.SquareGLSurfaceView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
+
+    <com.qiniu.pili.droid.shortvideo.demo.view.TextSelectorPanel
+        android:id="@+id/text_selector_panel"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="24dp"
-        android:layout_below="@id/preview"
-        android:background="@android:color/background_dark"/>
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/editing_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClickMix"
-            android:src="@mipmap/btn_mix_audio"
-            android:background="#000" />
 
-        <ImageButton
-            android:id="@+id/mix_audio_setting_button"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClickAudioMixSetting"
-            android:src="@mipmap/btn_set_volume"
-            android:background="#000" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClear"
-            android:src="@mipmap/btn_reset"
-            android:background="#000" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_text_view"
+                android:onClick="onClickShowFilters"
+                android:paddingBottom="5dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="5dp"
+                android:text="滤镜"
+                android:textColor="#fff"
+                android:textSize="15sp" />
 
-        <ImageButton
-            android:id="@+id/mute_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClickMute"
-            android:background="#000" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/border_text_view"
+                android:onClick="onClickShowMVs"
+                android:paddingBottom="5dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="5dp"
+                android:text="MV"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+        </LinearLayout>
 
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:onClick="onClickToggleWatermark"
-            android:src="@mipmap/btn_watermark"
-            android:background="#000" />
+            android:background="@android:color/background_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickMix"
+                android:src="@mipmap/btn_mix_audio" />
+
+            <ImageButton
+                android:id="@+id/mix_audio_setting_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickAudioMixSetting"
+                android:src="@mipmap/btn_set_volume" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickReset"
+                android:src="@mipmap/btn_reset" />
+
+            <ImageButton
+                android:id="@+id/mute_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickMute" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickToggleWatermark"
+                android:src="@mipmap/btn_watermark" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickTextSelect"
+                android:src="@mipmap/btn_add_text" />
+        </LinearLayout>
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

@@ -331,7 +331,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             mKiwiTrackWrapper.switchCamera(mCameraSetting.getCameraId().ordinal());
         }
         mShortVideoRecorder.switchCamera();
-
+        mFocusIndicator.focusCancel();
     }
 
     public void onClickSwitchFlash(View v) {

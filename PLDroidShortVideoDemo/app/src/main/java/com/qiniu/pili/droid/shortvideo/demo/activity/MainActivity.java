@@ -114,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickImageCompose(View v){
+        if (isPermissionOK()) {
+            jumpToActivity(ImageComposeActivity.class);
+        }
+    }
+
     private void jumpToActivity(Class<?> cls) {
         Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
