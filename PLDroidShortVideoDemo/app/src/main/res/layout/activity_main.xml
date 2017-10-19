@@ -51,6 +51,13 @@
             android:onClick="onClickVideoCompose"
             android:text="@string/title_compose" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickImageCompose"
+            android:text="@string/title_image_compose" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

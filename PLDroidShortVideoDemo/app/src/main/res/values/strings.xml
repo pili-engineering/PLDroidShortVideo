@@ -8,11 +8,21 @@
 
     <string name="title_record">视频拍摄</string>
     <string name="title_compose">视频拼接</string>
+    <string name="title_image_compose">图片合成</string>
     <string name="title_player">视频播放</string>
     <string name="title_screen_record">屏幕录制</string>
     <string name="title_transcode">视频转码</string>
     <string name="title_trim">视频剪辑</string>
     <string name="title_gif">制作GIF动画</string>
     <string name="title_show_gif">显示GIF动画</string>
+    <string name="title_start_compose">启动合成</string>
+    <string name="title_video_size">视频尺寸</string>
+    <string name="title_video_bitrate">视频码率</string>
+    <string name="title_add_image">添加图片</string>
+
+    <string name="desc_duration">持续时间</string>
+    <string name="desc_transition_time">转场时间</string>
+    <string name="desc_second">秒</string>
+    <string name="desc_ms">ms</string>
 
 </resources>

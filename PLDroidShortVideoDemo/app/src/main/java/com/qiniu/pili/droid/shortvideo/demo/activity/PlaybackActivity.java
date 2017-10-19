@@ -27,6 +27,9 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.MediaController;
 import com.qiniu.pili.droid.shortvideo.demo.view.MediaController.OnClickSpeedAdjustListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PlaybackActivity extends Activity implements
         PLUploadResultListener,
         PLUploadProgressListener {
@@ -134,11 +137,15 @@ public class PlaybackActivity extends Activity implements
     }
 
     @Override
-    public void onUploadVideoSuccess(String fileName) {
-        String filePath = "http://" + Config.DOMAIN + "/" + fileName;
-        copyToClipboard(filePath);
-        ToastUtils.l(this, "文件上传成功，" + filePath + "已复制到粘贴板");
-        mUploadBtn.setVisibility(View.INVISIBLE);
+    public void onUploadVideoSuccess(JSONObject response) {
+        try {
+            String filePath = "http://" + Config.DOMAIN + "/" + response.getString("key");
+            copyToClipboard(filePath);
+            ToastUtils.l(this, "文件上传成功，" + filePath + "已复制到粘贴板");
+            mUploadBtn.setVisibility(View.INVISIBLE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

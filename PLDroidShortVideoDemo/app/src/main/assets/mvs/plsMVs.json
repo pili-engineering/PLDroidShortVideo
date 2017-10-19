@@ -1,0 +1,32 @@
+{
+    "MVs": [
+                {
+                "name": "川久保玲",
+                "coverDir": "mv1",
+                "colorDir": "川久保玲",
+                "alphaDir": "川久保玲轨迹",
+                "category": "default"
+                },
+                {
+                "name": "爱马仕",
+                "coverDir": "mv2",
+                "colorDir": "爱马仕",
+                "alphaDir": "爱马仕轨迹",
+                "category": "default"
+                },
+                {
+                "name": "芬迪",
+                "coverDir": "mv3",
+                "colorDir": "芬迪",
+                "alphaDir": "芬迪轨迹",
+                "category": "default"
+                },
+                {
+                "name": "co",
+                "coverDir": "mv4",
+                "colorDir": "co",
+                "alphaDir": "co轨迹",
+                "category": "default"
+                },
+            ]
+}
