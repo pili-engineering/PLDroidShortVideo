@@ -14,10 +14,13 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 11
-        versionName "1.6.0"
+        versionCode 12
+        versionName "1.7.0"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
     buildTypes {
         release {
@@ -29,8 +32,10 @@ android {
 
 dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.3.10'
-    compile files('libs/pldroid-shortvideo-1.6.0.jar')
-    compile files('libs/pldroid-player-2.0.2.jar')
+    compile files('libs/pldroid-shortvideo-1.7.0.jar')
+    compile files('libs/pldroid-player-2.0.3.jar')
+    compile files('libs/EasyAR.jar')
+    compile files('libs/EasyAR3D.jar')
 
     compile 'com.android.support:multidex:1.0.1'
 

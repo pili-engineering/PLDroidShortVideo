@@ -7,14 +7,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onBack"
-            android:background="@mipmap/btn_back" />
+            android:background="@mipmap/btn_back"
+            android:onClick="onBack" />
 
         <TextView
             android:layout_width="0dp"
@@ -29,8 +29,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onDone"
-            android:background="@mipmap/btn_next" />
+            android:background="@mipmap/btn_next"
+            android:onClick="onDone" />
     </LinearLayout>
 
     <com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout
@@ -50,6 +50,35 @@
         android:padding="15dp"
         android:text="选择起始与结束的帧以决定剪裁的范围"
         android:textColor="@android:color/white" />
+
+    <RadioGroup
+        android:id="@+id/mode_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="剪辑模式："
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/mode_fast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="快速"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/mode_accurate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="精准"
+            android:textColor="@color/white" />
+    </RadioGroup>
 
     <RelativeLayout
         android:layout_width="match_parent"

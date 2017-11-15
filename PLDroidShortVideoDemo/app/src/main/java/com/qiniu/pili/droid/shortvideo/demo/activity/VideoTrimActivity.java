@@ -20,20 +20,26 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTrimmer;
 import com.qiniu.pili.droid.shortvideo.PLVideoFrame;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_MULTI_CODEC_WRONG;
 
 public class VideoTrimActivity extends Activity {
     private static final String TAG = "VideoTrimActivity";
@@ -41,6 +47,7 @@ public class VideoTrimActivity extends Activity {
     private static final int SLICE_COUNT = 8;
 
     private PLShortVideoTrimmer mShortVideoTrimmer;
+    private PLMediaFile mMediaFile;
 
     private LinearLayout mFrameListView;
     private View mHandlerLeft;
@@ -103,6 +110,9 @@ public class VideoTrimActivity extends Activity {
         if (mShortVideoTrimmer != null) {
             mShortVideoTrimmer.destroy();
         }
+        if (mMediaFile != null) {
+            mMediaFile.release();
+        }
     }
 
     private void startTrackPlayProgress() {
@@ -136,12 +146,13 @@ public class VideoTrimActivity extends Activity {
         mPreview = (VideoView) findViewById(R.id.preview);
 
         mShortVideoTrimmer = new PLShortVideoTrimmer(this, videoPath, Config.TRIM_FILE_PATH);
+        mMediaFile = new PLMediaFile(videoPath);
 
-        mSelectedEndMs = mDurationMs = mShortVideoTrimmer.getSrcDurationMs();
+        mSelectedEndMs = mDurationMs = mMediaFile.getDurationMs();
         duration.setText("时长: " + formatTime(mDurationMs));
         Log.i(TAG, "video duration: " + mDurationMs);
 
-        mVideoFrameCount = mShortVideoTrimmer.getVideoFrameCount(false);
+        mVideoFrameCount = mMediaFile.getVideoFrameCount(false);
         Log.i(TAG, "video frame count: " + mVideoFrameCount);
 
         mPreview.setVideoPath(videoPath);
@@ -208,7 +219,7 @@ public class VideoTrimActivity extends Activity {
                     @Override
                     protected Void doInBackground(Void... v) {
                         for (int i = 0; i < SLICE_COUNT; ++i) {
-                            PLVideoFrame frame = mShortVideoTrimmer.getVideoFrameByTime((long) ((1.0f * i / SLICE_COUNT) * mDurationMs), false, sliceEdge, sliceEdge);
+                            PLVideoFrame frame = mMediaFile.getVideoFrameByTime((long) ((1.0f * i / SLICE_COUNT) * mDurationMs), true, sliceEdge, sliceEdge);
                             publishProgress(frame);
                         }
                         return null;
@@ -311,7 +322,9 @@ public class VideoTrimActivity extends Activity {
     public void onDone(View v) {
         Log.i(TAG, "trim to file path: " + Config.TRIM_FILE_PATH + " range: " + mSelectedBeginMs + " - " + mSelectedEndMs);
         mProcessingDialog.show();
-        mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, new PLVideoSaveListener() {
+
+        PLShortVideoTrimmer.TRIM_MODE mode = ((RadioButton) findViewById(R.id.mode_fast)).isChecked() ? PLShortVideoTrimmer.TRIM_MODE.FAST : PLShortVideoTrimmer.TRIM_MODE.ACCURATE;
+        mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mode, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(String path) {
                 mProcessingDialog.dismiss();
@@ -319,9 +332,18 @@ public class VideoTrimActivity extends Activity {
             }
 
             @Override
-            public void onSaveVideoFailed(int errorCode) {
-                mProcessingDialog.dismiss();
-                Log.e(TAG, "trim video failed, error code: " + errorCode);
+            public void onSaveVideoFailed(final int errorCode) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProcessingDialog.dismiss();
+                        if (errorCode == ERROR_MULTI_CODEC_WRONG) {
+                            ToastUtils.s(VideoTrimActivity.this, "当前机型暂不支持该功能");
+                        }
+
+                        Log.e(TAG, "trim video failed, error code: " + errorCode);
+                    }
+                });
             }
 
             @Override

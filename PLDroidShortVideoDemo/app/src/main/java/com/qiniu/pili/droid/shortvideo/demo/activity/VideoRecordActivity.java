@@ -2,9 +2,11 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.kiwi.ui.StickerConfigMgr;
@@ -34,6 +37,7 @@ import com.qiniu.pili.droid.shortvideo.PLVideoFrame;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
+import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.KiwiTrackWrapper;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
@@ -338,6 +342,30 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         mFlashEnabled = !mFlashEnabled;
         mShortVideoRecorder.setFlashEnabled(mFlashEnabled);
         mSwitchFlashBtn.setActivated(mFlashEnabled);
+    }
+
+    public void onClickAddMixAudio(View v) {
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < 19) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("audio/*");
+        }
+        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+            Log.i(TAG, "Select file: " + selectedFilepath);
+            if (selectedFilepath != null && !"".equals(selectedFilepath)) {
+                mShortVideoRecorder.setMusicFile(selectedFilepath);
+            }
+        }
     }
 
     @Override

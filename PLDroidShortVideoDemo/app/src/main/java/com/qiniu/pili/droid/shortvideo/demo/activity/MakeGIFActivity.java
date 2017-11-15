@@ -21,8 +21,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
-import com.qiniu.pili.droid.shortvideo.PLShortVideoTrimmer;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.GIF_SAVE_PATH;
-import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.TRIM_FILE_PATH;
 
 public class MakeGIFActivity extends AppCompatActivity {
     private static final String TAG = "MakeGIFActivity";
@@ -46,7 +45,7 @@ public class MakeGIFActivity extends AppCompatActivity {
     private ProgressDialog mProcessingDialog;
     private GridView mGridView;
 
-    private PLShortVideoTrimmer mTrimmer;
+    private PLMediaFile mMediaFile;
     private PLShortVideoComposer mShortVideoComposer;
     private List<Integer> mSelectedFrameIndex;
 
@@ -101,6 +100,14 @@ public class MakeGIFActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mMediaFile != null) {
+            mMediaFile.release();
+        }
+    }
+
     private int calculateCacheCount() {
         Runtime runtime = Runtime.getRuntime();
         long freeBytes = runtime.maxMemory() - runtime.totalMemory() - runtime.freeMemory();
@@ -117,7 +124,7 @@ public class MakeGIFActivity extends AppCompatActivity {
 
     private void init(String videoPath) {
         setContentView(R.layout.activity_make_gif);
-        mTrimmer = new PLShortVideoTrimmer(this, videoPath, TRIM_FILE_PATH);
+        mMediaFile = new PLMediaFile(videoPath);
         mShortVideoComposer = new PLShortVideoComposer(this);
         mSelectedFrameIndex = new ArrayList<>();
 
@@ -181,7 +188,7 @@ public class MakeGIFActivity extends AppCompatActivity {
             public void run() {
                 ArrayList<Bitmap> bitmaps = new ArrayList<>();
                 for (int i = 0; i < mSelectedFrameIndex.size(); i++) {
-                    bitmaps.add(mTrimmer.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
+                    bitmaps.add(mMediaFile.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
                 }
                 mProcessingDialog.setCancelable(true);
                 mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -228,12 +235,12 @@ public class MakeGIFActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return mTrimmer.getVideoFrameCount(true);
+            return mMediaFile.getVideoFrameCount(true);
         }
 
         @Override
         public Object getItem(int position) {
-            return mTrimmer.getVideoFrameByIndex(position, true);
+            return mMediaFile.getVideoFrameByIndex(position, true);
         }
 
         @Override
@@ -249,7 +256,7 @@ public class MakeGIFActivity extends AppCompatActivity {
                 imageView.setLayoutParams(new GridView.LayoutParams(300, 300));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
-            } else  {
+            } else {
                 imageView = (ImageView) convertView;
             }
             imageView.setTag(position);
@@ -283,7 +290,7 @@ public class MakeGIFActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap doInBackground(Void... a) {
-            Bitmap bmp = mTrimmer.getVideoFrameByIndex(mIndex, true, THUMBNAIL_EDGE, THUMBNAIL_EDGE).toBitmap();
+            Bitmap bmp = mMediaFile.getVideoFrameByIndex(mIndex, true, THUMBNAIL_EDGE, THUMBNAIL_EDGE).toBitmap();
             mBitmapCache.put(mIndex, bmp);
             return bmp;
         }

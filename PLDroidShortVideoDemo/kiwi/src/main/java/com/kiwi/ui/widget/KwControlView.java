@@ -3,6 +3,7 @@ package com.kiwi.ui.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -94,7 +95,7 @@ public class KwControlView extends FrameLayout implements View.OnClickListener {
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         if (visibility == View.VISIBLE) {
-            findViewById(R.id.btn_bar_sticker).performClick();
+            //findViewById(R.id.btn_bar_sticker).performClick();
         }
     }
 
