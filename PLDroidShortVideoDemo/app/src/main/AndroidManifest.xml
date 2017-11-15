@@ -30,6 +30,9 @@
             android:name=".activity.VideoRecordActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.AudioRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.VideoTrimActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -50,15 +53,23 @@
             android:name=".activity.ScreenRecordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.ShowGIFActivity"
+        <activity
+            android:name=".activity.ShowGIFActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.VideoComposeActivity"
+        <activity
+            android:name=".activity.VideoComposeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.ImageComposeActivity"
+        <activity
+            android:name=".activity.ImageComposeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:theme="@style/AppThemeFullscreen"
+            android:name=".activity.ArRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.WebViewActivity"></activity>
     </application>
 
 </manifest>

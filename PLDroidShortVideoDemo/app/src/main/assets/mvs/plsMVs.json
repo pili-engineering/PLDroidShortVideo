@@ -2,31 +2,31 @@
     "MVs": [
                 {
                 "name": "川久保玲",
-                "coverDir": "mv1",
-                "colorDir": "川久保玲",
-                "alphaDir": "川久保玲轨迹",
+                "coverDir": "rei",
+                "colorDir": "rei",
+                "alphaDir": "rei_alpha",
                 "category": "default"
                 },
                 {
                 "name": "爱马仕",
-                "coverDir": "mv2",
-                "colorDir": "爱马仕",
-                "alphaDir": "爱马仕轨迹",
+                "coverDir": "hermes",
+                "colorDir": "hermes",
+                "alphaDir": "hermes_alpha",
                 "category": "default"
                 },
                 {
                 "name": "芬迪",
-                "coverDir": "mv3",
-                "colorDir": "芬迪",
-                "alphaDir": "芬迪轨迹",
+                "coverDir": "fendi",
+                "colorDir": "fendi",
+                "alphaDir": "fendi_alpha",
                 "category": "default"
                 },
                 {
                 "name": "co",
-                "coverDir": "mv4",
+                "coverDir": "co",
                 "colorDir": "co",
-                "alphaDir": "co轨迹",
+                "alphaDir": "co_alpha",
                 "category": "default"
-                },
+                }
             ]
 }

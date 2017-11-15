@@ -52,6 +52,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_MULTI_CODEC_WRONG;
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_SRC_DST_SAME_FILE_PATH;
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_NO_VIDEO_TRACK;
+
 public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final String TAG = "VideoEditActivity";
     private static final String MP4_PATH = "MP4_PATH";
@@ -61,6 +65,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private TextSelectorPanel mTextSelectorPanel;
     private CustomProgressDialog mProcessingDialog;
     private ImageButton mMuteButton;
+    private ImageButton mPausePalybackButton;
     private AudioMixSettingDialog mAudioMixSettingDialog;
 
     private PLShortVideoEditor mShortVideoEditor;
@@ -82,6 +87,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private boolean mIsMixAudio = false;
     private boolean mIsAudioMixDialogShown = false;
     private boolean mIsUseWatermark = true;
+    private boolean mIsPlaying = true;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
@@ -137,6 +143,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         mMuteButton = (ImageButton) findViewById(R.id.mute_button);
         mMuteButton.setImageResource(R.mipmap.btn_unmute);
+
+        mPausePalybackButton = (ImageButton) findViewById(R.id.pause_playback);
 
         mWatermarkSetting = new PLWatermarkSetting();
         mWatermarkSetting.setResourceId(R.drawable.qiniu_logo);
@@ -412,6 +420,17 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
     }
 
+    public void onClickTogglePlayback(View v) {
+        if (mIsPlaying) {
+            mShortVideoEditor.pausePlayback();
+            mPausePalybackButton.setImageResource(R.mipmap.btn_play);
+        } else {
+            mShortVideoEditor.resumePlayback();
+            mPausePalybackButton.setImageResource(R.mipmap.btn_pause);
+        }
+        mIsPlaying = !mIsPlaying;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -465,10 +484,27 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     @Override
-    public void onSaveVideoFailed(int errorCode) {
+    public void onSaveVideoFailed(final int errorCode) {
         Log.e(TAG, "save edit failed errorCode:" + errorCode);
-        mProcessingDialog.dismiss();
-        ToastUtils.s(this, "save edit failed: " + errorCode);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mProcessingDialog.dismiss();
+                switch (errorCode) {
+                    case ERROR_NO_VIDEO_TRACK:
+                        ToastUtils.s(VideoEditActivity.this, "该文件没有视频信息！");
+                        break;
+                    case ERROR_SRC_DST_SAME_FILE_PATH:
+                        ToastUtils.s(VideoEditActivity.this, "源文件路径和目标路径不能相同！");
+                        break;
+                    case ERROR_MULTI_CODEC_WRONG:
+                        ToastUtils.s(VideoEditActivity.this, "当前机型暂不支持该功能");
+                        break;
+                    default:
+                        ToastUtils.s(VideoEditActivity.this, "save edit failed: " + errorCode);
+                }
+            }
+        });
     }
 
     @Override
@@ -566,10 +602,12 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         @Override
         public void onBindViewHolder(FilterItemViewHolder holder, int position) {
+            final String mvsDir = Config.VIDEO_STORAGE_DIR + "mvs/";
+
             try {
                 if (position == 0) {
                     holder.mName.setText("None");
-                    Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("mvs/mv.png"));
+                    Bitmap bitmap = BitmapFactory.decodeFile(mvsDir + "none.png");
                     holder.mIcon.setImageBitmap(bitmap);
                     holder.mIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -584,15 +622,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
                 final JSONObject mv = mMVArray.getJSONObject(position - 1);
                 holder.mName.setText(mv.getString("name"));
-                InputStream is = getAssets().open("mvs/" + mv.getString("coverDir") + ".png");
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                Bitmap bitmap = BitmapFactory.decodeFile(mvsDir + mv.getString("coverDir") + ".png");
                 holder.mIcon.setImageBitmap(bitmap);
                 holder.mIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         try {
-                            mSelectedMV = Config.VIDEO_STORAGE_DIR + "mvs/" + mv.getString("colorDir") + ".mp4";
-                            mSelectedMask = Config.VIDEO_STORAGE_DIR + "mvs/" + mv.getString("alphaDir") + ".mp4";
+                            mSelectedMV = mvsDir + mv.getString("colorDir") + ".mp4";
+                            mSelectedMask = mvsDir + mv.getString("alphaDir") + ".mp4";
                             mShortVideoEditor.setMVEffect(mSelectedMV, mSelectedMask);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -600,8 +637,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                     }
                 });
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.qiniu.android.utils.StringUtils;
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
@@ -27,6 +29,10 @@ import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.io.File;
 
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_LOW_MEMORY;
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_NO_VIDEO_TRACK;
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_SRC_DST_SAME_FILE_PATH;
+
 public class VideoTranscodeActivity extends AppCompatActivity {
     private static final String TAG = "VideoTranscodeActivity";
 
@@ -36,6 +42,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private CustomProgressDialog mProcessingDialog;
 
     private PLShortVideoTranscoder mShortVideoTranscoder;
+    private PLMediaFile mMediaFile;
     private TextView mVideoFilePathText;
     private TextView mVideoSizeText;
     private TextView mVideoBitrateText;
@@ -111,17 +118,34 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mMediaFile != null) {
+            mMediaFile.release();
+        }
+    }
+
     private void onVideoFileSelected(String filepath) {
         mShortVideoTranscoder = new PLShortVideoTranscoder(this, filepath, Config.TRANSCODE_FILE_PATH);
+        mMediaFile = new PLMediaFile(filepath);
         mVideoFilePathText.setText(new File(filepath).getName());
-        mVideoSizeText.setText(mShortVideoTranscoder.getSrcWidth() + " x " + mShortVideoTranscoder.getSrcHeight());
-        mTranscodingWidthEditText.setText(String.valueOf(mShortVideoTranscoder.getSrcWidth()), TextView.BufferType.EDITABLE);
-        mTranscodingHeightEditText.setText(String.valueOf(mShortVideoTranscoder.getSrcHeight()), TextView.BufferType.EDITABLE);
-        String bitrate = (mShortVideoTranscoder.getSrcBitrate() / 1000) + " kbps";
+        mVideoSizeText.setText(mMediaFile.getVideoWidth() + " x " + mMediaFile.getVideoHeight());
+        mTranscodingWidthEditText.setText(String.valueOf(mMediaFile.getVideoWidth()), TextView.BufferType.EDITABLE);
+        mTranscodingHeightEditText.setText(String.valueOf(mMediaFile.getVideoHeight()), TextView.BufferType.EDITABLE);
+        String bitrate = (mMediaFile.getVideoBitrate() / 1000) + " kbps";
         mVideoBitrateText.setText(bitrate);
     }
 
     public void onClickTranscode(View v) {
+        doTranscode(false);
+    }
+
+    public void onClickReverse(View v) {
+        doTranscode(true);
+    }
+
+    private void doTranscode(boolean isReverse) {
         if (mShortVideoTranscoder == null) {
             ToastUtils.s(this, "请先选择转码文件！");
             return;
@@ -133,12 +157,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         mProcessingDialog.show();
 
-        mShortVideoTranscoder.transcode(transcodingWidth, transcodingHeight, getEncodingBitrateLevel(transcodingBitrateLevel), new PLVideoSaveListener() {
+        mShortVideoTranscoder.transcode(transcodingWidth, transcodingHeight, getEncodingBitrateLevel(transcodingBitrateLevel), isReverse, new PLVideoSaveListener() {
             @Override
-            public void onSaveVideoSuccess(String s) {
+            public void onSaveVideoSuccess(final String s) {
                 Log.i(TAG, "save success: " + s);
-                mProcessingDialog.dismiss();
-                PlaybackActivity.start(VideoTranscodeActivity.this, s);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProcessingDialog.dismiss();
+                        showChooseDialog(s);
+                    }
+                });
             }
 
             @Override
@@ -148,7 +177,19 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.s(VideoTranscodeActivity.this, "transcode failed: " + errorCode);
+                        switch (errorCode) {
+                            case ERROR_NO_VIDEO_TRACK:
+                                ToastUtils.s(VideoTranscodeActivity.this, "该文件没有视频信息！");
+                                break;
+                            case ERROR_SRC_DST_SAME_FILE_PATH:
+                                ToastUtils.s(VideoTranscodeActivity.this, "源文件路径和目标路径不能相同！");
+                                break;
+                            case ERROR_LOW_MEMORY:
+                                ToastUtils.s(VideoTranscodeActivity.this, "手机内存不足，无法对该视频进行时光倒流！");
+                                break;
+                            default:
+                                ToastUtils.s(VideoTranscodeActivity.this, "transcode failed: " + errorCode);
+                        }
                     }
                 });
             }
@@ -163,6 +204,25 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                 mProcessingDialog.setProgress((int) (100 * percentage));
             }
         });
+    }
+
+    private void showChooseDialog(final String filePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.if_edit_video));
+        builder.setPositiveButton(getString(R.string.dlg_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                VideoEditActivity.start(VideoTranscodeActivity.this, filePath);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dlg_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                PlaybackActivity.start(VideoTranscodeActivity.this, filePath);
+            }
+        });
+        builder.setCancelable(false);
+        builder.create().show();
     }
 
     private int getEncodingBitrateLevel(int position) {

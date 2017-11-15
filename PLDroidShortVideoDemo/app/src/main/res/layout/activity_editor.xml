@@ -44,6 +44,17 @@
             android:id="@+id/preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <ImageButton
+            android:id="@+id/pause_playback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#0000"
+            android:layout_alignBottom="@id/preview"
+            android:layout_alignEnd="@id/preview"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:onClick="onClickTogglePlayback"
+            android:src="@mipmap/btn_pause"/>
     </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
 
     <com.qiniu.pili.droid.shortvideo.demo.view.TextSelectorPanel

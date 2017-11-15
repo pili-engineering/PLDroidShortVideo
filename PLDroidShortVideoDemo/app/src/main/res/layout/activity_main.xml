@@ -20,6 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:onClick="onClickAudioCapture"
+            android:text="@string/title_audio_record" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:onClick="onClickImport"
             android:text="@string/title_trim" />
 
@@ -57,6 +64,13 @@
             android:layout_margin="10dp"
             android:onClick="onClickImageCompose"
             android:text="@string/title_image_compose" />
+
+        <Button
+            android:text="@string/title_ar_effect"
+            android:onClick="onClickAR"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <View
             android:layout_width="match_parent"

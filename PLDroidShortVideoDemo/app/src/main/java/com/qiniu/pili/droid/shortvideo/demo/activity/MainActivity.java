@@ -84,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickAudioCapture(View v) {
+        if (isPermissionOK()) {
+            jumpToAudioCaptureActivity();
+        }
+    }
+
     public void onClickImport(View v) {
         if (isPermissionOK()) {
             jumpToActivity(VideoTrimActivity.class);
@@ -120,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickAR(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(ArRecordActivity.class);
+        }
+    }
+
     private void jumpToActivity(Class<?> cls) {
         Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
@@ -133,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_LEVEL, mPreviewSizeLevelSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.ENCODING_SIZE_LEVEL, mEncodingSizeLevelSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.ENCODING_BITRATE_LEVEL, mEncodingBitrateLevelSpinner.getSelectedItemPosition());
+        startActivity(intent);
+    }
+
+    public void jumpToAudioCaptureActivity() {
+        Intent intent = new Intent(MainActivity.this, AudioRecordActivity.class);
         startActivity(intent);
     }
 
