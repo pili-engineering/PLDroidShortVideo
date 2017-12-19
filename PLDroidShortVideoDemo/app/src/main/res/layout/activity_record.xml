@@ -11,23 +11,100 @@
 
     <LinearLayout
         android:id="@+id/brightness_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/preview"
+        android:layout_alignRight="@+id/preview"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="onClickBrightness"
+            android:src="@mipmap/btn_brightness" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.VerticalSeekBar
+            android:id="@+id/adjust_brightness"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/preview"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:background="@drawable/speed_panel"
         android:gravity="center_vertical"
-        android:padding="20dp"
-        android:visibility="gone">
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="亮度调整"
-            android:textColor="#fff" />
-
-        <SeekBar
-            android:id="@+id/adjust_brightness"
+            android:id="@+id/super_slow_speed_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onSpeedClicked"
+            android:padding="7dp"
+            android:text="@string/speed_super_slow"
+            android:textColor="@color/speedTextNormal"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/slow_speed_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onSpeedClicked"
+            android:padding="7dp"
+            android:text="@string/speed_slow"
+            android:textColor="@color/speedTextNormal"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/normal_speed_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onSpeedClicked"
+            android:padding="7dp"
+            android:text="@string/speed_normal"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/fast_speed_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onSpeedClicked"
+            android:padding="7dp"
+            android:text="@string/speed_fast"
+            android:textColor="@color/speedTextNormal"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/super_fast_speed_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onSpeedClicked"
+            android:padding="7dp"
+            android:text="@string/speed_super_fast"
+            android:textColor="@color/speedTextNormal"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <FrameLayout
@@ -46,6 +123,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="15dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:onClick="onScreenRotation"
+            android:src="@mipmap/btn_screen_rotation" />
 
         <ImageView
             android:layout_width="25dp"
@@ -145,6 +230,14 @@
                 android:layout_weight="1"
                 android:src="@mipmap/btn_mix_audio"
                 android:onClick="onClickAddMixAudio" />
+
+            <ImageView
+                android:onClick="onClickSaveToDraft"
+                android:src="@drawable/ic_draft"
+                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
         </LinearLayout>
 
         <com.kiwi.ui.widget.KwControlView

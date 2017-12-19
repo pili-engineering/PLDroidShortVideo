@@ -148,11 +148,7 @@ public class VideoComposeActivity extends AppCompatActivity {
         @Override
         public void onSaveVideoFailed(int errorCode) {
             mProcessingDialog.dismiss();
-            if (errorCode == PLErrorCode.ERROR_DIFFERENT_AUDIO_PARAMS) {
-                ToastUtils.s(VideoComposeActivity.this, "音频采样率不一致，暂不支持 ");
-            } else {
-                ToastUtils.s(VideoComposeActivity.this, "视频拼接失败，错误码: " + errorCode);
-            }
+            ToastUtils.s(VideoComposeActivity.this, "视频拼接失败，错误码: " + errorCode);
         }
 
         @Override
@@ -161,8 +157,13 @@ public class VideoComposeActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onProgressUpdate(float percentage) {
-            mProcessingDialog.setProgress((int) (100 * percentage));
+        public void onProgressUpdate(final float percentage) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProcessingDialog.setProgress((int) (100 * percentage));
+                }
+            });
         }
     };
 

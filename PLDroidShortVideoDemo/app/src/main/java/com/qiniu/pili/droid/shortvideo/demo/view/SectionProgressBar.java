@@ -19,7 +19,7 @@ public class SectionProgressBar extends View {
     private static final long DEFAULT_FIRST_POINT_TIME = 2 * 1000;
     private static final long DEFAULT_TOTAL_TIME = 10 * 1000;
 
-    private final LinkedList<Long> mBreakPointList = new LinkedList<Long>();
+    private final LinkedList<Long> mBreakPointList = new LinkedList<>();
 
     private Paint mCursorPaint;
     private Paint mProgressBarPaint;
@@ -116,7 +116,7 @@ public class SectionProgressBar extends View {
     /**
      * Reset.
      */
-    public void reset() {
+    public synchronized void reset() {
         setCurrentState(State.PAUSE);
         mBreakPointList.clear();
     }
@@ -163,15 +163,19 @@ public class SectionProgressBar extends View {
      *
      * @param millisecond the millisecond
      */
-    public void addBreakPointTime(long millisecond) {
+    public synchronized void addBreakPointTime(long millisecond) {
         mBreakPointList.add(millisecond);
     }
 
     /**
      * Remove last break point.
      */
-    public void removeLastBreakPoint() {
+    public synchronized void removeLastBreakPoint() {
         mBreakPointList.removeLast();
+    }
+
+    public synchronized boolean isRecorded(){
+        return !mBreakPointList.isEmpty();
     }
 
     @Override
@@ -181,21 +185,23 @@ public class SectionProgressBar extends View {
 
         // redraw all the break point
         int startPoint = 0;
-        if (!mBreakPointList.isEmpty()) {
-            float lastTime = 0;
-            for (Long time : mBreakPointList) {
-                float left = startPoint;
-                startPoint += (time - lastTime) * mPixelUnit;
-                canvas.drawRect(left, 0, startPoint, getMeasuredHeight(), mProgressBarPaint);
-                canvas.drawRect(startPoint, 0, startPoint + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mBreakPointPaint);
-                startPoint += DEFAULT_BREAK_POINT_WIDTH;
-                lastTime = time;
+        synchronized (this) {
+            if (!mBreakPointList.isEmpty()) {
+                float lastTime = 0;
+                for (Long time : mBreakPointList) {
+                    float left = startPoint;
+                    startPoint += (time - lastTime) * mPixelUnit;
+                    canvas.drawRect(left, 0, startPoint, getMeasuredHeight(), mProgressBarPaint);
+                    canvas.drawRect(startPoint, 0, startPoint + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mBreakPointPaint);
+                    startPoint += DEFAULT_BREAK_POINT_WIDTH;
+                    lastTime = time;
+                }
             }
-        }
 
-        // draw the first point
-        if (mBreakPointList.isEmpty() || mBreakPointList.getLast() <= mFirstPointTime) {
-            canvas.drawRect(mPixelUnit * mFirstPointTime, 0, mPixelUnit * mFirstPointTime + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mFirstPointPaint);
+            // draw the first point
+            if (mBreakPointList.isEmpty() || mBreakPointList.getLast() <= mFirstPointTime) {
+                canvas.drawRect(mPixelUnit * mFirstPointTime, 0, mPixelUnit * mFirstPointTime + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mFirstPointPaint);
+            }
         }
 
         // increase the progress bar in start state

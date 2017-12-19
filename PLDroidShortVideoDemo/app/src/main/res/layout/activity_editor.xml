@@ -44,17 +44,18 @@
             android:id="@+id/preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <ImageButton
             android:id="@+id/pause_playback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#0000"
             android:layout_alignBottom="@id/preview"
             android:layout_alignEnd="@id/preview"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:background="#0000"
             android:onClick="onClickTogglePlayback"
-            android:src="@mipmap/btn_pause"/>
+            android:src="@mipmap/btn_pause" />
     </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
 
     <com.qiniu.pili.droid.shortvideo.demo.view.TextSelectorPanel
@@ -81,6 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_text_view"
+                android:clickable="true"
                 android:onClick="onClickShowFilters"
                 android:paddingBottom="5dp"
                 android:paddingLeft="8dp"
@@ -95,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/border_text_view"
+                android:clickable="true"
                 android:onClick="onClickShowMVs"
                 android:paddingBottom="5dp"
                 android:paddingLeft="8dp"
@@ -103,6 +106,82 @@
                 android:text="MV"
                 android:textColor="#fff"
                 android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/speed_panel"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/super_slow_speed_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onSpeedClicked"
+                    android:padding="7dp"
+                    android:text="@string/speed_super_slow"
+                    android:textColor="@color/speedTextNormal"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/slow_speed_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onSpeedClicked"
+                    android:padding="7dp"
+                    android:text="@string/speed_slow"
+                    android:textColor="@color/speedTextNormal"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/normal_speed_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onSpeedClicked"
+                    android:padding="7dp"
+                    android:text="@string/speed_normal"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/fast_speed_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onSpeedClicked"
+                    android:padding="7dp"
+                    android:text="@string/speed_fast"
+                    android:textColor="@color/speedTextNormal"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/super_fast_speed_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="onSpeedClicked"
+                    android:padding="7dp"
+                    android:text="@string/speed_super_fast"
+                    android:textColor="@color/speedTextNormal"
+                    android:textSize="15sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -167,6 +246,14 @@
                 android:background="#000"
                 android:onClick="onClickTextSelect"
                 android:src="@mipmap/btn_add_text" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000"
+                android:onClick="onClickDubAudio"
+                android:src="@mipmap/btn_dub" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

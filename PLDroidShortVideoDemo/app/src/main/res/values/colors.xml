@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorTextBG">#cc222222</color>
+    <color name="colorSpeedPanel">#99222222</color>
 
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
@@ -21,6 +22,7 @@
     <color name="text11">#ff0000</color>
     <color name="text12">#0000ff</color>
 
+    <color name="speedTextNormal">#ffdddddd</color>
     <color name="textSelectorBG">#2d2b39</color>
 
 </resources>

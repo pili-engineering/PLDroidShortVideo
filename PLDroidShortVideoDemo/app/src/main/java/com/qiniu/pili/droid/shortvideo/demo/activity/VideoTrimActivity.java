@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
@@ -352,8 +351,13 @@ public class VideoTrimActivity extends Activity {
             }
 
             @Override
-            public void onProgressUpdate(float percentage) {
-                mProcessingDialog.setProgress((int) (100 * percentage));
+            public void onProgressUpdate(final float percentage) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProcessingDialog.setProgress((int) (100 * percentage));
+                    }
+                });
             }
         });
     }

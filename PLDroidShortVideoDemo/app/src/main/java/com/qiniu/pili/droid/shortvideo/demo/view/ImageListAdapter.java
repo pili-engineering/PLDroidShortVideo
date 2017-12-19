@@ -114,7 +114,7 @@ public class ImageListAdapter extends BaseAdapter {
         return ThumbnailUtils.extractThumbnail(bitmap, 320, 320, OPTIONS_RECYCLE_INPUT);
     }
 
-    private String getFileNameWithSuffix(String pathandname) {
+    public static String getFileNameWithSuffix(String pathandname) {
         int start = pathandname.lastIndexOf("/");
         if (start != -1 ) {
             return pathandname.substring(start + 1);

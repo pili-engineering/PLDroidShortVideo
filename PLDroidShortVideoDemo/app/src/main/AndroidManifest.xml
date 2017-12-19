@@ -27,8 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.VideoRecordActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.VideoRecordActivity" />
         <activity
             android:name=".activity.AudioRecordActivity"
             android:screenOrientation="portrait" />
@@ -66,10 +65,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:theme="@style/AppThemeFullscreen"
             android:name=".activity.ArRecordActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".activity.WebViewActivity"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeFullscreen" />
+        <activity
+            android:name=".activity.DraftBoxActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activity.VideoDubActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.WebViewActivity" />
     </application>
 
 </manifest>

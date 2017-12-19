@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -53,12 +54,16 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_MULTI_CODEC_WRONG;
-import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_SRC_DST_SAME_FILE_PATH;
 import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_NO_VIDEO_TRACK;
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_SRC_DST_SAME_FILE_PATH;
+import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_SPEED_ARRAY;
 
 public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final String TAG = "VideoEditActivity";
     private static final String MP4_PATH = "MP4_PATH";
+
+    private static final int REQUEST_CODE_PICK_AUDIO_MIX_FILE = 0;
+    private static final int REQUEST_CODE_DUB = 1;
 
     private GLSurfaceView mPreviewView;
     private RecyclerView mFiltersList;
@@ -78,21 +83,50 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private EditText mCurTextView;
     private boolean mIsTextViewMoved;
 
-    private int mFgVolume = 100;
-    private int mBgVolume = 100;
     private int mFgVolumeBeforeMute = 100;
-    private long mAudioMixPosition = 0;
     private long mMixDuration = 5000; // ms
     private boolean mIsMuted = false;
     private boolean mIsMixAudio = false;
-    private boolean mIsAudioMixDialogShown = false;
     private boolean mIsUseWatermark = true;
     private boolean mIsPlaying = true;
+
+    private String mMp4path;
+
+    private TextView mSpeedTextView;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
         intent.putExtra(MP4_PATH, mp4Path);
         activity.startActivity(intent);
+    }
+
+    public void onSpeedClicked(View view) {
+        mSpeedTextView.setTextColor(getResources().getColor(R.color.speedTextNormal));
+
+        TextView textView = (TextView) view;
+        textView.setTextColor(getResources().getColor(R.color.colorAccent));
+        mSpeedTextView = textView;
+
+        double recordSpeed = 1.0;
+        switch (view.getId()) {
+            case R.id.super_slow_speed_text:
+                recordSpeed = RECORD_SPEED_ARRAY[0];
+                break;
+            case R.id.slow_speed_text:
+                recordSpeed = RECORD_SPEED_ARRAY[1];
+                break;
+            case R.id.normal_speed_text:
+                recordSpeed = RECORD_SPEED_ARRAY[2];
+                break;
+            case R.id.fast_speed_text:
+                recordSpeed = RECORD_SPEED_ARRAY[3];
+                break;
+            case R.id.super_fast_speed_text:
+                recordSpeed = RECORD_SPEED_ARRAY[4];
+                break;
+        }
+
+        mShortVideoEditor.setSpeed(recordSpeed);
     }
 
     @Override
@@ -151,11 +185,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mWatermarkSetting.setPosition(0.01f, 0.01f);
         mWatermarkSetting.setAlpha(128);
 
-        String path = getIntent().getStringExtra(MP4_PATH);
-        Log.i(TAG, "editing file: " + path);
+        mMp4path = getIntent().getStringExtra(MP4_PATH);
+        Log.i(TAG, "editing file: " + mMp4path);
 
         PLVideoEditSetting setting = new PLVideoEditSetting();
-        setting.setSourceFilepath(path);
+        setting.setSourceFilepath(mMp4path);
         setting.setDestFilepath(Config.EDITED_FILE_PATH);
 
         mShortVideoEditor = new PLShortVideoEditor(mPreviewView, setting);
@@ -168,22 +202,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mFiltersList.setAdapter(new FilterListAdapter(mShortVideoEditor.getBuiltinFilterList()));
 
         mAudioMixSettingDialog = new AudioMixSettingDialog(this);
+        // make dialog create +
+        mAudioMixSettingDialog.show();
+        mAudioMixSettingDialog.dismiss();
+        // make dialog create -
         mAudioMixSettingDialog.setOnAudioVolumeChangedListener(mOnAudioVolumeChangedListener);
         mAudioMixSettingDialog.setOnPositionSelectedListener(mOnPositionSelectedListener);
-    }
 
-    private void setMixVolume() {
-        mShortVideoEditor.setAudioMixVolume(mFgVolume / 100f, mBgVolume / 100f);
-    }
-
-    private void setMixAudioDuration() {
-        if (mShortVideoEditor == null) {
-            return;
-        }
-
-        int duration = mShortVideoEditor.getAudioMixFileDuration();
-        mAudioMixSettingDialog.setMixMaxPosition(duration);
-        Log.i(TAG, "duration = " + duration);
+        mSpeedTextView = (TextView) findViewById(R.id.normal_speed_text);
     }
 
     public void onClickReset(View v) {
@@ -194,10 +220,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mShortVideoEditor.setMVEffect(null, null);
         mShortVideoEditor.setAudioMixFile(null);
         mIsMixAudio = false;
-        if (mIsAudioMixDialogShown) {
-            mAudioMixPosition = 0;
-            mAudioMixSettingDialog.clearMixAudio();
-        }
+        mAudioMixSettingDialog.clearMixAudio();
     }
 
     public void onClickMix(View v) {
@@ -210,22 +233,17 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("audio/*");
         }
-        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), 0);
+        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), REQUEST_CODE_PICK_AUDIO_MIX_FILE);
     }
 
     public void onClickMute(View v) {
-        if (!mIsMuted) {
-            mFgVolumeBeforeMute = mFgVolume;
-            mFgVolume = 0;
-            mShortVideoEditor.muteOriginAudio(true);
-            mIsMuted = true;
-            mMuteButton.setImageResource(R.mipmap.btn_mute);
-        } else {
-            mFgVolume = mFgVolumeBeforeMute;
-            mShortVideoEditor.muteOriginAudio(false);
-            mIsMuted = false;
-            mMuteButton.setImageResource(R.mipmap.btn_unmute);
+        mIsMuted = !mIsMuted;
+        mShortVideoEditor.muteOriginAudio(mIsMuted);
+        mMuteButton.setImageResource(mIsMuted ? R.mipmap.btn_mute : R.mipmap.btn_unmute);
+        if (mIsMuted) {
+            mFgVolumeBeforeMute = mAudioMixSettingDialog.getSrcVolumeProgress();
         }
+        mAudioMixSettingDialog.setSrcVolumeProgress(mIsMuted ? 0 : mFgVolumeBeforeMute);
     }
 
     public void onClickTextSelect(View v) {
@@ -233,14 +251,15 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mTextSelectorPanel.setVisibility(View.VISIBLE);
     }
 
+    public void onClickDubAudio(View v) {
+        Intent intent = new Intent(this, VideoDubActivity.class);
+        intent.putExtra(VideoDubActivity.MP4_PATH, mMp4path);
+        startActivityForResult(intent, REQUEST_CODE_DUB);
+    }
+
     public void onClickAudioMixSetting(View v) {
         if (mIsMixAudio) {
             mAudioMixSettingDialog.show();
-            mIsAudioMixDialogShown = true;
-            mAudioMixSettingDialog.setSrcVolumeProgress(mFgVolume);
-            mAudioMixSettingDialog.setMixVolumeProgress(mBgVolume);
-            setMixAudioDuration();
-            mAudioMixSettingDialog.setMixPosition((int) mAudioMixPosition);
         } else {
             ToastUtils.s(this, "请先选择混音文件！");
         }
@@ -423,24 +442,31 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onClickTogglePlayback(View v) {
         if (mIsPlaying) {
             mShortVideoEditor.pausePlayback();
-            mPausePalybackButton.setImageResource(R.mipmap.btn_play);
         } else {
             mShortVideoEditor.resumePlayback();
-            mPausePalybackButton.setImageResource(R.mipmap.btn_pause);
         }
+        mPausePalybackButton.setImageResource(mIsPlaying ? R.mipmap.btn_play : R.mipmap.btn_pause);
         mIsPlaying = !mIsPlaying;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_PICK_AUDIO_MIX_FILE) {
             String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
-            if (selectedFilepath != null && !"".equals(selectedFilepath)) {
+            if (!TextUtils.isEmpty(selectedFilepath)) {
                 mShortVideoEditor.setAudioMixFile(selectedFilepath);
+                mAudioMixSettingDialog.setMixMaxPosition(mShortVideoEditor.getAudioMixFileDuration());
                 mIsMixAudio = true;
-                mBgVolume = 100;
-                setMixVolume();
+            }
+        } else if (requestCode == REQUEST_CODE_DUB) {
+            String dubMp4Path = data.getStringExtra(VideoDubActivity.DUB_MP4_PATH);
+            if (!TextUtils.isEmpty(dubMp4Path)) {
+                finish();
+                VideoEditActivity.start(this, dubMp4Path);
             }
         }
     }
@@ -458,12 +484,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mShortVideoEditor.setMVEffect(mSelectedMV, mSelectedMask);
         mShortVideoEditor.setWatermark(mIsUseWatermark ? mWatermarkSetting : null);
         mShortVideoEditor.startPlayback();
-        if (mIsMuted) {
-            mFgVolume = 0;
-            mShortVideoEditor.muteOriginAudio(true);
-            mMuteButton.setImageResource(R.mipmap.btn_mute);
-        }
-        setMixVolume();
     }
 
     public void onSaveEdit(View v) {
@@ -513,8 +533,13 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     @Override
-    public void onProgressUpdate(float percentage) {
-        mProcessingDialog.setProgress((int) (100 * percentage));
+    public void onProgressUpdate(final float percentage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mProcessingDialog.setProgress((int) (100 * percentage));
+            }
+        });
     }
 
     private class FilterItemViewHolder extends RecyclerView.ViewHolder {
@@ -650,10 +675,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private AudioMixSettingDialog.OnAudioVolumeChangedListener mOnAudioVolumeChangedListener = new AudioMixSettingDialog.OnAudioVolumeChangedListener() {
         @Override
         public void onAudioVolumeChanged(int fgVolume, int bgVolume) {
-            mFgVolume = fgVolume;
-            mBgVolume = bgVolume;
-            setMixVolume();
-            mIsMuted = mFgVolume == 0;
+            Log.i(TAG, "fg volume: " + fgVolume + " bg volume: " + bgVolume);
+            mShortVideoEditor.setAudioMixVolume(fgVolume / 100f, bgVolume / 100f);
+            mIsMuted = fgVolume == 0;
             mMuteButton.setImageResource(mIsMuted ? R.mipmap.btn_mute : R.mipmap.btn_unmute);
         }
     };
@@ -661,7 +685,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private AudioMixSettingDialog.OnPositionSelectedListener mOnPositionSelectedListener = new AudioMixSettingDialog.OnPositionSelectedListener() {
         @Override
         public void onPositionSelected(long position) {
-            mAudioMixPosition = position;
+            Log.i(TAG, "selected position: " + position);
             mShortVideoEditor.setAudioMixFileRange(position, position + mMixDuration);
         }
     };

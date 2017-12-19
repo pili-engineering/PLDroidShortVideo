@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.qiniu.pili.droid.shortvideo.PLComposeItem;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
@@ -34,6 +35,9 @@ import java.util.List;
 public class ImageComposeActivity extends AppCompatActivity {
     private static final String TAG = "ImageComposeActivity";
 
+    public static final int REQUEST_IMAGE_CODE = 100;
+    public static final int REQUEST_AUDIO_CODE = 101;
+
     public static final long DEFULT_DURATION = 3000;
     public static final long DEFULT_TRANS_TIME = 1000;
 
@@ -43,8 +47,10 @@ public class ImageComposeActivity extends AppCompatActivity {
     private ListView mImageListView;
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
+    private TextView mAudioPathText;
 
     private int mDeletePosition = 0;
+    private String mAudioFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class ImageComposeActivity extends AppCompatActivity {
 
         mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
+        mAudioPathText = (TextView) findViewById(R.id.AudioFileTextView);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter1);
@@ -79,7 +86,7 @@ public class ImageComposeActivity extends AppCompatActivity {
         mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                mShortVideoComposer.cancelComposeVideos();
+                mShortVideoComposer.cancelComposeImages();
             }
         });
 
@@ -135,7 +142,12 @@ public class ImageComposeActivity extends AppCompatActivity {
                 long duration = Long.parseLong(durationStr);
                 long transTime = Long.parseLong(transTimeStr);
                 PLComposeItem newItem = new PLComposeItem(path);
-                newItem.setDurationMs(duration);
+                try {
+                    newItem.setDurationMs(duration);
+                } catch (IllegalArgumentException e) {
+                    ToastUtils.s(ImageComposeActivity.this, "持续时间必须要大于0 ！");
+                    return;
+                }
                 newItem.setTransitionTimeMs(transTime);
 
                 mImageListAdapter.removeItem(position);
@@ -178,7 +190,11 @@ public class ImageComposeActivity extends AppCompatActivity {
     }
 
     public void onClickAddImage(View v) {
-        chooseImageFile();
+        chooseFile(false);
+    }
+
+    public void onClickAddMusic(View v) {
+        chooseFile(true);
     }
 
     public void onClickCompose(View v) {
@@ -191,7 +207,7 @@ public class ImageComposeActivity extends AppCompatActivity {
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
-        mShortVideoComposer.composeImages(items, Config.IMAGE_COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+        mShortVideoComposer.composeImages(items, mAudioFilePath, true, Config.IMAGE_COMPOSE_FILE_PATH, setting, mVideoSaveListener);
     }
 
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
@@ -212,36 +228,55 @@ public class ImageComposeActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onProgressUpdate(float percentage) {
-            mProcessingDialog.setProgress((int) (100 * percentage));
+        public void onProgressUpdate(final float percentage) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProcessingDialog.setProgress((int) (100 * percentage));
+                }
+            });
         }
     };
 
-    private void chooseImageFile() {
+    private void chooseFile(boolean isAudio) {
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
         } else {
             intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
         }
-        startActivityForResult(Intent.createChooser(intent, "选择要拼接的图片"), 0);
+        if (isAudio) {
+            intent.setType("audio/*");
+            startActivityForResult(Intent.createChooser(intent, "请选择音频文件"), REQUEST_AUDIO_CODE);
+        } else {
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, "请选择要拼接的图片"), REQUEST_IMAGE_CODE);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
-            Log.i(TAG, "Select file: " + selectedFilepath);
-            if (selectedFilepath != null && !"".equals(selectedFilepath)) {
-                PLComposeItem item = new PLComposeItem(selectedFilepath);
-                item.setDurationMs(DEFULT_DURATION).setTransitionTimeMs(DEFULT_TRANS_TIME);
-                mImageListAdapter.addItem(item);
-                mImageListAdapter.notifyDataSetChanged();
-                ToastUtils.s(this, "单击条目可以进行编辑，长按可以删除");
+            if (requestCode == REQUEST_IMAGE_CODE) {
+                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                Log.i(TAG, "Select file: " + selectedFilepath);
+                if (selectedFilepath != null && !"".equals(selectedFilepath)) {
+                    PLComposeItem item = new PLComposeItem(selectedFilepath);
+                    item.setDurationMs(DEFULT_DURATION).setTransitionTimeMs(DEFULT_TRANS_TIME);
+                    mImageListAdapter.addItem(item);
+                    mImageListAdapter.notifyDataSetChanged();
+                    ToastUtils.s(this, "单击条目可以进行编辑，长按可以删除");
+                }
+            } else if (requestCode == REQUEST_AUDIO_CODE) {
+                mAudioFilePath = GetPathFromUri.getPath(this, data.getData());
+                if (mAudioFilePath != null && !"".equals(mAudioFilePath)) {
+                    String audioName = ImageListAdapter.getFileNameWithSuffix(mAudioFilePath);
+                    if (!audioName.isEmpty()) {
+                        mAudioPathText.setText(audioName);
+                    }
+                }
             }
         }
     }
