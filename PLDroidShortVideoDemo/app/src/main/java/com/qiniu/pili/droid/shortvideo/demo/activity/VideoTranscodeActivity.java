@@ -37,6 +37,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private static final String TAG = "VideoTranscodeActivity";
 
     private Spinner mTranscodingBitrateLevelSpinner;
+    private Spinner mTranscodingRotationSpinner;
     private EditText mTranscodingWidthEditText;
     private EditText mTranscodingHeightEditText;
     private CustomProgressDialog mProcessingDialog;
@@ -65,12 +66,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         mVideoBitrateText = (TextView) findViewById(R.id.SrcVideoBitrateText);
 
         mTranscodingBitrateLevelSpinner = (Spinner) findViewById(R.id.TranscodingBitrateLevelSpinner);
+        mTranscodingRotationSpinner = (Spinner) findViewById(R.id.TranscodingRotationSpinner);
         mTranscodingWidthEditText = (EditText) findViewById(R.id.TranscodingWidth);
         mTranscodingHeightEditText = (EditText) findViewById(R.id.TranscodingHeight);
 
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
-        mTranscodingBitrateLevelSpinner.setAdapter(adapter4);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
+        mTranscodingBitrateLevelSpinner.setAdapter(adapter);
         mTranscodingBitrateLevelSpinner.setSelection(2);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ROTATION_LEVEL_TIPS_ARRAY);
+        mTranscodingRotationSpinner.setAdapter(adapter);
+        mTranscodingRotationSpinner.setSelection(0);
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -152,12 +158,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         }
 
         int transcodingBitrateLevel = mTranscodingBitrateLevelSpinner.getSelectedItemPosition();
+        int transcodingRotationLevel = mTranscodingRotationSpinner.getSelectedItemPosition();
         int transcodingWidth = Integer.parseInt(mTranscodingWidthEditText.getText().toString());
         int transcodingHeight = Integer.parseInt(mTranscodingHeightEditText.getText().toString());
 
         mProcessingDialog.show();
 
-        mShortVideoTranscoder.transcode(transcodingWidth, transcodingHeight, getEncodingBitrateLevel(transcodingBitrateLevel), isReverse, new PLVideoSaveListener() {
+        mShortVideoTranscoder.transcode(
+                transcodingWidth, transcodingHeight,
+                RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[transcodingBitrateLevel],
+                RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
+                isReverse, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(final String s) {
                 Log.i(TAG, "save success: " + s);
@@ -200,8 +211,13 @@ public class VideoTranscodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onProgressUpdate(float percentage) {
-                mProcessingDialog.setProgress((int) (100 * percentage));
+            public void onProgressUpdate(final float percentage) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProcessingDialog.setProgress((int) (100 * percentage));
+                    }
+                });
             }
         });
     }
@@ -223,10 +239,6 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         });
         builder.setCancelable(false);
         builder.create().show();
-    }
-
-    private int getEncodingBitrateLevel(int position) {
-        return RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[position];
     }
 
 }

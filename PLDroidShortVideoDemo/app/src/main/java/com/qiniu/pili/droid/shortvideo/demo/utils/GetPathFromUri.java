@@ -30,6 +30,9 @@ public class GetPathFromUri {
                 }
 
                 // TODO handle non-primary volumes
+                if ("5D68-9217".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {

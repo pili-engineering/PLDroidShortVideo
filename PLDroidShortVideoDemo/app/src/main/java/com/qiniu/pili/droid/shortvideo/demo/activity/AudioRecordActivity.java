@@ -26,6 +26,8 @@ import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
 public class AudioRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener {
     private static final String TAG = "AudioRecordActivity";
 
+    public static final String ENCODING_MODE = "EncodingMode";
+
     private PLShortAudioRecorder mShortAudioRecorder;
 
     private SectionProgressBar mSectionProgressBar;
@@ -43,6 +45,8 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio_record);
+
+        int encodingMode = getIntent().getIntExtra(ENCODING_MODE, 0);
 
         mSectionProgressBar = (SectionProgressBar) findViewById(R.id.record_progressbar);
         mRecordBtn = findViewById(R.id.record);
@@ -62,6 +66,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
 
         PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
         PLAudioEncodeSetting audioEncodeSetting = new PLAudioEncodeSetting();
+        audioEncodeSetting.setHWCodecEnabled(encodingMode == 0);
 
         PLRecordSetting recordSetting = new PLRecordSetting();
         recordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
@@ -201,8 +206,13 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
     }
 
     @Override
-    public void onProgressUpdate(float percentage) {
-        mProcessingDialog.setProgress((int) (100 * percentage));
+    public void onProgressUpdate(final float percentage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mProcessingDialog.setProgress((int) (100 * percentage));
+            }
+        });
     }
 
     @Override

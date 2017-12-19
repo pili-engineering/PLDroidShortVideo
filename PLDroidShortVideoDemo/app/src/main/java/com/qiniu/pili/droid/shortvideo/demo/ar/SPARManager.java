@@ -1,7 +1,6 @@
 package com.qiniu.pili.droid.shortvideo.demo.ar;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;

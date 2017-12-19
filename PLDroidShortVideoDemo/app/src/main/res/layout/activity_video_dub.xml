@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@android:color/background_dark" >
+
+    <LinearLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_back"
+            android:onClick="onClickBack" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:gravity="center"
+            android:text="配音"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_next"
+            android:onClick="onClickSaveDubbing" />
+    </LinearLayout>
+
+    <com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout
+        android:id="@+id/preview_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_layout">
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.SquareGLSurfaceView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
+
+    <com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar
+        android:id="@+id/record_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <LinearLayout
+        android:id="@+id/btns"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_delete"
+            android:clickable="true"
+            android:onClick="onClickDelete" />
+
+        <ImageView
+            android:id="@+id/record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:src="@drawable/btn_record" />
+
+        <ImageView
+            android:id="@+id/concat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_concat"
+            android:clickable="true"
+            android:onClick="onClickSaveDubbing" />
+
+    </LinearLayout>
+
+</LinearLayout>

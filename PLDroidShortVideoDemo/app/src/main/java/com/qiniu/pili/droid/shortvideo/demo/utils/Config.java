@@ -9,6 +9,7 @@ public class Config {
 
     public static final String VIDEO_STORAGE_DIR = Environment.getExternalStorageDirectory() + "/ShortVideo/";
     public static final String RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "record.mp4";
+    public static final String DUB_FILE_PATH = VIDEO_STORAGE_DIR + "dub.mp4";
     public static final String AUDIO_RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "audio_record.m4a";
     public static final String EDITED_FILE_PATH = VIDEO_STORAGE_DIR + "edited.mp4";
     public static final String TRIM_FILE_PATH = VIDEO_STORAGE_DIR + "trimmed.mp4";

@@ -98,6 +98,10 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
         mSrcVolumeSeekBar.setProgress(progress);
     }
 
+    public int getSrcVolumeProgress() {
+        return mSrcVolumeSeekBar.getProgress();
+    }
+
     public void setMixVolumeProgress(int progress) {
         mMixVolumeSeekBar.setProgress(progress);
     }

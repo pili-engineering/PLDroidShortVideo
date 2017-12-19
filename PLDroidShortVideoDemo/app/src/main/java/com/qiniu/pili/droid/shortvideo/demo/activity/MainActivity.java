@@ -23,10 +23,9 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private Spinner mRecordSpeedLevelSpinner;
-    private Spinner mRecordOrientationSpinner;
     private Spinner mPreviewSizeRatioSpinner;
     private Spinner mPreviewSizeLevelSpinner;
+    private Spinner mEncodingModeLevelSpinner;
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
 
@@ -39,26 +38,22 @@ public class MainActivity extends AppCompatActivity {
         String info = "版本号：" + getVersionDescription() + "，编译时间：" + getBuildTimeDescription();
         versionInfoTextView.setText(info);
 
-        mRecordSpeedLevelSpinner = (Spinner) findViewById(R.id.RecordSpeedLevelSpinner);
-        mRecordOrientationSpinner = (Spinner) findViewById(R.id.RecordOrientationSpinner);
         mPreviewSizeRatioSpinner = (Spinner) findViewById(R.id.PreviewSizeRatioSpinner);
         mPreviewSizeLevelSpinner = (Spinner) findViewById(R.id.PreviewSizeLevelSpinner);
+        mEncodingModeLevelSpinner = (Spinner) findViewById(R.id.EncodingModeLevelSpinner);
         mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_SPEED_LEVEL_TIPS_ARRAY);
-        mRecordSpeedLevelSpinner.setAdapter(adapter);
-        mRecordSpeedLevelSpinner.setSelection(3);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.RECORD_ORIENTATION_TIPS_ARRAY);
-        mRecordOrientationSpinner.setAdapter(adapter);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_RATIO_TIPS_ARRAY);
         mPreviewSizeRatioSpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.PREVIEW_SIZE_LEVEL_TIPS_ARRAY);
         mPreviewSizeLevelSpinner.setAdapter(adapter);
         mPreviewSizeLevelSpinner.setSelection(3);
+
+        adapter= new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_MODE_LEVEL_TIPS_ARRAY);
+        mEncodingModeLevelSpinner.setAdapter(adapter);
+        mEncodingModeLevelSpinner.setSelection(0);
 
         adapter= new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter);
@@ -132,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickDraftBox(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(DraftBoxActivity.class);
+        }
+    }
+
     private void jumpToActivity(Class<?> cls) {
         Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
@@ -139,10 +140,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpToCaptureActivity() {
         Intent intent = new Intent(MainActivity.this, VideoRecordActivity.class);
-        intent.putExtra(VideoRecordActivity.RECORD_SPEED_LEVEL, mRecordSpeedLevelSpinner.getSelectedItemPosition());
-        intent.putExtra(VideoRecordActivity.RECORD_ORIENTATION_LANDSCAPE, mRecordOrientationSpinner.getSelectedItemPosition() == 1);
         intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_RATIO, mPreviewSizeRatioSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.PREVIEW_SIZE_LEVEL, mPreviewSizeLevelSpinner.getSelectedItemPosition());
+        intent.putExtra(VideoRecordActivity.ENCODING_MODE, mEncodingModeLevelSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.ENCODING_SIZE_LEVEL, mEncodingSizeLevelSpinner.getSelectedItemPosition());
         intent.putExtra(VideoRecordActivity.ENCODING_BITRATE_LEVEL, mEncodingBitrateLevelSpinner.getSelectedItemPosition());
         startActivity(intent);
@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpToAudioCaptureActivity() {
         Intent intent = new Intent(MainActivity.this, AudioRecordActivity.class);
+        intent.putExtra(AudioRecordActivity.ENCODING_MODE, mEncodingModeLevelSpinner.getSelectedItemPosition());
         startActivity(intent);
     }
 

@@ -19,8 +19,21 @@
     <string name="title_start_compose">启动合成</string>
     <string name="title_video_size">视频尺寸</string>
     <string name="title_video_bitrate">视频码率</string>
+    <string name="title_audio_file_name">音频文件：</string>
     <string name="title_add_image">添加图片</string>
+    <string name="title_add_music">添加音乐</string>
     <string name="title_ar_effect">AR 特效</string>
+    <string name="title_from_draft_box">草稿箱</string>
+    <string name="title_all_drafts">草稿列表</string>
+
+    <string name="dlg_save_draft_title">输入草稿标题</string>
+    <string name="dlg_save_draft_yes">保存</string>
+    <string name="toast_draft_title_exist">已存在相同标题的草稿</string>
+    <string name="toast_draft_save_success">草稿保存成功</string>
+    <string name="toast_draft_save_fail">草稿保存失败</string>
+    <string name="toast_draft_recover_success">草稿恢复成功</string>
+    <string name="toast_draft_recover_fail">草稿恢复失败</string>
+    <string name="dlg_delete_draft">确认删除草稿</string>
 
     <string name="desc_duration">持续时间</string>
     <string name="desc_transition_time">转场时间</string>
@@ -29,5 +42,10 @@
 
     <string name="ar_record">开始录制</string>
     <string name="ar_stop">停止录制</string>
+    <string name="speed_super_slow">极慢"</string>
+    <string name="speed_slow">慢"</string>
+    <string name="speed_normal">正常"</string>
+    <string name="speed_fast">快"</string>
+    <string name="speed_super_fast">极快"</string>
 
 </resources>

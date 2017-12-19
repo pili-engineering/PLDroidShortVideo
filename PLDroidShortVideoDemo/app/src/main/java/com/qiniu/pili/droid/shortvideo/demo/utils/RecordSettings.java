@@ -8,22 +8,13 @@ public class RecordSettings {
     public static final long DEFAULT_MIN_RECORD_DURATION = 3 * 1000;
     public static final long DEFAULT_MAX_RECORD_DURATION = 10 * 1000;
 
-    public static final String[] RECORD_ORIENTATION_TIPS_ARRAY = {
-            "竖屏", "横屏"
-    };
-
-    public static final String[] RECORD_SPEED_LEVEL_TIPS_ARRAY = {
-            "0.125x",
-            "0.25x",
-            "0.5x",
-            "1.0x",
-            "2.0x",
-            "4.0x",
-            "8.0x",
-    };
-
     public static final String[] PREVIEW_SIZE_RATIO_TIPS_ARRAY = {
             "4:3", "16:9"
+    };
+
+    public static final String[] ENCODING_MODE_LEVEL_TIPS_ARRAY = {
+            "HW",
+            "SW"
     };
 
     public static final String[] PREVIEW_SIZE_LEVEL_TIPS_ARRAY = {
@@ -66,6 +57,13 @@ public class RecordSettings {
             "2500Kbps",
             "4000Kbps",
             "8000Kbps"
+    };
+
+    public static final String[] ROTATION_LEVEL_TIPS_ARRAY = {
+            "0（可用作去除视频旋转信息）",
+            "90",
+            "180",
+            "270"
     };
 
     public static final PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO[] PREVIEW_SIZE_RATIO_ARRAY = {
@@ -166,13 +164,19 @@ public class RecordSettings {
         8000 * 1000,
     };
 
+    public static final int[] ROTATION_LEVEL_ARRAY = {
+            0,
+            90,
+            180,
+            270,
+    };
+
     public static final double[] RECORD_SPEED_ARRAY = {
-        0.125,
         0.25,
         0.5,
         1,
         2,
         4,
-        8
     };
+
 }

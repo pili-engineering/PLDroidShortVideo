@@ -72,6 +72,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:text="@string/title_from_draft_box"
+            android:onClick="onClickDraftBox"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -84,32 +91,6 @@
             android:text="录制参数配置"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="倍数拍摄"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/RecordSpeedLevelSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="录制方向"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/RecordOrientationSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -133,6 +114,19 @@
 
         <Spinner
             android:id="@+id/PreviewSizeLevelSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="编码类型"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/EncodingModeLevelSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp" />

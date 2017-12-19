@@ -95,7 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="注：尺寸和码率决定了文件的画质和大小，目标尺寸建议保持原始视频的长宽比（16:9，1:1，4:3 等），防止画面被拉伸" />
+            android:text="注：\n尺寸和码率决定了文件的画质和大小，目标尺寸建议保持原始视频的长宽比（16:9，1:1，4:3 等），防止画面被拉伸。
+                             \n转码后的视频文件都将不带旋转信息。" />
 
         <TextView
             android:layout_width="match_parent"
@@ -143,6 +144,19 @@
 
         <Spinner
             android:id="@+id/TranscodingBitrateLevelSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="旋转角度"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/TranscodingRotationSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
