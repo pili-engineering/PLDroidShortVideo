@@ -15,10 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.qiniu.pili.droid.shortvideo.PLComposeItem;
+import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
@@ -207,7 +209,8 @@ public class ImageComposeActivity extends AppCompatActivity {
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
-        mShortVideoComposer.composeImages(items, mAudioFilePath, true, Config.IMAGE_COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+        PLDisplayMode displayMode = ((RadioButton) findViewById(R.id.fit_radio_btn)).isChecked() ? PLDisplayMode.FIT : PLDisplayMode.FULL;
+        mShortVideoComposer.composeImages(items, mAudioFilePath, true, Config.IMAGE_COMPOSE_FILE_PATH, displayMode, setting, mVideoSaveListener);
     }
 
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
@@ -218,8 +221,14 @@ public class ImageComposeActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSaveVideoFailed(int errorCode) {
-            mProcessingDialog.dismiss();
+        public void onSaveVideoFailed(final int errorCode) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProcessingDialog.dismiss();
+                    ToastUtils.toastErrorCode(ImageComposeActivity.this, errorCode);
+                }
+            });
         }
 
         @Override

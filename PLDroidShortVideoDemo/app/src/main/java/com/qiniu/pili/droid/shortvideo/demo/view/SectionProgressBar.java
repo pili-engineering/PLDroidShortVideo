@@ -19,7 +19,7 @@ public class SectionProgressBar extends View {
     private static final long DEFAULT_FIRST_POINT_TIME = 2 * 1000;
     private static final long DEFAULT_TOTAL_TIME = 10 * 1000;
 
-    private final LinkedList<Long> mBreakPointList = new LinkedList<>();
+    private final LinkedList<BreakPointInfo> mBreakPointInfoList = new LinkedList<>();
 
     private Paint mCursorPaint;
     private Paint mProgressBarPaint;
@@ -54,6 +54,13 @@ public class SectionProgressBar extends View {
          * Pause state.
          */
         PAUSE
+    }
+
+    /**
+     * Set the progress bar's color.
+     */
+    public void setBarColor(int color) {
+        mProgressBarPaint.setColor(color);
     }
 
     /**
@@ -118,7 +125,7 @@ public class SectionProgressBar extends View {
      */
     public synchronized void reset() {
         setCurrentState(State.PAUSE);
-        mBreakPointList.clear();
+        mBreakPointInfoList.clear();
     }
 
     /**
@@ -133,7 +140,7 @@ public class SectionProgressBar extends View {
     /**
      * Sets total time in millisecond
      *
-     * @param context the context
+     * @param context     the context
      * @param millisecond the millisecond
      */
     public void setTotalTime(Context context, long millisecond) {
@@ -164,18 +171,19 @@ public class SectionProgressBar extends View {
      * @param millisecond the millisecond
      */
     public synchronized void addBreakPointTime(long millisecond) {
-        mBreakPointList.add(millisecond);
+        BreakPointInfo info = new BreakPointInfo(millisecond, mProgressBarPaint.getColor());
+        mBreakPointInfoList.add(info);
     }
 
     /**
      * Remove last break point.
      */
     public synchronized void removeLastBreakPoint() {
-        mBreakPointList.removeLast();
+        mBreakPointInfoList.removeLast();
     }
 
-    public synchronized boolean isRecorded(){
-        return !mBreakPointList.isEmpty();
+    public synchronized boolean isRecorded() {
+        return !mBreakPointInfoList.isEmpty();
     }
 
     @Override
@@ -186,20 +194,23 @@ public class SectionProgressBar extends View {
         // redraw all the break point
         int startPoint = 0;
         synchronized (this) {
-            if (!mBreakPointList.isEmpty()) {
+            if (!mBreakPointInfoList.isEmpty()) {
                 float lastTime = 0;
-                for (Long time : mBreakPointList) {
+                int color = mProgressBarPaint.getColor();
+                for (BreakPointInfo info : mBreakPointInfoList) {
+                    mProgressBarPaint.setColor(info.getColor());
                     float left = startPoint;
-                    startPoint += (time - lastTime) * mPixelUnit;
+                    startPoint += (info.getTime() - lastTime) * mPixelUnit;
                     canvas.drawRect(left, 0, startPoint, getMeasuredHeight(), mProgressBarPaint);
                     canvas.drawRect(startPoint, 0, startPoint + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mBreakPointPaint);
                     startPoint += DEFAULT_BREAK_POINT_WIDTH;
-                    lastTime = time;
+                    lastTime = info.getTime();
                 }
+                mProgressBarPaint.setColor(color);
             }
 
             // draw the first point
-            if (mBreakPointList.isEmpty() || mBreakPointList.getLast() <= mFirstPointTime) {
+            if (mBreakPointInfoList.isEmpty() || mBreakPointInfoList.getLast().getTime() <= mFirstPointTime) {
                 canvas.drawRect(mPixelUnit * mFirstPointTime, 0, mPixelUnit * mFirstPointTime + DEFAULT_BREAK_POINT_WIDTH, getMeasuredHeight(), mFirstPointPaint);
             }
         }
@@ -230,5 +241,31 @@ public class SectionProgressBar extends View {
         mLastUpdateTime = System.currentTimeMillis();
 
         invalidate();
+    }
+
+    private class BreakPointInfo {
+        private long mTime;
+        private int mColor;
+
+        public BreakPointInfo(long time, int color) {
+            mTime = time;
+            mColor = color;
+        }
+
+        public void setTime(long mTime) {
+            this.mTime = mTime;
+        }
+
+        public void setColor(int mColor) {
+            this.mColor = mColor;
+        }
+
+        public long getTime() {
+            return mTime;
+        }
+
+        public int getColor() {
+            return mColor;
+        }
     }
 }

@@ -29,10 +29,6 @@ import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
 import java.io.File;
 
-import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_LOW_MEMORY;
-import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_NO_VIDEO_TRACK;
-import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_SRC_DST_SAME_FILE_PATH;
-
 public class VideoTranscodeActivity extends AppCompatActivity {
     private static final String TAG = "VideoTranscodeActivity";
 
@@ -169,57 +165,50 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                 RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[transcodingBitrateLevel],
                 RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
                 isReverse, new PLVideoSaveListener() {
-            @Override
-            public void onSaveVideoSuccess(final String s) {
-                Log.i(TAG, "save success: " + s);
-                runOnUiThread(new Runnable() {
                     @Override
-                    public void run() {
-                        mProcessingDialog.dismiss();
-                        showChooseDialog(s);
+                    public void onSaveVideoSuccess(final String s) {
+                        Log.i(TAG, "save success: " + s);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProcessingDialog.dismiss();
+                                showChooseDialog(s);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onSaveVideoFailed(final int errorCode) {
+                        Log.i(TAG, "save failed: " + errorCode);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProcessingDialog.dismiss();
+                                ToastUtils.toastErrorCode(VideoTranscodeActivity.this, errorCode);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onSaveVideoCanceled() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProcessingDialog.dismiss();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onProgressUpdate(final float percentage) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProcessingDialog.setProgress((int) (100 * percentage));
+                            }
+                        });
                     }
                 });
-            }
-
-            @Override
-            public void onSaveVideoFailed(final int errorCode) {
-                Log.i(TAG, "save failed: " + errorCode);
-                mProcessingDialog.dismiss();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (errorCode) {
-                            case ERROR_NO_VIDEO_TRACK:
-                                ToastUtils.s(VideoTranscodeActivity.this, "该文件没有视频信息！");
-                                break;
-                            case ERROR_SRC_DST_SAME_FILE_PATH:
-                                ToastUtils.s(VideoTranscodeActivity.this, "源文件路径和目标路径不能相同！");
-                                break;
-                            case ERROR_LOW_MEMORY:
-                                ToastUtils.s(VideoTranscodeActivity.this, "手机内存不足，无法对该视频进行时光倒流！");
-                                break;
-                            default:
-                                ToastUtils.s(VideoTranscodeActivity.this, "transcode failed: " + errorCode);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onSaveVideoCanceled() {
-                mProcessingDialog.dismiss();
-            }
-
-            @Override
-            public void onProgressUpdate(final float percentage) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.setProgress((int) (100 * percentage));
-                    }
-                });
-            }
-        });
     }
 
     private void showChooseDialog(final String filePath) {

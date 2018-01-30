@@ -336,11 +336,7 @@ public class VideoTrimActivity extends Activity {
                     @Override
                     public void run() {
                         mProcessingDialog.dismiss();
-                        if (errorCode == ERROR_MULTI_CODEC_WRONG) {
-                            ToastUtils.s(VideoTrimActivity.this, "当前机型暂不支持该功能");
-                        }
-
-                        Log.e(TAG, "trim video failed, error code: " + errorCode);
+                        ToastUtils.toastErrorCode(VideoTrimActivity.this, errorCode);
                     }
                 });
             }

@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.qiniu.pili.droid.shortvideo.PLErrorCode;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
@@ -146,9 +145,14 @@ public class VideoComposeActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSaveVideoFailed(int errorCode) {
-            mProcessingDialog.dismiss();
-            ToastUtils.s(VideoComposeActivity.this, "视频拼接失败，错误码: " + errorCode);
+        public void onSaveVideoFailed(final int errorCode) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProcessingDialog.dismiss();
+                    ToastUtils.toastErrorCode(VideoComposeActivity.this, errorCode);
+                }
+            });
         }
 
         @Override

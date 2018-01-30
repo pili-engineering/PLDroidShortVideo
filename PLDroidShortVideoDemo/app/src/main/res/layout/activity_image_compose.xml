@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/image_add_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -12,6 +13,7 @@
         android:text="@string/title_add_image" />
 
     <Button
+        android:id="@+id/music_add_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -19,11 +21,47 @@
         android:text="@string/title_add_music" />
 
     <Button
+        android:id="@+id/compose_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:onClick="onClickCompose"
         android:text="@string/title_start_compose" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/desc_compose_display_tip"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/display_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/fit_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/desc_compose_display_fit" />
+
+            <RadioButton
+                android:id="@+id/full_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_compose_display_full" />
+        </RadioGroup>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

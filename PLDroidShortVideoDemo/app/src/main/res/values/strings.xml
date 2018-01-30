@@ -39,6 +39,14 @@
     <string name="desc_transition_time">转场时间</string>
     <string name="desc_second">秒</string>
     <string name="desc_ms">ms</string>
+    <string name="desc_paint_color">画笔颜色</string>
+    <string name="desc_paint_size">画笔大小</string>
+    <string name="desc_paint_undo">撤销</string>
+    <string name="desc_paint_clear">清除</string>
+    <string name="desc_image_tip">请选择所需的贴图！</string>
+    <string name="desc_compose_display_tip">展现方式：</string>
+    <string name="desc_compose_display_full">全屏</string>
+    <string name="desc_compose_display_fit">自适应</string>
 
     <string name="ar_record">开始录制</string>
     <string name="ar_stop">停止录制</string>

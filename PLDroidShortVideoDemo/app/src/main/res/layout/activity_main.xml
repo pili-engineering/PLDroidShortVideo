@@ -10,6 +10,7 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/video_record_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -17,6 +18,7 @@
             android:text="@string/title_record" />
 
         <Button
+            android:id="@+id/audio_record_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -24,6 +26,7 @@
             android:text="@string/title_audio_record" />
 
         <Button
+            android:id="@+id/video_trim_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,6 +34,7 @@
             android:text="@string/title_trim" />
 
         <Button
+            android:id="@+id/video_transcode_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -38,13 +42,15 @@
             android:text="@string/title_transcode" />
 
         <Button
+            android:id="@+id/gif_make_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:onClick="onClickMakeGIF"
             android:text="@string/title_gif" />
-      
+
         <Button
+            android:id="@+id/screen_record_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -52,6 +58,7 @@
             android:text="@string/title_screen_record" />
 
         <Button
+            android:id="@+id/video_compose_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -59,6 +66,7 @@
             android:text="@string/title_compose" />
 
         <Button
+            android:id="@+id/image_compose_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -66,18 +74,20 @@
             android:text="@string/title_image_compose" />
 
         <Button
-            android:text="@string/title_ar_effect"
-            android:onClick="onClickAR"
-            android:layout_margin="10dp"
+            android:id="@+id/ar_make_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickAR"
+            android:text="@string/title_ar_effect" />
 
         <Button
-            android:text="@string/title_from_draft_box"
-            android:onClick="onClickDraftBox"
-            android:layout_margin="10dp"
+            android:id="@+id/draft_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickDraftBox"
+            android:text="@string/title_from_draft_box" />
 
         <View
             android:layout_width="match_parent"
@@ -114,6 +124,20 @@
 
         <Spinner
             android:id="@+id/PreviewSizeLevelSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="音频声道"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/AudioChannelNumSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp" />

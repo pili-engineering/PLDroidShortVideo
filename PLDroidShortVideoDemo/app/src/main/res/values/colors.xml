@@ -22,6 +22,24 @@
     <color name="text11">#ff0000</color>
     <color name="text12">#0000ff</color>
 
+    <color name="paint1">#FFFFFF</color>
+    <color name="paint2">#000000</color>
+    <color name="paint3">#ffefa8</color>
+    <color name="paint4">#fccaff</color>
+    <color name="paint5">#61dcff</color>
+    <color name="paint6">#ffc502</color>
+    <color name="paint7">#ff8621</color>
+    <color name="paint8">#7777ff</color>
+    <color name="paint9">#00ff00</color>
+    <color name="paint10">#0000ff</color>
+
+    <color name="effectBar1">#ffefa8</color>
+    <color name="effectBar2">#fccaff</color>
+    <color name="effectBar3">#61dcff</color>
+    <color name="effectBar4">#ffc502</color>
+    <color name="effectBar5">#ff8621</color>
+    <color name="effectBar6">#7777ff</color>
+
     <color name="speedTextNormal">#ffdddddd</color>
     <color name="textSelectorBG">#2d2b39</color>
 

@@ -124,7 +124,7 @@ public class PlaybackActivity extends Activity implements
 
     @Override
     public void onUploadProgress(String fileName, double percent) {
-        mProgressBarDeterminate.setProgress((int)(percent * 100));
+        mProgressBarDeterminate.setProgress((int) (percent * 100));
         if (1.0 == percent) {
             mProgressBarDeterminate.setVisibility(View.INVISIBLE);
         }
@@ -139,9 +139,14 @@ public class PlaybackActivity extends Activity implements
     @Override
     public void onUploadVideoSuccess(JSONObject response) {
         try {
-            String filePath = "http://" + Config.DOMAIN + "/" + response.getString("key");
+            final String filePath = "http://" + Config.DOMAIN + "/" + response.getString("key");
             copyToClipboard(filePath);
-            ToastUtils.l(this, "文件上传成功，" + filePath + "已复制到粘贴板");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.l(PlaybackActivity.this, "文件上传成功，" + filePath + "已复制到粘贴板");
+                }
+            });
             mUploadBtn.setVisibility(View.INVISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -149,8 +154,13 @@ public class PlaybackActivity extends Activity implements
     }
 
     @Override
-    public void onUploadVideoFailed(int statusCode, String error) {
-        ToastUtils.l(this, "Upload failed, statusCode = " + statusCode + " error = " + error);
+    public void onUploadVideoFailed(final int statusCode, final String error) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtils.l(PlaybackActivity.this, "Upload failed, statusCode = " + statusCode + " error = " + error);
+            }
+        });
     }
 
     private OnClickSpeedAdjustListener mOnClickSpeedAdjustListener = new OnClickSpeedAdjustListener() {
@@ -189,7 +199,7 @@ public class PlaybackActivity extends Activity implements
 
     private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
         @Override
-        public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, int extra) {
+        public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, final int extra) {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
@@ -197,7 +207,12 @@ public class PlaybackActivity extends Activity implements
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                     break;
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
-                    ToastUtils.s(PlaybackActivity.this, "first video render time: " + extra + "ms");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.s(PlaybackActivity.this, "first video render time: " + extra + "ms");
+                        }
+                    });
                     break;
                 case PLMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
                     break;
@@ -238,6 +253,7 @@ public class PlaybackActivity extends Activity implements
         @Override
         public boolean onError(PLMediaPlayer mp, int errorCode) {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
+            final String errorTip;
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
                     /**
@@ -246,15 +262,24 @@ public class PlaybackActivity extends Activity implements
                     Log.e(TAG, "IO Error!");
                     return false;
                 case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
-                    ToastUtils.s(PlaybackActivity.this, "failed to open player !");
+                    errorTip = "failed to open player !";
                     break;
                 case PLMediaPlayer.ERROR_CODE_SEEK_FAILED:
-                    ToastUtils.s(PlaybackActivity.this, "failed to seek !");
+                    errorTip = "failed to seek !";
                     break;
                 default:
-                    ToastUtils.s(PlaybackActivity.this, "unknown error !");
+                    errorTip = "unknown error !";
                     break;
             }
+            if (errorTip != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.s(PlaybackActivity.this, errorTip);
+                    }
+                });
+            }
+
             finish();
             return true;
         }
@@ -264,7 +289,12 @@ public class PlaybackActivity extends Activity implements
         @Override
         public void onCompletion(PLMediaPlayer plMediaPlayer) {
             Log.i(TAG, "Play Completed !");
-            ToastUtils.s(PlaybackActivity.this, "Play Completed !");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.s(PlaybackActivity.this, "Play Completed !");
+                }
+            });
             finish();
         }
     };
