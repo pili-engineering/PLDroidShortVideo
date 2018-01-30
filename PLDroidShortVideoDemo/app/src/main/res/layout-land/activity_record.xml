@@ -27,6 +27,7 @@
         android:layout_margin="15dp">
 
         <ImageView
+            android:id="@+id/screen_rotate_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
@@ -35,6 +36,7 @@
             android:src="@mipmap/btn_screen_rotation" />
 
         <ImageView
+            android:id="@+id/capture_frame_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
@@ -74,6 +76,7 @@
         android:padding="15dp">
 
         <ImageView
+            android:id="@+id/adjust_brightness_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"

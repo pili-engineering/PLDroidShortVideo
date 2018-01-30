@@ -83,15 +83,21 @@ public class VideoListAdapter extends BaseAdapter {
             }
             PLMediaFile file = new PLMediaFile(filepath);
             holder.mVideoName.setText("文件名：" + new File(filepath).getName());
-            String videoParams = "视频：" + file.getVideoWidth() + "x" + file.getVideoHeight() + ", " + file.getVideoRotation() + " 度";
-            holder.mVideoParams.setText(videoParams);
-            String audioParams = "音频：" + file.getAudioSampleRate() + "Hz, ";
-            if (file.getAudioChannels() == 1) {
-                audioParams += "单通道";
-            } else {
-                audioParams += "立体声";
+            if (file.hasVideo()) {
+                String videoParams = "视频：" + file.getVideoWidth() + "x" + file.getVideoHeight() + ", " + file.getVideoRotation() + " 度";
+                holder.mVideoParams.setText(videoParams);
             }
-            holder.mAudioParams.setText(audioParams);
+            if (file.hasAudio()) {
+                String audioParams = "音频：" + file.getAudioSampleRate() + "Hz, ";
+                if (file.getAudioChannels() == 1) {
+                    audioParams += "单通道";
+                } else {
+                    audioParams += "立体声";
+                }
+                holder.mAudioParams.setText(audioParams);
+            } else {
+                holder.mAudioParams.setText("音频：无");
+            }
             file.release();
         }
 

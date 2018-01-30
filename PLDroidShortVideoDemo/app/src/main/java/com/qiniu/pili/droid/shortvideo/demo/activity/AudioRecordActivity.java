@@ -2,6 +2,7 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.media.AudioFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,6 +28,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
     private static final String TAG = "AudioRecordActivity";
 
     public static final String ENCODING_MODE = "EncodingMode";
+    public static final String AUDIO_CHANNEL_NUM = "AudioChannelNum";
 
     private PLShortAudioRecorder mShortAudioRecorder;
 
@@ -46,7 +48,8 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio_record);
 
-        int encodingMode = getIntent().getIntExtra(ENCODING_MODE, 0);
+        int encodingModePos = getIntent().getIntExtra(ENCODING_MODE, 0);
+        int audioChannelNumPos = getIntent().getIntExtra(AUDIO_CHANNEL_NUM, 0);
 
         mSectionProgressBar = (SectionProgressBar) findViewById(R.id.record_progressbar);
         mRecordBtn = findViewById(R.id.record);
@@ -65,8 +68,12 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         mShortAudioRecorder.setRecordStateListener(this);
 
         PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
+        microphoneSetting.setChannelConfig(RecordSettings.AUDIO_CHANNEL_NUM_ARRAY[audioChannelNumPos] == 1 ?
+                AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO);
+
         PLAudioEncodeSetting audioEncodeSetting = new PLAudioEncodeSetting();
-        audioEncodeSetting.setHWCodecEnabled(encodingMode == 0);
+        audioEncodeSetting.setHWCodecEnabled(encodingModePos == 0);
+        audioEncodeSetting.setChannels(RecordSettings.AUDIO_CHANNEL_NUM_ARRAY[audioChannelNumPos]);
 
         PLRecordSetting recordSetting = new PLRecordSetting();
         recordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);

@@ -14,8 +14,8 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 13
-        versionName "1.8.0"
+        versionCode 14
+        versionName "1.9.0"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
         ndk {
@@ -32,7 +32,7 @@ android {
 
 dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.3.10'
-    compile files('libs/pldroid-shortvideo-1.8.0.jar')
+    compile files('libs/pldroid-shortvideo-1.9.0.jar')
     compile files('libs/pldroid-player-2.0.5.jar')
     compile files('libs/EasyAR.jar')
     compile files('libs/EasyAR3D.jar')
@@ -48,4 +48,8 @@ dependencies {
     compile(name: 'kw-filter', ext: 'aar')
     compile(name: 'kw-tracker', ext: 'aar')
     compile project(':kiwi')
+    compile files('libs/TuSDKCore-2.9.0.jar')
+    compile files('libs/TuSDKFace-1.0.0.jar')
+    compile files('libs/TuSDKVideo-1.11.0.jar')
+    compile files('libs/universal-image-loader-1.9.4.jar')
 }

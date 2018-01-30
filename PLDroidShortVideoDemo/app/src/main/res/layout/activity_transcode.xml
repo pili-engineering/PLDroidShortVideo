@@ -161,6 +161,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:id="@+id/transcode_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -169,6 +170,7 @@
             android:textSize="12sp" />
 
         <Button
+            android:id="@+id/reverse_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

@@ -18,8 +18,7 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 public class TextSelectorPanel extends LinearLayout {
     private RecyclerView mTextViews;
     private Context mContext;
-    private OnTextClickedListener mOnTextClickedListener;
-    private OnViewClosedListener mOnViewClosedListener;
+    private OnTextSelectorListener mOnTextSelectorListener;
     private ImageButton mCloseBtn;
 
     public static int[] colors = {R.color.text1, R.color.text2, R.color.text3, R.color.text4,
@@ -30,7 +29,7 @@ public class TextSelectorPanel extends LinearLayout {
     public TextSelectorPanel(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        View view = LayoutInflater.from(context).inflate(R.layout.text_selector_panel, this);
+        View view = LayoutInflater.from(context).inflate(R.layout.panel_text_selector, this);
 
         mTextViews = (RecyclerView) view.findViewById(R.id.recycler_text);
         TextInfo[] infos = initTextInfos();
@@ -42,19 +41,15 @@ public class TextSelectorPanel extends LinearLayout {
         mCloseBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mOnViewClosedListener != null) {
-                    mOnViewClosedListener.onViewClosed();
+                if (mOnTextSelectorListener != null) {
+                    mOnTextSelectorListener.onViewClosed();
                 }
             }
         });
     }
 
-    public void setOnTextClickedListener(OnTextClickedListener onTextClickedListener) {
-        mOnTextClickedListener = onTextClickedListener;
-    }
-
-    public void setOnViewClosedListener(OnViewClosedListener onViewClosedListener) {
-        mOnViewClosedListener = onViewClosedListener;
+    public void setOnTextSelectorListener(OnTextSelectorListener listener) {
+        mOnTextSelectorListener = listener;
     }
 
     private TextInfo[] initTextInfos() {
@@ -90,8 +85,8 @@ public class TextSelectorPanel extends LinearLayout {
             mText.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mOnTextClickedListener != null) {
-                        mOnTextClickedListener.onTextClicked(mText);
+                    if (mOnTextSelectorListener != null) {
+                        mOnTextSelectorListener.onTextSelected(mText);
                     }
                 }
             });
@@ -140,11 +135,9 @@ public class TextSelectorPanel extends LinearLayout {
         }
     }
 
-    public interface OnTextClickedListener {
-        void onTextClicked(StrokedTextView textView);
-    }
+    public interface OnTextSelectorListener {
+        void onTextSelected(StrokedTextView textView);
 
-    public interface OnViewClosedListener {
         void onViewClosed();
     }
 

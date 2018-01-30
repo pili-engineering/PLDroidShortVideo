@@ -66,6 +66,11 @@ public class RecordSettings {
             "270"
     };
 
+    public static final String[] AUDIO_CHANNEL_NUM_TIPS_ARRAY = {
+            "单声道",
+            "双声道"
+    };
+
     public static final PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO[] PREVIEW_SIZE_RATIO_ARRAY = {
             PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO.RATIO_4_3,
             PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO.RATIO_16_9
@@ -153,15 +158,15 @@ public class RecordSettings {
     };
 
     public static final int[] ENCODING_BITRATE_LEVEL_ARRAY = {
-        500 * 1000,
-        800 * 1000,
-        1000 * 1000,
-        1200 * 1000,
-        1600 * 1000,
-        2000 * 1000,
-        2500 * 1000,
-        4000 * 1000,
-        8000 * 1000,
+            500 * 1000,
+            800 * 1000,
+            1000 * 1000,
+            1200 * 1000,
+            1600 * 1000,
+            2000 * 1000,
+            2500 * 1000,
+            4000 * 1000,
+            8000 * 1000,
     };
 
     public static final int[] ROTATION_LEVEL_ARRAY = {
@@ -172,11 +177,15 @@ public class RecordSettings {
     };
 
     public static final double[] RECORD_SPEED_ARRAY = {
-        0.25,
-        0.5,
-        1,
-        2,
-        4,
+            0.25,
+            0.5,
+            1,
+            2,
+            4,
     };
 
+    public static final int[] AUDIO_CHANNEL_NUM_ARRAY = {
+            1,
+            2,
+    };
 }
