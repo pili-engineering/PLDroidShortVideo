@@ -180,8 +180,8 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private String prepareUrl() {
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        String fileName = "EasyAR_Recording_" + timeStamp + ".mp4";
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        String fileName = "EasyAR_Recording_" + timestamp + ".mp4";
         File folder = new File(Config.VIDEO_STORAGE_DIR + "ArMovies");
         if (!folder.exists())
             folder.mkdirs();

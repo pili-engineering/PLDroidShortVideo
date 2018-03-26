@@ -249,7 +249,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 }
 
                 @Override
-                public int onDrawFrame(int texId, int texWidth, int texHeight, long timeStampNs, float[] transformMatrix) {
+                public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
                     if (!isTrackerOnSurfaceChangedCalled) {
                         isTrackerOnSurfaceChangedCalled = true;
                         mKiwiTrackWrapper.onSurfaceChanged(surfaceWidth, surfaceHeight, texWidth, texHeight);

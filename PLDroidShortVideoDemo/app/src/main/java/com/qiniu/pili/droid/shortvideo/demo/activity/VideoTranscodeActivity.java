@@ -158,9 +158,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         int transcodingWidth = Integer.parseInt(mTranscodingWidthEditText.getText().toString());
         int transcodingHeight = Integer.parseInt(mTranscodingHeightEditText.getText().toString());
 
-        mProcessingDialog.show();
-
-        mShortVideoTranscoder.transcode(
+        boolean startResult = mShortVideoTranscoder.transcode(
                 transcodingWidth, transcodingHeight,
                 RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[transcodingBitrateLevel],
                 RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
@@ -209,6 +207,12 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                         });
                     }
                 });
+
+        if (startResult) {
+            mProcessingDialog.show();
+        } else {
+            ToastUtils.s(this, "开始转码失败！");
+        }
     }
 
     private void showChooseDialog(final String filePath) {

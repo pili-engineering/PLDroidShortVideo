@@ -133,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickTransitionMake(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(VideoDivideActivity.class);
+        }
+    }
+
     public void onClickDraftBox(View v) {
         if (isPermissionOK()) {
             jumpToActivity(DraftBoxActivity.class);

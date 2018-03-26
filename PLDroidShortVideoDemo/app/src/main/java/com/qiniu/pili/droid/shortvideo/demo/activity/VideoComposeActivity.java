@@ -130,11 +130,14 @@ public class VideoComposeActivity extends AppCompatActivity {
             ToastUtils.s(this, "请先添加至少 2 个视频");
             return;
         }
-        mProcessingDialog.show();
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
-        mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+        if (mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener)) {
+            mProcessingDialog.show();
+        } else {
+            ToastUtils.s(this, "开始拼接失败！");
+        }
     }
 
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {

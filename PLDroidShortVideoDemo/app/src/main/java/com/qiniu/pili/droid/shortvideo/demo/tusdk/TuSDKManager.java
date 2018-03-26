@@ -124,7 +124,7 @@ public class TuSDKManager {
         // 设置输入的图片朝向 如果输入的图片不是原始朝向 该选项必须配置
         filterEngine.setInputImageOrientation(ImageOrientation.DownMirrored);
         // 设置是否开启动态贴纸功能
-        filterEngine.setEnableLiveSticker(true);
+        filterEngine.setEnableLiveSticker(false);
         return filterEngine;
     }
 
