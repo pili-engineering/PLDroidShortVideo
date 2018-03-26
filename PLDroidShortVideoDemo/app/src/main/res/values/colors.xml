@@ -43,4 +43,10 @@
     <color name="speedTextNormal">#ffdddddd</color>
     <color name="textSelectorBG">#2d2b39</color>
 
+    <color name="transitionSelectorBG">#575558</color>
+    <color name="sectionDrawColor">#80575558</color>
+    <color name="frameSelectorBorder">#ffffff</color>
+    <color name="frameSelectorBody">#8061dcff</color>
+    <color name="videoFrameActivityMiddleBG">#222222</color>
+    <color name="videoFrameActivityBottomBG">#1a1a1a</color>
 </resources>

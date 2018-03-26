@@ -89,6 +89,14 @@
             android:onClick="onClickDraftBox"
             android:text="@string/title_from_draft_box" />
 
+        <Button
+            android:id="@+id/video_divide_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickTransitionMake"
+            android:text="@string/title_video_divide" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

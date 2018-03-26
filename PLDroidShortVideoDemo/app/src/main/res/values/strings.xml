@@ -25,6 +25,8 @@
     <string name="title_ar_effect">AR 特效</string>
     <string name="title_from_draft_box">草稿箱</string>
     <string name="title_all_drafts">草稿列表</string>
+    <string name="title_video_divide">视频分割</string>
+    <string name="title_transition_make">过场字幕</string>
 
     <string name="dlg_save_draft_title">输入草稿标题</string>
     <string name="dlg_save_draft_yes">保存</string>
@@ -56,4 +58,12 @@
     <string name="speed_fast">快"</string>
     <string name="speed_super_fast">极快"</string>
 
+    <string name="transition_maker_edit">编辑"</string>
+    <string name="transition_maker_confirm">确定"</string>
+    <string name="divide_delete_tip">双击片段可以删除"</string>
+    <string name="divide_add_tip">剪一段"</string>
+    <string name="divide_add_video">添加视频"</string>
+    <string name="divide_long_press_tip">长按缩略图排序"</string>
+    <string name="divide_compose">视频合成"</string>
+    <string name="divide_add_transition">添加过场字幕"</string>
 </resources>

@@ -1026,7 +1026,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
 
         @Override
-        public int onDrawFrame(int texId, int texWidth, int texHeight, long timeStampNs, float[] transformMatrix) {
+        public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
             if (mCancelSave && mTuSDKManager.getPreviewFilterEngine() == null) {
                 mTuSDKManager.setupPreviewFilterEngine();
                 mTuSDKManager.getPreviewFilterEngine().onSurfaceCreated();
@@ -1083,8 +1083,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
 
         @Override
-        public int onDrawFrame(int texId, int texWidth, int texHeight, long timeStampNs, float[] transformMatrix) {
-            long currentTimeMs = (long) Math.ceil(timeStampNs / 1000000L);
+        public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
+            long currentTimeMs = (long) Math.ceil(timestampNs / 1000000L);
             if (startTimeMs == 0) {
                 startTimeMs = currentTimeMs;
             }

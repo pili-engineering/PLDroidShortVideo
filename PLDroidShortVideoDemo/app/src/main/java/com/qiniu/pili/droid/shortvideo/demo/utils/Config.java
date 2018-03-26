@@ -19,4 +19,5 @@ public class Config {
     public static final String SCREEN_RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "screen_record.mp4";
     public static final String COMPOSE_FILE_PATH = VIDEO_STORAGE_DIR + "composed.mp4";
     public static final String IMAGE_COMPOSE_FILE_PATH = VIDEO_STORAGE_DIR + "image_composed.mp4";
+    public static final String VIDEO_DIVIDE_FILE_PATH = VIDEO_STORAGE_DIR + "divide_composed.mp4";
 }

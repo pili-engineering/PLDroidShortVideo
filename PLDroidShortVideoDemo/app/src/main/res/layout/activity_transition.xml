@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@mipmap/btn_back"
+            android:onClick="onBackClicked" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:id="@+id/transition_container0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"></RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transition_container1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transition_container2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transition_container3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transition_container4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transition_container5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></RelativeLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/transitionSelectorBG"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_transition_make"
+                    android:textColor="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:clickable="true"
+                        android:onClick="onEditClicked"
+                        android:text="@string/transition_maker_edit"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:onClick="onSaveClicked"
+                        android:text="@string/transition_maker_confirm"
+                        android:textColor="@color/colorAccent" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_transition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.qiniu.pili.droid.shortvideo.demo.view.TransitionEditView
+        android:id="@+id/transition_edit_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"></com.qiniu.pili.droid.shortvideo.demo.view.TransitionEditView>
+</FrameLayout>
