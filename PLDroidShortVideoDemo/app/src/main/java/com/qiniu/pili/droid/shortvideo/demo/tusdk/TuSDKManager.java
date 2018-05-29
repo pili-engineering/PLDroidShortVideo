@@ -3,7 +3,7 @@ package com.qiniu.pili.droid.shortvideo.demo.tusdk;
 
 import android.content.Context;
 
-import org.lasque.tusdk.api.TuSDKFilterEngine;
+import org.lasque.tusdk.api.video.preproc.filter.TuSDKFilterEngine;
 import org.lasque.tusdk.core.utils.image.ImageOrientation;
 import org.lasque.tusdk.video.editor.TuSDKTimeRange;
 
@@ -109,7 +109,7 @@ public class TuSDKManager {
      */
     public synchronized MagicModel findMagicModelWithPosition(long position) {
         for (MagicModel magicModel : mMagicModelsList) {
-            if ((magicModel.getTimeRange().start <= position && position <= magicModel.getTimeRange().end))
+            if ((magicModel.getTimeRange().getStartTime() <= position && position <= magicModel.getTimeRange().getEndTime()))
                 return magicModel;
         }
         return null;

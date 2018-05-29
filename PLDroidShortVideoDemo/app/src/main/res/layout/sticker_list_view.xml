@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="65dp">
+
+    <RelativeLayout
+        android:id="@+id/lsq_item_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="0dp">
+
+        <ImageView
+            android:id="@+id/lsq_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/lsq_progress_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/loading_icon"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/lsq_item_state_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@id/lsq_item_image"
+            android:layout_alignRight="@id/lsq_item_image"
+            android:scaleType="centerInside"
+            android:src="@drawable/download_icon"
+            android:visibility="visible" />
+    </RelativeLayout>
+</RelativeLayout>

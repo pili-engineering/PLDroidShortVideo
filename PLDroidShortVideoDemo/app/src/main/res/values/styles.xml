@@ -12,4 +12,20 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="lsq_record_filter_list_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">90dp</item>
+
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="lsq_sticker_list_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingLeft">13dp</item>
+        <item name="android:paddingRight">13dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
 </resources>

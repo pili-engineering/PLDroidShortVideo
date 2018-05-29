@@ -1037,7 +1037,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             int curPos = mShortVideoEditor.getCurrentPosition();
 
             if (mSceneMagicEditing && mTuSDKManager.getLastMagicModel() != null) {
-                mTuSDKManager.getLastMagicModel().getTimeRange().end = curPos;
+                mTuSDKManager.getLastMagicModel().getTimeRange().setEndTime(curPos);
             }
 
             TuSDKManager.MagicModel model = mTuSDKManager.findMagicModelWithPosition(curPos);
