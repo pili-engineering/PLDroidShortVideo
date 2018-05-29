@@ -175,48 +175,89 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/concat"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/btn_concat"
-            android:clickable="true"
-            android:onClick="onClickConcat" />
+        <LinearLayout
+            android:id="@+id/bottom_control_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/record"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
-            android:src="@drawable/btn_record" />
+            <ImageView
+                android:id="@+id/concat"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/btn_concat"
+                android:clickable="true"
+                android:onClick="onClickConcat" />
 
-        <ImageView
-            android:id="@+id/delete"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_delete"
-            android:clickable="true"
-            android:onClick="onClickDelete" />
+            <ImageView
+                android:id="@+id/record"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:src="@drawable/btn_record" />
 
-        <ImageView
-            android:id="@+id/btn_camera_effect"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:onClick="onClickShowKiwi"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_camera_effect"
-            android:visibility="gone" />
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_delete"
+                android:clickable="true"
+                android:onClick="onClickDelete" />
 
+            <ImageView
+                android:id="@+id/btn_camera_effect"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:onClick="onClickShowTutu"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_camera_effect"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
-
-    <com.kiwi.ui.widget.KwControlView
-        android:id="@+id/kiwi_control_layout"
+    <!-- 滤镜栏 -->
+    <RelativeLayout
+        android:id="@+id/lsq_filter_group_bottom_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:visibility="gone" />
+        android:background="@android:color/black"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <!-- 贴纸栏 -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/lsq_sticker_list_view"
+                    style="@style/lsq_sticker_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/half_transparent_black"></android.support.v7.widget.RecyclerView>
+
+                <include layout="@layout/smart_beauty_layout" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/close_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|left"
+                android:background="#0000"
+                android:onClick="onCloseBottomPanel"
+                android:src="@drawable/btn_close" />
+        </FrameLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

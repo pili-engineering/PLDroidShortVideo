@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qiniu.pili.droid.shortvideo.demo.view.tusdk.filter.FilterCellView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="54dp"
+        android:layout_height="75dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tusdk_view_dubbing_roundcorner_bg">
+
+            <org.lasque.tusdk.core.view.TuSdkImageView
+                android:id="@+id/lsq_item_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="false"
+                android:scaleType="fitStart"
+                android:src="@drawable/tail_watermark" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/lsq_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/tusdk_view_filter_unselected_text_roundcorner"
+            android:gravity="center"
+            android:textColor="@color/lsq_color_white"
+            android:textSize="13sp" />
+
+        <RelativeLayout
+            android:id="@+id/lsq_none_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tusdk_view_white_background"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/lsq_item_none"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/forbid" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lsq_item_border"
+            android:layout_width="54dp"
+            android:layout_height="75dp"
+            android:background="@drawable/tusdk_view_filter_selected_border"
+            android:visibility="gone"></RelativeLayout>
+    </RelativeLayout>
+</com.qiniu.pili.droid.shortvideo.demo.view.tusdk.filter.FilterCellView>

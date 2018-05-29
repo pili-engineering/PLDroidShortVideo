@@ -66,4 +66,36 @@
     <string name="divide_long_press_tip">长按缩略图排序"</string>
     <string name="divide_compose">视频合成"</string>
     <string name="divide_add_transition">添加过场字幕"</string>
+
+    <!-- TuSdk -->
+    <string name="lsq_filter_group_zhuanye">直播厂商合作</string>
+    <string name="lsq_filter_nature">自然</string>
+    <string name="lsq_filter_pink">粉嫩</string>
+    <string name="lsq_filter_jelly">果冻</string>
+    <string name="lsq_filter_ruddy">红润</string>
+    <string name="lsq_filter_sugar">糖水色</string>
+    <string name="lsq_filter_honey">蜜粉</string>
+    <string name="lsq_filter_clear">白皙</string>
+    <string name="lsq_filter_timber">小森林</string>
+    <string name="lsq_filter_whitening">美白</string>
+    <string name="lsq_filter_porcelain">青花瓷</string>
+    <string name="lsq_filter_Skinwhitening_1">美白</string>
+    <string name="lsq_filter_group_ZhiBo0">直播公用</string>
+    <string name="lsq_filter_VideoFair07">自然</string>
+    <string name="lsq_filter_VideoWhiteSkin07">美白</string>
+    <string name="lsq_filter_Brilliantly07">明亮</string>
+    <string name="lsq_filter_Forest09">小森林</string>
+    <string name="lsq_filter_SkinPink07">粉嫩</string>
+
+    <!--  滤镜参数 -->
+    <string name="lsq_filter_set_smoothing">润滑</string>
+    <string name="lsq_filter_set_whitening">白皙</string>
+    <string name="lsq_filter_set_mixied">效果</string>
+    <string name="lsq_filter_set_eyeSize">大眼</string>
+    <string name="lsq_filter_set_chinSize">瘦脸</string>
+    <string name="lsq_filter_set_vignette">暗角</string>
+
+    <string name="lsq_dermabrasion">磨皮</string>
+    <string name="lsq_big_eyes">大眼</string>
+    <string name="lsq_thin_face">瘦脸</string>
 </resources>

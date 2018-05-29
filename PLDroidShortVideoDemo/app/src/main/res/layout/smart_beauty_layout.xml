@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lsq_smart_beauty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/lsq_beauty_content"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+            <include layout="@layout/beauty_wrap_layout" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/lsq_filter_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/lsq_filter_config_view"
+                layout="@layout/filter_config_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_below="@id/lsq_filter_config_view"
+                android:orientation="horizontal">
+
+                <com.qiniu.pili.droid.shortvideo.demo.view.tusdk.filter.FilterListView
+                    android:id="@+id/lsq_filter_list_view"
+                    style="@style/lsq_record_filter_list_view"
+                    android:paddingLeft="8dp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+    <View
+        android:id="@+id/lsq_spilt_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/tusdk_view_edit_split_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lsq_color_transparent">"
+
+        <org.lasque.tusdk.core.view.widget.button.TuSdkTextButton
+            android:id="@+id/lsq_beauty_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/lsq_style_default_btn_beauty_selected"
+            android:onClick="onClick"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:text="美颜"
+            android:textColor="#f4a11a"
+            android:textSize="14sp" />
+
+        <org.lasque.tusdk.core.view.widget.button.TuSdkTextButton
+            android:id="@+id/lsq_filter_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/lsq_beauty_btn"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/lsq_style_default_btn_filter_unselected"
+            android:onClick="onClick"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:text="滤镜"
+            android:textColor="@color/lsq_filter_title_default_color"
+            android:textSize="14sp" />
+
+        <org.lasque.tusdk.core.view.widget.button.TuSdkTextButton
+            android:id="@+id/lsq_sticker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/lsq_filter_btn"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/lsq_style_default_btn_filter_unselected"
+            android:onClick="onClick"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:text="贴图"
+            android:textColor="@color/lsq_filter_title_default_color"
+            android:textSize="14sp" />
+    </RelativeLayout>
+</LinearLayout>

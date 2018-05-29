@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <FrameLayout 
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent" >
+	    <LinearLayout 
+	    	android:layout_width="match_parent"
+	    	android:layout_height="match_parent"
+	    	android:orientation="vertical" >  
+		   <include
+		        android:id="@+id/lsq_dermabrasion_bar"
+		        android:layout_width="match_parent"
+		        android:layout_height="50dp"
+		        layout="@layout/tusdk_config_seekbar_one" />
+		   <include
+		        android:id="@+id/lsq_big_eyes_bar"
+		        android:layout_width="match_parent"
+		        android:layout_height="50dp"
+		        layout="@layout/tusdk_config_seekbar_one" />
+		    <include
+		        android:id="@+id/lsq_thin_face_bar"
+		        android:layout_width="match_parent"
+		        android:layout_height="50dp"
+		        layout="@layout/tusdk_config_seekbar_one" />
+	    </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

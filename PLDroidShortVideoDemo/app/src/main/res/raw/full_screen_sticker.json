@@ -1,0 +1,45 @@
+{
+  "stickerGroups" : [
+    {
+      "name" : "米妮",
+      "id" : "1419",
+      "previewImage" : "/stickerGroup/img?id=1419"
+    },
+    {
+      "name" : "粉红公主",
+      "id" : "1475",
+      "previewImage" : "/stickerGroup/img?id=1475"
+    },
+    {
+      "name" : "闪光兔耳 ",
+      "id" : "1477",
+      "previewImage" : "/stickerGroup/img?id=1477"
+    },
+    {
+      "name" : "金刚",
+      "id" : "1456",
+      "previewImage" : "/stickerGroup/img?id=1456"
+    },
+    {
+      "name" : "荧光猫耳",
+      "id" : "1455",
+      "previewImage" : "/stickerGroup/img?id=1455"
+    },
+    {
+      "name" : "儿童节",
+      "id" : "1446",
+      "previewImage" : "/stickerGroup/img?id=1446"
+    },
+    {
+      "name" : "汤圆",
+      "id" : "1432",
+      "previewImage" : "/stickerGroup/img?id=1432"
+    },
+
+    {
+      "name" : "小猫玩球",
+      "id" : "1420",
+      "previewImage" : "/stickerGroup/img?id=1420"
+    }
+  ]
+}
