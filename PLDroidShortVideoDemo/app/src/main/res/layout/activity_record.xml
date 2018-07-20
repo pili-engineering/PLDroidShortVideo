@@ -225,16 +225,6 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/btn_camera_effect"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:onClick="onClickShowTutu"
-                android:scaleType="fitCenter"
-                android:src="@drawable/btn_camera_effect"
-                android:visibility="gone" />
-
-            <ImageView
                 android:id="@+id/audio_mix_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -252,46 +242,4 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <!-- 滤镜栏 -->
-    <RelativeLayout
-        android:id="@+id/lsq_filter_group_bottom_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/preview"
-        android:background="@android:color/black"
-        android:visibility="gone">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom"
-                android:orientation="vertical">
-
-                <!-- 贴纸栏 -->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/lsq_sticker_list_view"
-                    style="@style/lsq_sticker_list_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/half_transparent_black"></android.support.v7.widget.RecyclerView>
-
-                <include layout="@layout/smart_beauty_layout" />
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/close_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|left"
-                android:background="#0000"
-                android:onClick="onCloseBottomPanel"
-                android:src="@drawable/btn_close" />
-        </FrameLayout>
-    </RelativeLayout>
 </RelativeLayout>

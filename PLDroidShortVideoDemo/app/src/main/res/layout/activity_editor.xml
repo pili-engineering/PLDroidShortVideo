@@ -59,6 +59,14 @@
             android:onClick="onClickTogglePlayback"
             android:src="@mipmap/btn_pause" />
 
+        <com.qiniu.pili.droid.shortvideo.demo.view.FrameListView
+            android:id="@+id/frame_list_view"
+            android:layout_width="match_parent"
+            android:layout_alignTop="@id/preview"
+            android:layout_height="wrap_content">
+
+        </com.qiniu.pili.droid.shortvideo.demo.view.FrameListView>
+
         <LinearLayout
             android:id="@+id/speed_panel"
             android:layout_width="match_parent"
@@ -138,13 +146,6 @@
                 android:textColor="@color/speedTextNormal"
                 android:textSize="15sp" />
         </LinearLayout>
-
-        <com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar
-            android:id="@+id/effect_progressbar"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_alignBottom="@id/preview"
-            android:visibility="gone" />
     </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
 
 
@@ -252,21 +253,6 @@
                 android:textColor="#fff"
                 android:textSize="15sp" />
 
-            <TextView
-                android:id="@+id/effect_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/border_text_view"
-                android:clickable="true"
-                android:onClick="onClickShowEffect"
-                android:paddingBottom="5dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="5dp"
-                android:text="特效"
-                android:textColor="#fff"
-                android:textSize="15sp" />
         </LinearLayout>
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel

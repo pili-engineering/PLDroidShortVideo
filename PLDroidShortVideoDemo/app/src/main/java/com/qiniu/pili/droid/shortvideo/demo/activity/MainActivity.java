@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -17,9 +16,6 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
-
-import org.lasque.tusdk.core.TuSdk;
-import org.lasque.tusdk.core.seles.tusdk.FilterManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -72,22 +68,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.AUDIO_CHANNEL_NUM_TIPS_ARRAY);
         mAudioChannelNumSpinner.setAdapter(adapter);
         mAudioChannelNumSpinner.setSelection(0);
-
-        // TuSDK
-        // 异步方式初始化滤镜管理器 (注意：如果需要一开启应用马上执行SDK组件，需要做该检测，反之可选)
-        // 需要等待滤镜管理器初始化完成，才能使用所有功能
-        TuSdk.checkFilterManager(mFilterManagerDelegate);
     }
-
-    /**
-     * 滤镜管理器委托
-     */
-    private FilterManager.FilterManagerDelegate mFilterManagerDelegate = new FilterManager.FilterManagerDelegate() {
-        @Override
-        public void onFilterManagerInited(FilterManager manager) {
-            Log.i(TAG, "TuSDK initialized!");
-        }
-    };
 
     private boolean isPermissionOK() {
         PermissionChecker checker = new PermissionChecker(this);

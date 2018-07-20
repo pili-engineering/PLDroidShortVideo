@@ -67,6 +67,8 @@
     <string name="divide_compose">视频合成"</string>
     <string name="divide_add_transition">添加过场字幕"</string>
 
+    <item name="selector_view" type="id"></item>
+    <item name="rect_view" type="id"></item>
     <!-- TuSdk -->
     <string name="lsq_filter_group_zhuanye">直播厂商合作</string>
     <string name="lsq_filter_nature">自然</string>
