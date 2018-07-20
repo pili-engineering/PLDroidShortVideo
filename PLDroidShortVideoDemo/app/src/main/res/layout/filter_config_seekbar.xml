@@ -26,6 +26,8 @@
         android:layout_toLeftOf="@id/lsq_filterValueView"
         android:layout_centerVertical="true"
         layout="@layout/widget_seekbar" />
+    
+    
 
     <RelativeLayout
         android:id="@+id/lsq_titleWrapView"
@@ -45,5 +47,7 @@
             android:text="@string/lsq_filter_set_mixied"
             android:textColor="@color/lsq_seekbar_drag_color"
             android:textSize="14sp" />
+
     </RelativeLayout>
+
 </com.qiniu.pili.droid.shortvideo.demo.view.tusdk.filter.FilterConfigSeekbar>

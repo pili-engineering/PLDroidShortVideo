@@ -14,8 +14,8 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 15
-        versionName "1.10.0"
+        versionCode 16
+        versionName "1.11.0"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
         ndk {
@@ -31,8 +31,8 @@ android {
 }
 
 dependencies {
-    compile 'com.qiniu:qiniu-android-sdk:7.3.10'
-    compile files('libs/pldroid-shortvideo-1.10.0.jar')
+    compile 'com.qiniu:qiniu-android-sdk:7.3.11'
+    compile files('libs/pldroid-shortvideo-1.11.0.jar')
     compile files('libs/pldroid-player-2.0.5.jar')
     compile files('libs/EasyAR.jar')
     compile files('libs/EasyAR3D.jar')
@@ -47,8 +47,5 @@ dependencies {
 
     compile files('libs/universal-image-loader-1.9.4.jar')
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6'
-    compile files('libs/TuSDKCore-2.9.1.jar')
-    compile files('libs/TuSDKFace-2.0.0.jar')
-    compile files('libs/TuSDKVideo-2.0.0.jar')
     compile 'com.github.bumptech.glide:glide:3.7.0'
 }

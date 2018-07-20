@@ -121,11 +121,26 @@ public class FrameSelectorView extends RelativeLayout {
         return mGroupLayoutParam.leftMargin + mHandlerLeft.getWidth();
     }
 
+    public int getLeftHandlerWidth() {
+        return mHandlerLeft.getWidth();
+    }
+
     public int getBodyWidth() {
         return mHandlerBody.getWidth();
     }
 
     public int getBodyRight() {
         return getBodyLeft() + mHandlerBody.getWidth();
+    }
+
+    public void setBodyLeft(int left) {
+        mGroupLayoutParam.leftMargin = left;
+        setLayoutParams(mGroupLayoutParam);
+    }
+
+    public void setBodyWidth(int width){
+        mOriginParam = mHandlerBody.getLayoutParams();
+        mOriginParam.width = width;
+        mHandlerBody.setLayoutParams(mOriginParam);
     }
 }

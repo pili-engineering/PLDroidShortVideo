@@ -32,21 +32,19 @@ import android.widget.TextView;
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
 import com.qiniu.pili.droid.shortvideo.PLImageView;
 import com.qiniu.pili.droid.shortvideo.PLPaintView;
-import com.qiniu.pili.droid.shortvideo.PLVideoPlayerListener;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEditor;
 import com.qiniu.pili.droid.shortvideo.PLTextView;
 import com.qiniu.pili.droid.shortvideo.PLVideoEditSetting;
-import com.qiniu.pili.droid.shortvideo.PLVideoFilterListener;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.PLWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
-import com.qiniu.pili.droid.shortvideo.demo.tusdk.TuEffectListAdapter;
-import com.qiniu.pili.droid.shortvideo.demo.tusdk.TuSDKManager;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.AudioMixSettingDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
+import com.qiniu.pili.droid.shortvideo.demo.view.FrameListView;
+import com.qiniu.pili.droid.shortvideo.demo.view.FrameSelectorView;
 import com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel;
 import com.qiniu.pili.droid.shortvideo.demo.view.PaintSelectorPanel;
 import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
@@ -56,7 +54,6 @@ import com.qiniu.pili.droid.shortvideo.demo.view.TextSelectorPanel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lasque.tusdk.video.editor.TuSDKTimeRange;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,8 +80,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     private PLShortVideoEditorStatus mShortVideoEditorStatus = PLShortVideoEditorStatus.Idle;
-    private boolean mSceneMagicEditing = false;
-    private boolean mIsEffectShow = false;
 
     private GLSurfaceView mPreviewView;
     private RecyclerView mFiltersList;
@@ -105,9 +100,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private ImageSelectorPanel mImageSelectorPanel;
     private SectionProgressBar mSectionProgressBar;
 
-    private TuEffectListAdapter mTuEffectListAdapter;
-    private TuSDKManager mTuSDKManager;
-
     private PLTextView mCurTextView;
     private PLImageView mCurImageView;
 
@@ -116,7 +108,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private boolean mIsMuted = false;
     private boolean mIsMixAudio = false;
     private boolean mIsUseWatermark = true;
-    private boolean mIsPlaying = true;
 
     private String mMp4path;
 
@@ -125,6 +116,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private volatile boolean mCancelSave;
     private volatile boolean mIsVideoPlayCompleted;
+
+    private FrameListView mFrameListView;
+    private TimerTask mScrollTimerTask;
+    private Timer mScrollTimer;
+    private View mCurView;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
@@ -148,7 +144,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mMuteButton.setImageResource(R.mipmap.btn_unmute);
         mPausePalybackButton = (ImageButton) findViewById(R.id.pause_playback);
         mSpeedPanel = (LinearLayout) findViewById(R.id.speed_panel);
-        mSectionProgressBar = (SectionProgressBar) findViewById(R.id.effect_progressbar);
+
+        mFrameListView = (FrameListView) findViewById(R.id.frame_list_view);
 
         initPreviewView();
         initTextSelectorPanel();
@@ -157,7 +154,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         initProcessingDialog();
         initWatermarkSetting();
         initShortVideoEditor();
-        initEffects();
         initFiltersList();
         initAudioMixSettingDialog();
     }
@@ -167,12 +163,13 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     private void startPlayback() {
         if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Idle) {
-            mShortVideoEditor.startPlayback(mVideoPlayFilterListener);
+            mShortVideoEditor.startPlayback();
             mShortVideoEditorStatus = PLShortVideoEditorStatus.Playing;
         } else if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Paused) {
             mShortVideoEditor.resumePlayback();
             mShortVideoEditorStatus = PLShortVideoEditorStatus.Playing;
         }
+        mPausePalybackButton.setImageResource(R.mipmap.btn_pause);
     }
 
     /**
@@ -181,6 +178,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void stopPlayback() {
         mShortVideoEditor.stopPlayback();
         mShortVideoEditorStatus = PLShortVideoEditorStatus.Idle;
+        mPausePalybackButton.setImageResource(R.mipmap.btn_play);
     }
 
     /**
@@ -189,16 +187,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void pausePlayback() {
         mShortVideoEditor.pausePlayback();
         mShortVideoEditorStatus = PLShortVideoEditorStatus.Paused;
-    }
-
-    private void initEffects() {
-        mTuSDKManager = new TuSDKManager(getBaseContext());
-
-        mSectionProgressBar.setTotalTime(this, mMixDuration);
-        mSectionProgressBar.setFirstPointTime(0);
-
-        mTuEffectListAdapter = new TuEffectListAdapter(this);
-        mTuEffectListAdapter.setEffectOnTouchListener(mOnEffectTouchListener);
+        mPausePalybackButton.setImageResource(R.mipmap.btn_play);
     }
 
     public void onClickShowSpeed(View view) {
@@ -235,6 +224,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     private void addImageView(String imagePath) {
+        checkToAddRectView();
+
         final PLImageView imageView = new PLImageView(VideoEditActivity.this);
         Bitmap bitmap = null;
         try {
@@ -242,10 +233,19 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         imageView.setImageBitmap(bitmap);
         mShortVideoEditor.addImageView(imageView);
+
+        addSelectorView(imageView);
+
         showImageViewBorder(imageView);
         imageView.setOnTouchListener(new ViewTouchListener(imageView));
+    }
+
+    private void addSelectorView(View view) {
+        View selectorView = mFrameListView.addSelectorView();
+        view.setTag(R.id.selector_view, selectorView);
     }
 
     private void initFiltersList() {
@@ -276,9 +276,41 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         mShortVideoEditor = new PLShortVideoEditor(mPreviewView, setting);
         mShortVideoEditor.setVideoSaveListener(this);
-        mShortVideoEditor.setVideoPlayerListener(mVideoPlayerListener);
 
         mMixDuration = mShortVideoEditor.getDurationMs();
+
+        mFrameListView.setVideoPath(mMp4path);
+        mFrameListView.setOnVideoFrameScrollListener(new FrameListView.OnVideoFrameScrollListener() {
+            @Override
+            public void onVideoFrameScrollChanged(long timeMs) {
+                if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
+                    pausePlayback();
+                }
+                mShortVideoEditor.seekTo((int) timeMs);
+            }
+        });
+
+        initTimerTask();
+    }
+
+    private void initTimerTask() {
+        mScrollTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
+                            int position = mShortVideoEditor.getCurrentPosition();
+                            mFrameListView.scrollToTime(position);
+                        }
+                    }
+                });
+            }
+        };
+        mScrollTimer = new Timer();
+        // scroll fps:20
+        mScrollTimer.schedule(mScrollTimerTask, 50, 50);
     }
 
     private void initWatermarkSetting() {
@@ -351,8 +383,19 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             @Override
             public void onClick(View v) {
                 hideViewBorder();
+                checkToAddRectView();
             }
         });
+    }
+
+    private void checkToAddRectView() {
+        if (mCurView != null) {
+            View rectView = mFrameListView.addSelectedRect((View) mCurView.getTag(R.id.selector_view));
+            mCurView.setTag(R.id.rect_view, rectView);
+            FrameListView.SectionItem sectionItem = mFrameListView.getSectionByRectView(rectView);
+            mShortVideoEditor.setViewTimeline(mCurView, sectionItem.getStartTime(), (sectionItem.getEndTime() - sectionItem.getStartTime()));
+            mCurView = null;
+        }
     }
 
     private void initProcessingDialog() {
@@ -409,11 +452,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         startActivityForResult(intent, REQUEST_CODE_DUB);
     }
 
-    public void onClickShowEffect(View v) {
-        setPanelVisibility(mFiltersList, true, true);
-        mFiltersList.setAdapter(mTuEffectListAdapter);
-    }
-
     public void onClickAudioMixSetting(View v) {
         if (mIsMixAudio) {
             mAudioMixSettingDialog.show();
@@ -432,6 +470,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     public void addText(StrokedTextView selectText) {
+        checkToAddRectView();
+
         final StrokedTextView textView = new StrokedTextView(this);
         textView.setText("点击输入文字");
         textView.setTextSize(40);
@@ -443,6 +483,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         textView.setStrokeColor(selectText.getStrokeColor());
 
         mShortVideoEditor.addTextView(textView);
+
+        addSelectorView(textView);
+
         showTextViewBorder(textView);
         textView.setOnTouchListener(new ViewTouchListener(textView));
 
@@ -487,12 +530,40 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         hideViewBorder();
         mCurTextView = textView;
         mCurTextView.setBackgroundResource(R.drawable.border_text_view);
+
+        mCurView = textView;
+
+        FrameSelectorView selectorView = (FrameSelectorView) mCurView.getTag(R.id.selector_view);
+        selectorView.setVisibility(View.VISIBLE);
+
+        View rectView = (View) mCurView.getTag(R.id.rect_view);
+        if (rectView != null) {
+            mFrameListView.showSelectorByRectView(selectorView, rectView);
+            mFrameListView.removeRectView(rectView);
+            mShortVideoEditor.setViewTimeline(mCurView, 0, mShortVideoEditor.getDurationMs());
+        }
+
+        pausePlayback();
     }
 
     private void showImageViewBorder(PLImageView imageView) {
         hideViewBorder();
         mCurImageView = imageView;
         mCurImageView.setBackgroundResource(R.drawable.border_text_view);
+
+        mCurView = imageView;
+
+        FrameSelectorView selectorView = (FrameSelectorView) mCurView.getTag(R.id.selector_view);
+        selectorView.setVisibility(View.VISIBLE);
+
+        View rectView = (View) mCurView.getTag(R.id.rect_view);
+        if (rectView != null) {
+            mFrameListView.showSelectorByRectView(selectorView, rectView);
+            mFrameListView.removeRectView(rectView);
+            mShortVideoEditor.setViewTimeline(mCurView, 0, mShortVideoEditor.getDurationMs());
+        }
+
+        pausePlayback();
     }
 
     private class ViewTouchListener implements View.OnTouchListener {
@@ -520,6 +591,16 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                         mCurImageView = null;
                     }
                 }
+
+                View rectView = (View) mView.getTag(R.id.rect_view);
+                if (rectView != null) {
+                    mFrameListView.removeRectView((View) mView.getTag(R.id.rect_view));
+                }
+                FrameSelectorView selectorView = (FrameSelectorView) mView.getTag(R.id.selector_view);
+                if (selectorView != null) {
+                    mFrameListView.removeSelectorView(selectorView);
+                }
+                mCurView = null;
                 return true;
             }
 
@@ -553,6 +634,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 boolean yOK = touchY >= v.getHeight() * 2 / 4 && touchY <= v.getHeight();
                 scale = xOK && yOK;
 
+                if (mCurView != v) {
+                    checkToAddRectView();
+                }
                 if (v instanceof PLTextView) {
                     showTextViewBorder((PLTextView) v);
                 } else if (v instanceof PLImageView) {
@@ -637,20 +721,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             }
             panel.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
-
-        if (isEffect) {
-            mIsEffectShow = true;
-            mShortVideoEditor.setPlaybackLoop(false);
-            mSectionProgressBar.setVisibility(View.VISIBLE);
-            mPausePalybackButton.setVisibility(View.INVISIBLE);
-            resetEffects();
-        } else {
-            mIsEffectShow = false;
-            mShortVideoEditor.setPlaybackLoop(true);
-            mSectionProgressBar.setVisibility(View.GONE);
-            mPausePalybackButton.setVisibility(View.VISIBLE);
-            startPlayback();
-        }
     }
 
     public void onClickShowMVs(View v) {
@@ -696,8 +766,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         } else {
             startPlayback();
         }
-        mPausePalybackButton.setImageResource(mIsPlaying ? R.mipmap.btn_play : R.mipmap.btn_pause);
-        mIsPlaying = !mIsPlaying;
     }
 
     @Override
@@ -737,12 +805,23 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         startPlayback();
     }
 
-    public void onSaveEdit(View v) {
-        synchronized (this) {
-            mTuSDKManager.destroyPreviewFilterEngine();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mScrollTimer != null) {
+            mScrollTimer.cancel();
+            mScrollTimer = null;
         }
+        if (mScrollTimerTask != null) {
+            mScrollTimerTask.cancel();
+            mScrollTimerTask = null;
+        }
+    }
+
+    public void onSaveEdit(View v) {
+        checkToAddRectView();
         mProcessingDialog.show();
-        mShortVideoEditor.save(mVideoSaveFilterListener);
+        mShortVideoEditor.save();
         hideViewBorder();
     }
 
@@ -769,9 +848,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onSaveVideoCanceled() {
         mProcessingDialog.dismiss();
         mCancelSave = true;
-        if (mIsEffectShow) {
-            onResume();
-        }
     }
 
     @Override
@@ -914,194 +990,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
     }
 
-    /// ========================= TuSDK 相关 ========================= ///
-    private void resetEffects() {
-        mSectionProgressBar.reset();
-        mTuSDKManager.reset();
-        mShortVideoEditor.seekTo(0);
-        mIsVideoPlayCompleted = false;
-        pausePlayback();
-    }
-
-    PLVideoPlayerListener mVideoPlayerListener = new PLVideoPlayerListener() {
-        @Override
-        public void onCompletion() {
-            if (mIsEffectShow) {
-                mIsVideoPlayCompleted = true;
-                mShortVideoEditor.pausePlayback();
-            }
-        }
-    };
-
-    TuEffectListAdapter.OnEffectTouchListener mOnEffectTouchListener = new TuEffectListAdapter.OnEffectTouchListener() {
-        private int PRESS_DELAY_TIME = 300;
-        private Timer timer;
-        private long downTime;
-
-        private void onActionDown(String effectCode, int color) {
-            if (mIsVideoPlayCompleted) {
-                // 当预览至视频结束位置时，再次长按时重置场景特效信息
-                resetEffects();
-            }
-
-            // 获取当前视频位置
-            float startPosition = mShortVideoEditor.getCurrentPosition();
-
-            if (!effectCode.isEmpty()) {
-                mSceneMagicEditing = true;
-                // 切换场景特效
-                mTuSDKManager.getPreviewFilterEngine().switchFilter(effectCode);
-                // 将当前场景特效添加至场景纪录
-                TuSDKManager.MagicModel m = new TuSDKManager.MagicModel(effectCode, TuSDKTimeRange.makeRange(startPosition, startPosition));
-                mTuSDKManager.addMagicModel(m);
-            }
-
-            mSectionProgressBar.setBarColor(color);
-            mSectionProgressBar.setCurrentState(SectionProgressBar.State.START);
-            startPlayback();
-        }
-
-        @Override
-        public boolean onTouch(View v, MotionEvent motionEvent, final String effectCode, final int color) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                timer = new Timer();
-                TimerTask task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onActionDown(effectCode, color);
-                            }
-                        });
-                    }
-                };
-                timer.schedule(task, PRESS_DELAY_TIME);
-                downTime = System.currentTimeMillis();
-
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL || motionEvent.getAction() == MotionEvent.ACTION_POINTER_UP) {
-                long curTime = System.currentTimeMillis();
-                if (curTime - downTime < PRESS_DELAY_TIME && !mSceneMagicEditing) {
-                    timer.cancel();
-                    return false;
-                }
-                // 松手时暂停预览场景特效
-                pausePlayback();
-                mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
-                mSectionProgressBar.addBreakPointTime(mShortVideoEditor.getCurrentPosition());
-                mSceneMagicEditing = false;
-            }
-            return true;
-        }
-    };
-
-    /**
-     * 预览时为视频添加场景特效
-     */
-    private PLVideoFilterListener mVideoPlayFilterListener = new PLVideoFilterListener() {
-        @Override
-        public void onSurfaceCreated() {
-            mTuSDKManager.setupPreviewFilterEngine();
-            mTuSDKManager.getPreviewFilterEngine().onSurfaceCreated();
-        }
-
-        @Override
-        public void onSurfaceChanged(int i, int i1) {
-            if (mIsEffectShow) {
-                resetEffects();
-            }
-            if (mTuSDKManager.getPreviewFilterEngine() != null) {
-                mTuSDKManager.getPreviewFilterEngine().onSurfaceChanged(i, i1);
-            }
-        }
-
-        @Override
-        public void onSurfaceDestroy() {
-            if (mTuSDKManager.getPreviewFilterEngine() != null) {
-                mTuSDKManager.getPreviewFilterEngine().onSurfaceDestroy();
-            }
-            synchronized (VideoEditActivity.this) {
-                mTuSDKManager.destroyPreviewFilterEngine();
-            }
-        }
-
-        @Override
-        public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
-            if (mCancelSave && mTuSDKManager.getPreviewFilterEngine() == null) {
-                mTuSDKManager.setupPreviewFilterEngine();
-                mTuSDKManager.getPreviewFilterEngine().onSurfaceCreated();
-                mCancelSave = false;
-                pausePlayback();
-            }
-
-            int curPos = mShortVideoEditor.getCurrentPosition();
-
-            if (mSceneMagicEditing && mTuSDKManager.getLastMagicModel() != null) {
-                mTuSDKManager.getLastMagicModel().getTimeRange().setEndTime(curPos);
-            }
-
-            TuSDKManager.MagicModel model = mTuSDKManager.findMagicModelWithPosition(curPos);
-            synchronized (VideoEditActivity.this) {
-                if (mTuSDKManager.getPreviewFilterEngine() != null) {
-                    if (model != null) {
-                        mTuSDKManager.getPreviewFilterEngine().switchFilter(model.getMagicCode());
-                        return mTuSDKManager.getPreviewFilterEngine().processFrame(texId, texWidth, texHeight);
-                    }
-                }
-            }
-            return texId;
-        }
-    };
-
-    /**
-     * 保存存时为视频添加场景特效
-     */
-    private PLVideoFilterListener mVideoSaveFilterListener = new PLVideoFilterListener() {
-        // 记录保存时的起始时间戳
-        private long startTimeMs = 0;
-
-        @Override
-        public void onSurfaceCreated() {
-            startTimeMs = 0;
-            mTuSDKManager.setupSaveFilterEngine();
-            mTuSDKManager.getSaveFilterEngine().onSurfaceCreated();
-        }
-
-        @Override
-        public void onSurfaceChanged(int i, int i1) {
-            if (mTuSDKManager.getSaveFilterEngine() != null) {
-                mTuSDKManager.getSaveFilterEngine().onSurfaceChanged(i, i1);
-            }
-        }
-
-        @Override
-        public void onSurfaceDestroy() {
-            if (mTuSDKManager.getSaveFilterEngine() != null) {
-                mTuSDKManager.getSaveFilterEngine().onSurfaceDestroy();
-            }
-            mTuSDKManager.destroySaveFilterEngine();
-        }
-
-        @Override
-        public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
-            long currentTimeMs = (long) Math.ceil(timestampNs / 1000000L);
-            if (startTimeMs == 0) {
-                startTimeMs = currentTimeMs;
-            }
-
-            if (mTuSDKManager.getSaveFilterEngine() != null) {
-                // 根据保存进度更新场景特效
-                TuSDKManager.MagicModel magicModel = mTuSDKManager.findMagicModelWithPosition(currentTimeMs - startTimeMs);
-
-                if (magicModel != null) {
-                    mTuSDKManager.getSaveFilterEngine().switchFilter(magicModel.getMagicCode());
-                    return mTuSDKManager.getSaveFilterEngine().processFrame(texId, texWidth, texHeight);
-                }
-            }
-            return texId;
-        }
-    };
-
     private AudioMixSettingDialog.OnAudioVolumeChangedListener mOnAudioVolumeChangedListener = new AudioMixSettingDialog.OnAudioVolumeChangedListener() {
         @Override
         public void onAudioVolumeChanged(int fgVolume, int bgVolume) {
@@ -1117,9 +1005,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         public void onPositionSelected(long position) {
             Log.i(TAG, "selected position: " + position);
             mShortVideoEditor.setAudioMixFileRange(position, position + mMixDuration);
-            if (mIsEffectShow) {
-                resetEffects();
-            }
         }
     };
 }
