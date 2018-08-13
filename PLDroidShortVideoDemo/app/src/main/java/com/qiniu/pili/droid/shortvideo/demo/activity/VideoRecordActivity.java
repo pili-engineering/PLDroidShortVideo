@@ -102,6 +102,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     private TextView mSpeedTextView;
 
     private Stack<Long> mDurationRecordStack = new Stack();
+    private Stack<Double> mDurationVideoStack = new Stack();
 
     private OrientationEventListener mOrientationListener;
     private boolean mSectionBegan;
@@ -163,13 +164,15 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             mVideoEncodeSetting.setEncodingSizeLevel(RecordSettings.ENCODING_SIZE_LEVEL_ARRAY[encodingSizeLevelPos]);
             mVideoEncodeSetting.setEncodingBitrate(RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[encodingBitrateLevelPos]);
             mVideoEncodeSetting.setHWCodecEnabled(encodingModePos == 0);
+            mVideoEncodeSetting.setConstFrameRateEnabled(true);
 
             mAudioEncodeSetting = new PLAudioEncodeSetting();
             mAudioEncodeSetting.setHWCodecEnabled(encodingModePos == 0);
             mAudioEncodeSetting.setChannels(RecordSettings.AUDIO_CHANNEL_NUM_ARRAY[audioChannelNumPos]);
 
             mRecordSetting = new PLRecordSetting();
-            mRecordSetting.setMaxRecordDuration((long) (RecordSettings.DEFAULT_MAX_RECORD_DURATION * mRecordSpeed));
+            mRecordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+            mRecordSetting.setRecordSpeedVariable(true);
             mRecordSetting.setVideoCacheDir(Config.VIDEO_STORAGE_DIR);
             mRecordSetting.setVideoFilepath(Config.RECORD_FILE_PATH);
 
@@ -177,7 +180,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
             mShortVideoRecorder.prepare(preview, mCameraSetting, mMicrophoneSetting, mVideoEncodeSetting,
                     mAudioEncodeSetting, USE_TUSDK ? null : mFaceBeautySetting, mRecordSetting);
-            mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+            mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
             onSectionCountChanged(0, 0);
         } else {
             PLDraft draft = PLDraftBox.getInstance(this).getDraftByTag(draftTag);
@@ -199,16 +202,20 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                     long currentDuration = draft.getSectionDuration(i);
                     draftDuration += draft.getSectionDuration(i);
                     onSectionIncreased(currentDuration, draftDuration, i + 1);
+                    if (!mDurationRecordStack.isEmpty()) {
+                        mDurationRecordStack.pop();
+                    }
                 }
                 mSectionProgressBar.setFirstPointTime(draftDuration);
                 ToastUtils.s(this, getString(R.string.toast_draft_recover_success));
             } else {
                 onSectionCountChanged(0, 0);
-                mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+                mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION );
                 ToastUtils.s(this, getString(R.string.toast_draft_recover_fail));
             }
         }
         mShortVideoRecorder.setRecordSpeed(mRecordSpeed);
+        mSectionProgressBar.setProceedingSpeed(mRecordSpeed);
         mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
 
         mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
@@ -228,9 +235,19 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                     }
                 } else if (action == MotionEvent.ACTION_UP) {
                     if (mSectionBegan) {
-                        long totalDurationMs = (System.currentTimeMillis() - mSectionBeginTSMs) + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek());
-                        mDurationRecordStack.push(totalDurationMs);
-                        mSectionProgressBar.addBreakPointTime(totalDurationMs);
+                        long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginTSMs;
+                        long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek().longValue());
+                        double sectionVideoDurationMs = sectionRecordDurationMs / mRecordSpeed;
+                        double totalVideoDurationMs = sectionVideoDurationMs + (mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue());
+                        mDurationRecordStack.push(new Long(totalRecordDurationMs));
+                        mDurationVideoStack.push(new Double(totalVideoDurationMs));
+                        if (mRecordSetting.IsRecordSpeedVariable()) {
+                            Log.d(TAG,"SectionRecordDuration: " + sectionRecordDurationMs + "; sectionVideoDuration: " + sectionVideoDurationMs + "; totalVideoDurationMs: " + totalVideoDurationMs + "Section count: " + mDurationVideoStack.size());
+                            mSectionProgressBar.addBreakPointTime((long) totalVideoDurationMs);
+                        } else {
+                            mSectionProgressBar.addBreakPointTime(totalRecordDurationMs);
+                        }
+
                         mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
                         mShortVideoRecorder.endSection();
                         mSectionBegan = false;
@@ -473,16 +490,25 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onSectionIncreased(long incDuration, long totalDuration, int sectionCount) {
-        Log.i(TAG, "section increased incDuration: " + incDuration + " totalDuration: " + totalDuration + " sectionCount: " + sectionCount);
-        onSectionCountChanged(sectionCount, totalDuration);
+        double videoSectionDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
+        if ((videoSectionDuration + incDuration / mRecordSpeed) >= mRecordSetting.getMaxRecordDuration()) {
+            videoSectionDuration = mRecordSetting.getMaxRecordDuration();
+        }
+        Log.d(TAG, "videoSectionDuration: " + videoSectionDuration + "; incDuration: " + incDuration);
+        onSectionCountChanged(sectionCount, (long) videoSectionDuration);
     }
 
     @Override
     public void onSectionDecreased(long decDuration, long totalDuration, int sectionCount) {
-        Log.i(TAG, "section decreased decDuration: " + decDuration + " totalDuration: " + totalDuration + " sectionCount: " + sectionCount);
-        onSectionCountChanged(sectionCount, totalDuration);
         mSectionProgressBar.removeLastBreakPoint();
-        mDurationRecordStack.pop();
+        if (!mDurationVideoStack.isEmpty()) {
+            mDurationVideoStack.pop();
+        }
+        if (!mDurationRecordStack.isEmpty()) {
+            mDurationRecordStack.pop();
+        }
+        double deletedDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
+        onSectionCountChanged(sectionCount, (long) deletedDuration);
     }
 
     @Override
@@ -573,7 +599,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             @Override
             public void run() {
                 mDeleteBtn.setEnabled(count > 0);
-                mConcatBtn.setEnabled(totalTime >= (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+                mConcatBtn.setEnabled(totalTime >= (RecordSettings.DEFAULT_MIN_RECORD_DURATION));
             }
         });
     }
@@ -610,9 +636,11 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     }
 
     public void onSpeedClicked(View view) {
-        if (mSectionProgressBar.isRecorded()) {
-            ToastUtils.s(this, "已经拍摄视频，无法再设置拍摄倍数！");
-            return;
+        if (!mVideoEncodeSetting.IsConstFrameRateEnabled() || !mRecordSetting.IsRecordSpeedVariable()) {
+            if (mSectionProgressBar.isRecorded()) {
+                ToastUtils.s(this, "变帧率模式下，无法在拍摄中途修改拍摄倍数！");
+                return;
+            }
         }
 
         if (mSpeedTextView != null) {
@@ -641,9 +669,16 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 break;
         }
 
-        mRecordSetting.setMaxRecordDuration((long) (RecordSettings.DEFAULT_MAX_RECORD_DURATION * mRecordSpeed));
         mShortVideoRecorder.setRecordSpeed(mRecordSpeed);
-        mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+        if (mRecordSetting.IsRecordSpeedVariable() && mVideoEncodeSetting.IsConstFrameRateEnabled()) {
+            mSectionProgressBar.setProceedingSpeed(mRecordSpeed);
+            mRecordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+            mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+        } else {
+            mRecordSetting.setMaxRecordDuration((long) (RecordSettings.DEFAULT_MAX_RECORD_DURATION * mRecordSpeed));
+            mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
+        }
+
         mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
     }
 
