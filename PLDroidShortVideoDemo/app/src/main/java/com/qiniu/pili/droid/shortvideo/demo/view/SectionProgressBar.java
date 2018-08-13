@@ -37,6 +37,8 @@ public class SectionProgressBar extends View {
 
     private float mPixelsPerMilliSecond;
 
+    private double mProceedingSpeed = 1;
+
     private float mProgressWidth;
 
     private long mLastUpdateTime;
@@ -61,6 +63,13 @@ public class SectionProgressBar extends View {
      */
     public void setBarColor(int color) {
         mProgressBarPaint.setColor(color);
+    }
+
+    /**
+     * Set the progress bar's proceeding speed.
+     */
+    public void setProceedingSpeed(double speed) {
+        mProceedingSpeed = speed;
     }
 
     /**
@@ -179,7 +188,9 @@ public class SectionProgressBar extends View {
      * Remove last break point.
      */
     public synchronized void removeLastBreakPoint() {
-        mBreakPointInfoList.removeLast();
+        if (!mBreakPointInfoList.isEmpty()) {
+            mBreakPointInfoList.removeLast();
+        }
     }
 
     public synchronized boolean isRecorded() {
@@ -217,7 +228,7 @@ public class SectionProgressBar extends View {
 
         // increase the progress bar in start state
         if (mCurrentState == State.START) {
-            mProgressWidth += mPixelsPerMilliSecond * (curTime - mLastUpdateTime);
+            mProgressWidth += mPixelsPerMilliSecond * (curTime - mLastUpdateTime) / mProceedingSpeed;
             if (startPoint + mProgressWidth <= getMeasuredWidth()) {
                 canvas.drawRect(startPoint, 0, startPoint + mProgressWidth, getMeasuredHeight(), mProgressBarPaint);
             } else {
