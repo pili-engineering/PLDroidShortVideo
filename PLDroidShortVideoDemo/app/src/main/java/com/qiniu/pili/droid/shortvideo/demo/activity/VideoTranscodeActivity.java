@@ -32,17 +32,27 @@ import java.io.File;
 public class VideoTranscodeActivity extends AppCompatActivity {
     private static final String TAG = "VideoTranscodeActivity";
 
-    private Spinner mTranscodingBitrateLevelSpinner;
-    private Spinner mTranscodingRotationSpinner;
-    private EditText mTranscodingWidthEditText;
-    private EditText mTranscodingHeightEditText;
     private CustomProgressDialog mProcessingDialog;
 
     private PLShortVideoTranscoder mShortVideoTranscoder;
     private PLMediaFile mMediaFile;
     private TextView mVideoFilePathText;
     private TextView mVideoSizeText;
+    private TextView mVideoRotationText;
+    private TextView mVideoSizeRotatedText;
     private TextView mVideoBitrateText;
+
+    private EditText mTranscodingWidthEditText;
+    private EditText mTranscodingHeightEditText;
+
+    private EditText mTranscodingClipXText;
+    private EditText mTranscodingClipYText;
+    private EditText mTranscodingClipWidthText;
+    private EditText mTranscodingClipHeightText;
+
+    private EditText mTranscodingBitrateText;
+    private Spinner mTranscodingRotationSpinner;
+    private EditText mTranscodingMaxFPSEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,18 +69,23 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         mVideoFilePathText = (TextView) findViewById(R.id.SrcVideoPathText);
         mVideoSizeText = (TextView) findViewById(R.id.SrcVideoSizeText);
+        mVideoRotationText = (TextView) findViewById(R.id.SrcVideoRotationText);
+        mVideoSizeRotatedText = (TextView) findViewById(R.id.SrcVideoSizeRotatedText);
         mVideoBitrateText = (TextView) findViewById(R.id.SrcVideoBitrateText);
 
-        mTranscodingBitrateLevelSpinner = (Spinner) findViewById(R.id.TranscodingBitrateLevelSpinner);
-        mTranscodingRotationSpinner = (Spinner) findViewById(R.id.TranscodingRotationSpinner);
         mTranscodingWidthEditText = (EditText) findViewById(R.id.TranscodingWidth);
         mTranscodingHeightEditText = (EditText) findViewById(R.id.TranscodingHeight);
+        mTranscodingMaxFPSEditText = (EditText) findViewById(R.id.TranscodingMaxFPS);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
-        mTranscodingBitrateLevelSpinner.setAdapter(adapter);
-        mTranscodingBitrateLevelSpinner.setSelection(2);
+        mTranscodingClipXText = (EditText) findViewById(R.id.TranscodingClipX);
+        mTranscodingClipYText = (EditText) findViewById(R.id.TranscodingClipY);
+        mTranscodingClipWidthText = (EditText) findViewById(R.id.TranscodingClipWidth);
+        mTranscodingClipHeightText = (EditText) findViewById(R.id.TranscodingClipHeight);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ROTATION_LEVEL_TIPS_ARRAY);
+        mTranscodingBitrateText = (EditText) findViewById(R.id.TranscodingBitrate);
+        mTranscodingRotationSpinner = (Spinner) findViewById(R.id.TranscodingRotationSpinner);
+
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ROTATION_LEVEL_TIPS_ARRAY);
         mTranscodingRotationSpinner.setAdapter(adapter);
         mTranscodingRotationSpinner.setSelection(0);
 
@@ -131,12 +146,26 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private void onVideoFileSelected(String filepath) {
         mShortVideoTranscoder = new PLShortVideoTranscoder(this, filepath, Config.TRANSCODE_FILE_PATH);
         mMediaFile = new PLMediaFile(filepath);
+        int bitrateInKbps = mMediaFile.getVideoBitrate() / 1000;
+        int videoWidthRaw = mMediaFile.getVideoWidth();
+        int videoHeightRaw = mMediaFile.getVideoHeight();
+        int videoRotation = mMediaFile.getVideoRotation();
+        int videoWidthRotated = videoRotation == 0 || videoRotation == 180 ? mMediaFile.getVideoWidth() : mMediaFile.getVideoHeight();
+        int videoHeightRotated = videoRotation == 0 || videoRotation == 180 ? mMediaFile.getVideoHeight() : mMediaFile.getVideoWidth();
+        int videoFrameRate = mMediaFile.getVideoFrameRate();
+
         mVideoFilePathText.setText(new File(filepath).getName());
-        mVideoSizeText.setText(mMediaFile.getVideoWidth() + " x " + mMediaFile.getVideoHeight());
-        mTranscodingWidthEditText.setText(String.valueOf(mMediaFile.getVideoWidth()), TextView.BufferType.EDITABLE);
-        mTranscodingHeightEditText.setText(String.valueOf(mMediaFile.getVideoHeight()), TextView.BufferType.EDITABLE);
-        String bitrate = (mMediaFile.getVideoBitrate() / 1000) + " kbps";
-        mVideoBitrateText.setText(bitrate);
+        mVideoSizeText.setText(videoWidthRaw + " x " + videoHeightRaw);
+        mVideoRotationText.setText("" + videoRotation);
+        mVideoSizeRotatedText.setText(videoWidthRotated + " x " + videoHeightRotated);
+        mVideoBitrateText.setText(bitrateInKbps + " kbps");
+
+        mTranscodingWidthEditText.setText(String.valueOf(videoWidthRaw));
+        mTranscodingHeightEditText.setText(String.valueOf(videoHeightRaw));
+        mTranscodingMaxFPSEditText.setText(String.valueOf(videoFrameRate));
+        mTranscodingClipWidthText.setText(String.valueOf(videoWidthRotated));
+        mTranscodingClipHeightText.setText(String.valueOf(videoHeightRotated));
+        mTranscodingBitrateText.setText(String.valueOf(bitrateInKbps));
     }
 
     public void onClickTranscode(View v) {
@@ -153,14 +182,25 @@ public class VideoTranscodeActivity extends AppCompatActivity {
             return;
         }
 
-        int transcodingBitrateLevel = mTranscodingBitrateLevelSpinner.getSelectedItemPosition();
+        int transcodingBitrate = Integer.parseInt(mTranscodingBitrateText.getText().toString()) * 1000;
         int transcodingRotationLevel = mTranscodingRotationSpinner.getSelectedItemPosition();
         int transcodingWidth = Integer.parseInt(mTranscodingWidthEditText.getText().toString());
         int transcodingHeight = Integer.parseInt(mTranscodingHeightEditText.getText().toString());
+        int transcodingMaxFPS = Integer.parseInt(mTranscodingMaxFPSEditText.getText().toString());
+        if (transcodingMaxFPS > 0) {
+            mShortVideoTranscoder.setMaxFrameRate(transcodingMaxFPS);
+        }
+
+        int clipWidth = Integer.parseInt(mTranscodingClipWidthText.getText().toString());
+        int clipHeight = Integer.parseInt(mTranscodingClipHeightText.getText().toString());
+        if (clipWidth > 0 && clipHeight > 0) {
+            int clipX = Integer.parseInt(mTranscodingClipXText.getText().toString());
+            int clipY = Integer.parseInt(mTranscodingClipYText.getText().toString());
+            mShortVideoTranscoder.setClipArea(clipX, clipY, clipWidth, clipHeight);
+        }
 
         boolean startResult = mShortVideoTranscoder.transcode(
-                transcodingWidth, transcodingHeight,
-                RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[transcodingBitrateLevel],
+                transcodingWidth, transcodingHeight, transcodingBitrate,
                 RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
                 isReverse, new PLVideoSaveListener() {
                     @Override
