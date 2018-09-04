@@ -188,6 +188,12 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
     }
 
+
+    @Override
+    public void onSectionRecording(long sectionDurationMs, long videoDurationMs, int sectionCount) {
+        Log.d(TAG,  "sectionDurationMs: " + sectionDurationMs + "; videoDurationMs: " + videoDurationMs + "; sectionCount: " + sectionCount);
+    }
+
     @Override
     public void onSectionIncreased(long incDuration, long totalDuration, int sectionCount) {
         Log.i(TAG, "section increased incDuration: " + incDuration + " totalDuration: " + totalDuration + " sectionCount: " + sectionCount);

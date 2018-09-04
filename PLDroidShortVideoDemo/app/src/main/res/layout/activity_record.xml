@@ -232,6 +232,15 @@
                 android:onClick="onClickAddMixAudio"
                 android:src="@mipmap/btn_mix_audio" />
 
+            <TextView
+                android:id="@+id/recording_percentage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0%"
+                android:textColor="#FFFFFF"/>
+
             <ImageView
                 android:id="@+id/save_to_draft_button"
                 android:layout_width="30dp"

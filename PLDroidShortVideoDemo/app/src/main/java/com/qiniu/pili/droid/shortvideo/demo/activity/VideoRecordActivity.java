@@ -82,6 +82,9 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     private FocusIndicator mFocusIndicator;
     private SeekBar mAdjustBrightnessSeekBar;
 
+    private TextView mRecordingPercentageView;
+    private long mLastRecordingPercentageViewUpdateTime = 0;
+
     private boolean mFlashEnabled;
     private boolean mIsEditVideo = false;
 
@@ -125,6 +128,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         mFocusIndicator = (FocusIndicator) findViewById(R.id.focus_indicator);
         mAdjustBrightnessSeekBar = (SeekBar) findViewById(R.id.adjust_brightness);
         mBottomControlPanel = (ViewGroup) findViewById(R.id.bottom_control_panel);
+        mRecordingPercentageView = (TextView) findViewById(R.id.recording_percentage);
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -489,6 +493,12 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     }
 
     @Override
+    public void onSectionRecording(long sectionDurationMs, long videoDurationMs, int sectionCount) {
+        Log.d(TAG, "sectionDurationMs: " + sectionDurationMs + "; videoDurationMs: " + videoDurationMs + "; sectionCount: " + sectionCount);
+        updateRecordingPercentageView(videoDurationMs);
+    }
+
+    @Override
     public void onSectionIncreased(long incDuration, long totalDuration, int sectionCount) {
         double videoSectionDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
         if ((videoSectionDuration + incDuration / mRecordSpeed) >= mRecordSetting.getMaxRecordDuration()) {
@@ -507,8 +517,9 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         if (!mDurationRecordStack.isEmpty()) {
             mDurationRecordStack.pop();
         }
-        double deletedDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
-        onSectionCountChanged(sectionCount, (long) deletedDuration);
+        double currentDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
+        onSectionCountChanged(sectionCount, (long) currentDuration);
+        updateRecordingPercentageView((long) currentDuration);
     }
 
     @Override
@@ -559,6 +570,21 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 } else {
                     PlaybackActivity.start(VideoRecordActivity.this, filePath);
                 }
+            }
+        });
+    }
+
+    private void updateRecordingPercentageView(long currentDuration) {
+        final int per = (int) (100 * currentDuration / mRecordSetting.getMaxRecordDuration());
+        final long curTime = System.currentTimeMillis();
+        if ((mLastRecordingPercentageViewUpdateTime != 0) && (curTime - mLastRecordingPercentageViewUpdateTime < 100)) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecordingPercentageView.setText((per > 100 ? 100 : per) + "%");
+                mLastRecordingPercentageViewUpdateTime = curTime;
             }
         });
     }
