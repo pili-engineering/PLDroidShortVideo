@@ -285,6 +285,11 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
     }
 
     @Override
+    public void onSectionRecording(long sectionDurationMs, long videoDurationMs, int sectionCount) {
+
+    }
+
+    @Override
     public void onSectionIncreased(long incDuration, long totalDuration, int sectionCount) {
         onSectionCountChanged(sectionCount, totalDuration);
         mSectionProgressBar.addBreakPointTime(totalDuration);

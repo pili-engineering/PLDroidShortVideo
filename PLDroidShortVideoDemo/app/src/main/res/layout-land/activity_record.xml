@@ -184,6 +184,14 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/audio_mix_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:onClick="onClickAddMixAudio"
+                android:src="@mipmap/btn_mix_audio" />
+
+            <ImageView
                 android:id="@+id/concat"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -207,6 +215,15 @@
                 android:background="@drawable/btn_delete"
                 android:clickable="true"
                 android:onClick="onClickDelete" />
+
+            <TextView
+                android:id="@+id/recording_percentage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0%"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
