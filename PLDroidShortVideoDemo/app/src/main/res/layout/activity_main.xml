@@ -97,6 +97,14 @@
             android:onClick="onClickTransitionMake"
             android:text="@string/title_video_divide" />
 
+        <Button
+            android:id="@+id/external_media_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickExternalMediaRecord"
+            android:text="外部录制" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

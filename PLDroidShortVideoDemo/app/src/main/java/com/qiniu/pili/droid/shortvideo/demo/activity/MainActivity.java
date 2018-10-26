@@ -145,6 +145,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickExternalMediaRecord(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(ExternalMediaRecordActivity.class);
+        }
+    }
+
     private void jumpToActivity(Class<?> cls) {
         Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
