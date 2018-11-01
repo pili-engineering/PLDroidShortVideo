@@ -185,7 +185,12 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
             @Override
             public void onSaveVideoFailed(final int errorCode) {
-                ToastUtils.s(VideoDubActivity.this, "拼接音频段失败: " + errorCode);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.s(VideoDubActivity.this, "拼接音频段失败，错误码：" + errorCode);
+                    }
+                });
             }
 
             @Override
