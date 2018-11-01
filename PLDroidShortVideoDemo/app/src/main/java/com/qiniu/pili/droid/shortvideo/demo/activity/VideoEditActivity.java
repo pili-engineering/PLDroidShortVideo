@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
@@ -35,6 +36,7 @@ import com.qiniu.pili.droid.shortvideo.PLPaintView;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEditor;
 import com.qiniu.pili.droid.shortvideo.PLTextView;
 import com.qiniu.pili.droid.shortvideo.PLVideoEditSetting;
+import com.qiniu.pili.droid.shortvideo.PLVideoFilterListener;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.PLWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
@@ -68,6 +70,7 @@ import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_S
 public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final String TAG = "VideoEditActivity";
     private static final String MP4_PATH = "MP4_PATH";
+    private static final String PREVIOUS_ORIENTATION = "PREVIOUS_ORIENTATION";
 
     private static final int REQUEST_CODE_PICK_AUDIO_MIX_FILE = 0;
     private static final int REQUEST_CODE_DUB = 1;
@@ -96,6 +99,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private String mSelectedMV;
     private String mSelectedMask;
     private PLWatermarkSetting mWatermarkSetting;
+    private PLWatermarkSetting mSaveWatermarkSetting;
+    private PLWatermarkSetting mPreviewWatermarkSetting;
     private PLPaintView mPaintView;
     private ImageSelectorPanel mImageSelectorPanel;
     private SectionProgressBar mSectionProgressBar;
@@ -116,6 +121,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private volatile boolean mCancelSave;
     private volatile boolean mIsVideoPlayCompleted;
+    private int mPreviousOrientation;
 
     private FrameListView mFrameListView;
     private TimerTask mScrollTimerTask;
@@ -125,6 +131,13 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
         intent.putExtra(MP4_PATH, mp4Path);
+        activity.startActivity(intent);
+    }
+
+    public static void start(Activity activity, String mp4Path, int previousOrientation) {
+        Intent intent = new Intent(activity, VideoEditActivity.class);
+        intent.putExtra(MP4_PATH, mp4Path);
+        intent.putExtra(PREVIOUS_ORIENTATION, previousOrientation);
         activity.startActivity(intent);
     }
 
@@ -147,6 +160,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         mFrameListView = (FrameListView) findViewById(R.id.frame_list_view);
 
+        mPreviousOrientation = getIntent().getIntExtra(PREVIOUS_ORIENTATION, 1);
+
         initPreviewView();
         initTextSelectorPanel();
         initPaintSelectorPanel();
@@ -158,12 +173,48 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         initAudioMixSettingDialog();
     }
 
+    @Override
+    public void finish() {
+        if (0 == mPreviousOrientation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        super.finish();
+    }
+
     /**
      * 启动预览
      */
     private void startPlayback() {
         if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Idle) {
-            mShortVideoEditor.startPlayback();
+            mShortVideoEditor.startPlayback(new PLVideoFilterListener() {
+                @Override
+                public void onSurfaceCreated() {
+
+                }
+
+                @Override
+                public void onSurfaceChanged(int width, int height) {
+
+                }
+
+                @Override
+                public void onSurfaceDestroy() {
+
+                }
+
+                @Override
+                public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
+                    int time = mShortVideoEditor.getCurrentPosition();
+                    //三秒之后，预览视频的水印坐标动态改变
+                    if (time > 3000) {
+                        mPreviewWatermarkSetting.setPosition(0.01f, 1);
+                    } else {
+                        mPreviewWatermarkSetting.setPosition(0.01f, 0.01f);
+                    }
+                    mShortVideoEditor.updatePreviewWatermark(mIsUseWatermark ? mPreviewWatermarkSetting : null);
+                    return texId;
+                }
+            });
             mShortVideoEditorStatus = PLShortVideoEditorStatus.Playing;
         } else if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Paused) {
             mShortVideoEditor.resumePlayback();
@@ -314,10 +365,18 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     private void initWatermarkSetting() {
-        mWatermarkSetting = new PLWatermarkSetting();
-        mWatermarkSetting.setResourceId(R.drawable.qiniu_logo);
-        mWatermarkSetting.setPosition(0.01f, 0.01f);
-        mWatermarkSetting.setAlpha(128);
+        mWatermarkSetting = createWatermarkSetting();
+        //动态水印设置
+        mPreviewWatermarkSetting = createWatermarkSetting();
+        mSaveWatermarkSetting = createWatermarkSetting();
+    }
+
+    private PLWatermarkSetting createWatermarkSetting(){
+        PLWatermarkSetting watermarkSetting = new PLWatermarkSetting();
+        watermarkSetting.setResourceId(R.drawable.qiniu_logo);
+        watermarkSetting.setPosition(0.01f, 0.01f);
+        watermarkSetting.setAlpha(128);
+        return watermarkSetting;
     }
 
     private void initTextSelectorPanel() {
@@ -821,7 +880,35 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onSaveEdit(View v) {
         checkToAddRectView();
         mProcessingDialog.show();
-        mShortVideoEditor.save();
+        mShortVideoEditor.save(new PLVideoFilterListener() {
+            @Override
+            public void onSurfaceCreated() {
+
+            }
+
+            @Override
+            public void onSurfaceChanged(int width, int height) {
+
+            }
+
+            @Override
+            public void onSurfaceDestroy() {
+
+            }
+
+            @Override
+            public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
+                long time = timestampNs / 1000000L;
+                //三秒之后，保存的视频中水印坐标动态改变
+                if (time > 3000) {
+                    mSaveWatermarkSetting.setPosition(0.01f, 1);
+                } else {
+                    mSaveWatermarkSetting.setPosition(0.01f, 0.01f);
+                }
+                mShortVideoEditor.updateSaveWatermark(mIsUseWatermark ? mSaveWatermarkSetting : null);
+                return texId;
+            }
+        });
         hideViewBorder();
     }
 

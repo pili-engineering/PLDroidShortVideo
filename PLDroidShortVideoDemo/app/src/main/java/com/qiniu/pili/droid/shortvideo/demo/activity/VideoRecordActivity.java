@@ -565,10 +565,11 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             @Override
             public void run() {
                 mProcessingDialog.dismiss();
+                int screenOrientation = (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == getRequestedOrientation()) ? 0 : 1;
                 if (mIsEditVideo) {
-                    VideoEditActivity.start(VideoRecordActivity.this, filePath);
+                    VideoEditActivity.start(VideoRecordActivity.this, filePath, screenOrientation);
                 } else {
-                    PlaybackActivity.start(VideoRecordActivity.this, filePath);
+                    PlaybackActivity.start(VideoRecordActivity.this, filePath, screenOrientation);
                 }
             }
         });
