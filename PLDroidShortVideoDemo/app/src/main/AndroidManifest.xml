@@ -66,6 +66,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".activity.MultipleComposeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".activity.ArRecordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeFullscreen" />

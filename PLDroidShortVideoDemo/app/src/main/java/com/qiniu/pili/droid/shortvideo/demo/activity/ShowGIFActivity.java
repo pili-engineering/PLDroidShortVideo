@@ -14,6 +14,8 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class ShowGIFActivity extends AppCompatActivity {
 
+    public static final String GIF_PATH = "GifPathToPlay";
+
     GifImageView mGifImageView;
 
     @Override
@@ -28,9 +30,14 @@ public class ShowGIFActivity extends AppCompatActivity {
 
         setTitle(R.string.title_show_gif);
 
+        String gifFilePath = getIntent().getStringExtra(GIF_PATH);
+        if (gifFilePath == null) {
+            return;
+        }
+
         mGifImageView = (GifImageView) findViewById(R.id.gif_image_view);
         try {
-            GifDrawable drawable = new GifDrawable(Config.GIF_SAVE_PATH);
+            GifDrawable drawable = new GifDrawable(gifFilePath);
             drawable.start();
             drawable.setLoopCount(10);
             mGifImageView.setBackground(drawable);

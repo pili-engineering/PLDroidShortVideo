@@ -10,6 +10,7 @@
     <string name="title_audio_record">音频录制</string>
     <string name="title_compose">视频拼接</string>
     <string name="title_image_compose">图片合成</string>
+    <string name="title_multiple_compose">图片视频混排</string>
     <string name="title_player">视频播放</string>
     <string name="title_screen_record">屏幕录制</string>
     <string name="title_transcode">视频转码</string>
@@ -57,6 +58,7 @@
     <string name="speed_normal">正常"</string>
     <string name="speed_fast">快"</string>
     <string name="speed_super_fast">极快"</string>
+    <string name="speed_range">分段变速</string>
 
     <string name="transition_maker_edit">编辑"</string>
     <string name="transition_maker_confirm">确定"</string>
