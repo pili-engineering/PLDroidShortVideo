@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -51,6 +52,15 @@ public class MakeGIFActivity extends AppCompatActivity {
 
     private LruCache<Integer, Bitmap> mBitmapCache;
     private Map<Integer, LoadFrameTask> mOngoingTasks;
+
+    private String mInputFilePath;
+    private EditText mGIFZoomFactorText;
+    private EditText mGIFTotalFrameCountText;
+    private EditText mGIFFrameRateText;
+    private EditText mGIFStartTimeText;
+    private EditText mGIFEndTimeText;
+    public static final String OUTPUT_GIF_COVER_PATH = "/sdcard/ShortVideo/gif_cover.gif";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +100,10 @@ public class MakeGIFActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
-            Log.i(TAG, "Select file: " + selectedFilepath);
-            if (selectedFilepath != null && !"".equals(selectedFilepath)) {
-                init(selectedFilepath);
+            mInputFilePath = GetPathFromUri.getPath(this, data.getData());
+            Log.i(TAG, "Select file: " + mInputFilePath);
+            if (mInputFilePath != null && !"".equals(mInputFilePath)) {
+                init(mInputFilePath);
             }
         } else {
             finish();
@@ -130,6 +140,13 @@ public class MakeGIFActivity extends AppCompatActivity {
 
         mBitmapCache = new LruCache<>(calculateCacheCount());
         mOngoingTasks = new Hashtable<>();
+
+        mGIFZoomFactorText = (EditText) findViewById(R.id.zoom_factor);
+        mGIFTotalFrameCountText = (EditText) findViewById(R.id.total_frame_count);
+        mGIFFrameRateText = (EditText) findViewById(R.id.gif_framerate);
+
+        mGIFStartTimeText = (EditText) findViewById(R.id.start_time);
+        mGIFEndTimeText = (EditText) findViewById(R.id.end_time);
 
         mGridView = (GridView) findViewById(R.id.key_frame_grid);
         final FrameAdapter adapter = new FrameAdapter(this);
@@ -176,6 +193,71 @@ public class MakeGIFActivity extends AppCompatActivity {
         mProcessingDialog.setMessage("正在生成");
     }
 
+    public void onClickExtrackGIFCover(View v) {
+        int outputWeight = mMediaFile.getVideoWidth();
+        int outputHeight = mMediaFile.getVideoHeight();
+        float zoomFactor = Float.parseFloat(mGIFZoomFactorText.getText().toString());
+        if (zoomFactor < 0) {
+            zoomFactor = 1;
+        } else if ((zoomFactor > 2) || (zoomFactor < 0.5)) {
+            ToastUtils.s(this, "缩放倍数异常，建议范围[0.5, 2]");
+            return;
+        } else {
+            outputWeight *= zoomFactor;
+            outputHeight *= zoomFactor;
+        }
+        int totalFrameCount = Integer.parseInt(mGIFTotalFrameCountText.getText().toString());
+        if (totalFrameCount < 0) {
+            totalFrameCount = 20;
+        } else if (totalFrameCount > 50) {
+            ToastUtils.s(this, "GIF帧数过大，系统运行缓慢，请减小帧数设置");
+            return;
+        }
+        int gifFrameRate = Integer.parseInt(mGIFFrameRateText.getText().toString());
+        if ((gifFrameRate < 0) || (gifFrameRate > 120)) {
+            ToastUtils.s(this, "GIF输出帧率异常，请选择1~120之间的整数");
+            return;
+        }
+        int startTime = Integer.parseInt(mGIFStartTimeText.getText().toString());
+        if (startTime < 0) {
+            startTime = 0;
+        }
+        int endTime = Integer.parseInt(mGIFEndTimeText.getText().toString());
+        if ((endTime < 0) || (endTime < startTime)) {
+            ToastUtils.s(this, "时间参数异常，请重新设置");
+            return;
+        }
+
+        mProcessingDialog.show();
+        mShortVideoComposer.extractVideoToGIF(mInputFilePath, startTime * 1000, endTime * 1000, totalFrameCount,
+                outputWeight, outputHeight, gifFrameRate, true, OUTPUT_GIF_COVER_PATH, new PLVideoSaveListener() {
+                    @Override
+                    public void onSaveVideoSuccess(String s) {
+                        mProcessingDialog.dismiss();
+                        Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
+                        intent.putExtra(ShowGIFActivity.GIF_PATH, OUTPUT_GIF_COVER_PATH);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onSaveVideoFailed(int i) {
+                        mProcessingDialog.dismiss();
+                        ToastUtils.s(MakeGIFActivity.this, "Failed");
+                    }
+
+                    @Override
+                    public void onSaveVideoCanceled() {
+                        mProcessingDialog.dismiss();
+                        ToastUtils.s(MakeGIFActivity.this, "Canceled");
+                    }
+
+                    @Override
+                    public void onProgressUpdate(float v) {
+
+                    }
+                });
+    }
+
     public void onClickMakeGIF(View v) {
         if (mSelectedFrameIndex.size() <= 0) {
             ToastUtils.s(this, "请先选择帧");
@@ -201,8 +283,9 @@ public class MakeGIFActivity extends AppCompatActivity {
                     @Override
                     public void onSaveVideoSuccess(String s) {
                         mProcessingDialog.dismiss();
-                        startActivity(new Intent(MakeGIFActivity.this, ShowGIFActivity.class));
-                        finish();
+                        Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
+                        intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);
+                        startActivity(intent);
                     }
 
                     @Override

@@ -127,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickMultipleCompose(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(MultipleComposeActivity.class);
+        }
+    }
+
     public void onClickAR(View v) {
         if (isPermissionOK()) {
             jumpToActivity(ArRecordActivity.class);

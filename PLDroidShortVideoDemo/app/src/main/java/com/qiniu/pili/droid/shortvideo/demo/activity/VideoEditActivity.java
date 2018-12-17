@@ -32,8 +32,10 @@ import android.widget.TextView;
 
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
 import com.qiniu.pili.droid.shortvideo.PLImageView;
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLPaintView;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEditor;
+import com.qiniu.pili.droid.shortvideo.PLSpeedTimeRange;
 import com.qiniu.pili.droid.shortvideo.PLTextView;
 import com.qiniu.pili.droid.shortvideo.PLVideoEditSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoFilterListener;
@@ -62,6 +64,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -127,6 +130,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private TimerTask mScrollTimerTask;
     private Timer mScrollTimer;
     private View mCurView;
+    private boolean mIsRangeSpeed;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
@@ -256,18 +260,26 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         switch (view.getId()) {
             case R.id.super_slow_speed_text:
                 recordSpeed = RECORD_SPEED_ARRAY[0];
+                mIsRangeSpeed = false;
                 break;
             case R.id.slow_speed_text:
                 recordSpeed = RECORD_SPEED_ARRAY[1];
+                mIsRangeSpeed = false;
                 break;
             case R.id.normal_speed_text:
                 recordSpeed = RECORD_SPEED_ARRAY[2];
+                mIsRangeSpeed = false;
                 break;
             case R.id.fast_speed_text:
                 recordSpeed = RECORD_SPEED_ARRAY[3];
+                mIsRangeSpeed = false;
                 break;
             case R.id.super_fast_speed_text:
                 recordSpeed = RECORD_SPEED_ARRAY[4];
+                mIsRangeSpeed = false;
+                break;
+            case R.id.range_speed_text:
+                mIsRangeSpeed = true;
                 break;
         }
 
@@ -325,7 +337,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         setting.setSourceFilepath(mMp4path);
         setting.setDestFilepath(Config.EDITED_FILE_PATH);
 
-        mShortVideoEditor = new PLShortVideoEditor(mPreviewView, setting);
+        mShortVideoEditor = new PLShortVideoEditor(mPreviewView);
+        mShortVideoEditor.setVideoEditSetting(setting);
         mShortVideoEditor.setVideoSaveListener(this);
 
         mMixDuration = mShortVideoEditor.getDurationMs();
@@ -371,7 +384,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mSaveWatermarkSetting = createWatermarkSetting();
     }
 
-    private PLWatermarkSetting createWatermarkSetting(){
+    private PLWatermarkSetting createWatermarkSetting() {
         PLWatermarkSetting watermarkSetting = new PLWatermarkSetting();
         watermarkSetting.setResourceId(R.drawable.qiniu_logo);
         watermarkSetting.setPosition(0.01f, 0.01f);
@@ -877,9 +890,29 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
     }
 
+    private void setSpeedTimeRanges() {
+        PLMediaFile mediaFile = new PLMediaFile(mMp4path);
+        long durationMs = mediaFile.getDurationMs();
+        mediaFile.release();
+
+        PLSpeedTimeRange plSpeedTimeRange1 = new PLSpeedTimeRange(0.5, 0, durationMs / 3);
+        PLSpeedTimeRange plSpeedTimeRange2 = new PLSpeedTimeRange(1, durationMs / 3, durationMs * 2 / 3);
+        PLSpeedTimeRange plSpeedTimeRange3 = new PLSpeedTimeRange(2, durationMs * 2 / 3, durationMs);
+
+        ArrayList<PLSpeedTimeRange> speedTimeRanges = new ArrayList<>();
+        speedTimeRanges.add(plSpeedTimeRange1);
+        speedTimeRanges.add(plSpeedTimeRange2);
+        speedTimeRanges.add(plSpeedTimeRange3);
+
+        mShortVideoEditor.setSpeedTimeRanges(speedTimeRanges);
+    }
+
     public void onSaveEdit(View v) {
         checkToAddRectView();
         mProcessingDialog.show();
+        if (mIsRangeSpeed) {
+            setSpeedTimeRanges();
+        }
         mShortVideoEditor.save(new PLVideoFilterListener() {
             @Override
             public void onSurfaceCreated() {

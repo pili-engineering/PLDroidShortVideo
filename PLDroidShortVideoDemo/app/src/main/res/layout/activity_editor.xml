@@ -145,6 +145,19 @@
                 android:text="@string/speed_super_fast"
                 android:textColor="@color/speedTextNormal"
                 android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/range_speed_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onSpeedClicked"
+                android:padding="7dp"
+                android:text="@string/speed_range"
+                android:textColor="@color/speedTextNormal"
+                android:textSize="15sp" />
         </LinearLayout>
     </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
 

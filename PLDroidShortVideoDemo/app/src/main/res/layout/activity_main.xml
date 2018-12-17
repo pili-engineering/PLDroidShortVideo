@@ -74,6 +74,14 @@
             android:text="@string/title_image_compose" />
 
         <Button
+            android:id="@+id/multiple_compose_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickMultipleCompose"
+            android:text="@string/title_multiple_compose" />
+
+        <Button
             android:id="@+id/ar_make_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
