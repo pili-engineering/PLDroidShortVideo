@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
 import com.qiniu.pili.droid.shortvideo.PLImageView;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
+import com.qiniu.pili.droid.shortvideo.PLMixAudioFile;
 import com.qiniu.pili.droid.shortvideo.PLPaintView;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEditor;
 import com.qiniu.pili.droid.shortvideo.PLSpeedTimeRange;
@@ -77,6 +78,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private static final int REQUEST_CODE_PICK_AUDIO_MIX_FILE = 0;
     private static final int REQUEST_CODE_DUB = 1;
+    private static final int REQUEST_CODE_MULTI_AUDIO_MIX_FILE = 2;
 
     // 视频编辑器预览状态
     private enum PLShortVideoEditorStatus {
@@ -131,6 +133,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private Timer mScrollTimer;
     private View mCurView;
     private boolean mIsRangeSpeed;
+
+    private int mAudioMixingMode = -1;       // audio mixing mode: 0 - single audio mixing; 1 - multiple audio mixing; 单混音和多重混音为互斥模式，最多只可选择其中一项。
+    private boolean mMainAudioFileAdded;
+    private int mAudioMixingFileCount = 0;
+    private long mInputMp4FileDurationMs = 0;
+    private double mSpeed = 1;
+    private PLMixAudioFile mMainMixAudioFile;
+    private float mMainMixAudioFileVolume = 1;
 
     public static void start(Activity activity, String mp4Path) {
         Intent intent = new Intent(activity, VideoEditActivity.class);
@@ -283,7 +293,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 break;
         }
 
-        mShortVideoEditor.setSpeed(recordSpeed);
+        mSpeed = recordSpeed;
+        mShortVideoEditor.setSpeed(mSpeed);
     }
 
     private void addImageView(String imagePath) {
@@ -492,6 +503,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     public void onClickMix(View v) {
+        if (mAudioMixingMode == 1) {
+            ToastUtils.s(this, "已选择多重混音，无法再选择单混音！");
+            return;
+        }
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -501,7 +516,26 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("audio/*");
         }
+        mAudioMixingMode = 0;
         startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), REQUEST_CODE_PICK_AUDIO_MIX_FILE);
+    }
+
+    public void onClickMultipleAudioMixing(View v) {
+        if (mAudioMixingMode == 0) {
+            ToastUtils.s(this, "已选择单混音，无法再选择多重混音！");
+            return;
+        }
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < 19) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("audio/*");
+        }
+        mAudioMixingMode = 1;
+        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), REQUEST_CODE_MULTI_AUDIO_MIX_FILE);
     }
 
     public void onClickMute(View v) {
@@ -512,6 +546,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mFgVolumeBeforeMute = mAudioMixSettingDialog.getSrcVolumeProgress();
         }
         mAudioMixSettingDialog.setSrcVolumeProgress(mIsMuted ? 0 : mFgVolumeBeforeMute);
+        if (mMainMixAudioFile != null) {
+            if (mIsMuted) {
+                mMainMixAudioFileVolume = mMainMixAudioFile.getVolume();
+                mMainMixAudioFile.setVolume(0);
+            } else {
+                mMainMixAudioFile.setVolume(mMainMixAudioFileVolume);
+            }
+        }
     }
 
     public void onClickTextSelect(View v) {
@@ -853,6 +895,44 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 mAudioMixSettingDialog.setMixMaxPosition(mShortVideoEditor.getAudioMixFileDuration());
                 mIsMixAudio = true;
             }
+        } else if (requestCode == REQUEST_CODE_MULTI_AUDIO_MIX_FILE) {
+            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+            try {
+                if (!mMainAudioFileAdded) {
+                    mMainMixAudioFile = new PLMixAudioFile(mMp4path);
+                    PLMediaFile mp4File = new PLMediaFile(mMp4path);
+                    mInputMp4FileDurationMs = mp4File.getDurationMs();
+                    mp4File.release();
+                    mShortVideoEditor.addMixAudioFile(mMainMixAudioFile);
+                    mMainAudioFileAdded = true;
+                }
+
+                PLMixAudioFile audioFile = new PLMixAudioFile(selectedFilepath);
+                if (mAudioMixingFileCount == 0) {
+                    ToastUtils.s(this, "添加第一个混音文件");
+                    long firstMixingDurationMs = (mInputMp4FileDurationMs <= 5000) ? mInputMp4FileDurationMs : 5000;
+                    audioFile.setDurationInVideo(firstMixingDurationMs * 1000);
+                } else if (mAudioMixingFileCount == 1) {
+                    ToastUtils.s(this, "添加第二个混音文件");
+                    if (mInputMp4FileDurationMs - 5000 < 1000) {
+                        ToastUtils.s(this, "视频时长过短，请选择更长的视频添加混音");
+                        return;
+                    }
+                    audioFile.setOffsetInVideo(5000 * 1000 * mAudioMixingFileCount);
+                    long secondMixingDurationMs = mInputMp4FileDurationMs - 5000;
+                    audioFile.setDurationInVideo(secondMixingDurationMs * 1000);
+                } else if (mAudioMixingFileCount >= 2) {
+                    ToastUtils.s(this, "最多可以添加2个混音文件");
+                    return;
+                }
+                audioFile.setVolume(0.5f);
+                mShortVideoEditor.addMixAudioFile(audioFile);
+
+                mAudioMixingFileCount++;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         } else if (requestCode == REQUEST_CODE_DUB) {
             String dubMp4Path = data.getStringExtra(VideoDubActivity.DUB_MP4_PATH);
             if (!TextUtils.isEmpty(dubMp4Path)) {
@@ -912,6 +992,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mProcessingDialog.show();
         if (mIsRangeSpeed) {
             setSpeedTimeRanges();
+        }
+        if (mMainMixAudioFile != null) {
+            mMainMixAudioFile.setSpeed(mSpeed);
+            mMainMixAudioFile.setDurationInVideo((int) (mInputMp4FileDurationMs * 1000 / mSpeed));
         }
         mShortVideoEditor.save(new PLVideoFilterListener() {
             @Override
