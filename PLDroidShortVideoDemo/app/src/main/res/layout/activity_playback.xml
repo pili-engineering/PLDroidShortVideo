@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.pili.pldroid.player.widget.PLVideoTextureView
+    <SurfaceView
         android:id="@+id/video"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"  />
 
     <ProgressBar
         android:id="@+id/progressBar"

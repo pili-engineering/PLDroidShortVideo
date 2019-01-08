@@ -266,6 +266,22 @@
                 android:textColor="#fff"
                 android:textSize="15sp" />
 
+            <TextView
+                android:id="@+id/multiple_audio_mixing_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/border_text_view"
+                android:clickable="true"
+                android:onClick="onClickMultipleAudioMixing"
+                android:paddingBottom="5dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="5dp"
+                android:text="多重混音"
+                android:textColor="#fff"
+                android:textSize="15sp"  />
+
         </LinearLayout>
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel
