@@ -97,6 +97,11 @@
             android:name=".activity.ExternalMediaRecordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.VideoMixRecordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
         <activity android:name=".activity.WebViewActivity" />
     </application>
 
