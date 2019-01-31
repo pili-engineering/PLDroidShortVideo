@@ -97,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickMixRecord(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(VideoMixRecordActivity.class);
+        }
+    }
+
     public void onClickTranscode(View v) {
         if (isPermissionOK()) {
             jumpToActivity(VideoTranscodeActivity.class);

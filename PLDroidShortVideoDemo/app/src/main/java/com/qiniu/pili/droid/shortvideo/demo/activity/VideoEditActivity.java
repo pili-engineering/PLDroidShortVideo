@@ -294,7 +294,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         }
 
         mSpeed = recordSpeed;
-        mShortVideoEditor.setSpeed(mSpeed);
+        mShortVideoEditor.setSpeed(mSpeed, true);
     }
 
     private void addImageView(String imagePath) {
@@ -521,10 +521,19 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     public void onClickMultipleAudioMixing(View v) {
+        PLMediaFile mediaFile = new PLMediaFile(mMp4path);
+        boolean isPureVideo = !mediaFile.hasAudio();
+        mediaFile.release();
+
         if (mAudioMixingMode == 0) {
             ToastUtils.s(this, "已选择单混音，无法再选择多重混音！");
             return;
         }
+        if (isPureVideo) {
+            ToastUtils.s(this, "该视频没有音频信息，无法进行多重混音！");
+            return;
+        }
+
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
