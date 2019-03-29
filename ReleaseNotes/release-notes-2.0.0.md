@@ -21,8 +21,8 @@ PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 S
 * 修复视频编辑有概率出现 crash 的问题
 
 ### 注意事项
-
-上传 SDK 的依赖需要更新到如下版本：
+* 七牛短视频 SDK 自 v2.0.0 版本起, 划分为基础版、进阶版、专业版。不同版本 SDK 可以使用的功能点数量有差别，请按照购买的 License 版本使用对应的短视频 SDK 版本。
+* 上传 SDK 的依赖需要更新到如下版本：
 
 ```java
 compile 'com.qiniu:qiniu-android-sdk:7.3.11'
