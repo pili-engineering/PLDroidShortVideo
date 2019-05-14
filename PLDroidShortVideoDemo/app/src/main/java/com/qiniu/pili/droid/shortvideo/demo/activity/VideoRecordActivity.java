@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.util.Stack;
 
 import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_SPEED_ARRAY;
+import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.chooseCameraFacingId;
 
 public class VideoRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener, PLFocusListener {
     private static final String TAG = "VideoRecordActivity";
@@ -629,16 +630,6 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                 mConcatBtn.setEnabled(totalTime >= (RecordSettings.DEFAULT_MIN_RECORD_DURATION));
             }
         });
-    }
-
-    private PLCameraSetting.CAMERA_FACING_ID chooseCameraFacingId() {
-        if (PLCameraSetting.hasCameraFacing(PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_3RD)) {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_3RD;
-        } else if (PLCameraSetting.hasCameraFacing(PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT)) {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
-        } else {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
-        }
     }
 
     private void showChooseDialog() {

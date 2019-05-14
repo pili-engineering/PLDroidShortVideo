@@ -37,6 +37,38 @@
             android:layout_marginTop="15dp" />
     </LinearLayout>
 
+
+    <LinearLayout
+        android:id="@+id/audio_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/previewParent"
+        android:layout_alignLeft="@id/previewParent"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/mute_microphone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="Mute Microphone" />
+
+        <CheckBox
+            android:id="@+id/mute_sample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="Mute Sample" />
+
+        <CheckBox
+            android:id="@+id/earphone_mode"
+            android:layout_width="match_parent"
+            android:textColor="#FFFFFF"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="Earphone Mode" />
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
