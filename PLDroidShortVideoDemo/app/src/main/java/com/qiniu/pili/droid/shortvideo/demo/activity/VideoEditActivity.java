@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
+import com.qiniu.pili.droid.shortvideo.PLGifWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.PLImageView;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLMixAudioFile;
@@ -66,6 +67,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,6 +81,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final int REQUEST_CODE_PICK_AUDIO_MIX_FILE = 0;
     private static final int REQUEST_CODE_DUB = 1;
     private static final int REQUEST_CODE_MULTI_AUDIO_MIX_FILE = 2;
+
+    private int mRotation = 0;
 
     // 视频编辑器预览状态
     private enum PLShortVideoEditorStatus {
@@ -106,6 +110,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private PLWatermarkSetting mWatermarkSetting;
     private PLWatermarkSetting mSaveWatermarkSetting;
     private PLWatermarkSetting mPreviewWatermarkSetting;
+    private List<PLGifWatermarkSetting> mGifWatermarkSettingList;
     private PLPaintView mPaintView;
     private ImageSelectorPanel mImageSelectorPanel;
     private SectionProgressBar mSectionProgressBar;
@@ -118,6 +123,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private boolean mIsMuted = false;
     private boolean mIsMixAudio = false;
     private boolean mIsUseWatermark = true;
+    private boolean mIsUseGifWatermark = false;
 
     private String mMp4path;
 
@@ -393,6 +399,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         //动态水印设置
         mPreviewWatermarkSetting = createWatermarkSetting();
         mSaveWatermarkSetting = createWatermarkSetting();
+        createGifWatermarkSetting();
     }
 
     private PLWatermarkSetting createWatermarkSetting() {
@@ -401,6 +408,46 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         watermarkSetting.setPosition(0.01f, 0.01f);
         watermarkSetting.setAlpha(128);
         return watermarkSetting;
+    }
+
+    private void createGifWatermarkSetting() {
+        try {
+            File dir = new File(Environment.getExternalStorageDirectory() + "/ShortVideo/gif");
+            // copy mv assets to sdcard
+            if (!dir.exists()) {
+                dir.mkdirs();
+                String[] fs = getAssets().list("gif");
+                for (String file : fs) {
+                    InputStream is = getAssets().open("gif/" + file);
+                    FileOutputStream fos = new FileOutputStream(new File(dir, file));
+                    byte[] buffer = new byte[1024];
+                    int byteCount;
+                    while ((byteCount = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, byteCount);
+                    }
+                    fos.flush();
+                    is.close();
+                    fos.close();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mGifWatermarkSettingList = new ArrayList<>(0);
+        PLGifWatermarkSetting gifWatermarkSetting1 = new PLGifWatermarkSetting();
+        gifWatermarkSetting1.setFilePath(Environment.getExternalStorageDirectory() + "/ShortVideo/gif/test.gif");
+        gifWatermarkSetting1.setPosition(0.1f, 0.1f);
+        gifWatermarkSetting1.setAlpha(255);
+        gifWatermarkSetting1.setDisplayPeriod(0, 3000);
+        mGifWatermarkSettingList.add(gifWatermarkSetting1);
+
+        PLGifWatermarkSetting gifWatermarkSetting2 = new PLGifWatermarkSetting();
+        gifWatermarkSetting2.setFilePath(Environment.getExternalStorageDirectory() + "/ShortVideo/gif/watermark.gif");
+        gifWatermarkSetting2.setPosition(0.8f, 0.1f);
+        gifWatermarkSetting2.setAlpha(255);
+        gifWatermarkSetting2.setDisplayPeriod(3000, 3000);
+        mGifWatermarkSettingList.add(gifWatermarkSetting2);
     }
 
     private void initTextSelectorPanel() {
@@ -590,6 +637,27 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onClickToggleWatermark(View v) {
         mIsUseWatermark = !mIsUseWatermark;
         mShortVideoEditor.setWatermark(mIsUseWatermark ? mWatermarkSetting : null);
+    }
+
+    public void onClickToggleGifWatermark(View v) {
+        mIsUseGifWatermark = !mIsUseGifWatermark;
+        if (mIsUseGifWatermark) {
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(0));
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(1));
+        } else {
+            mShortVideoEditor.removeGifWatermark(mGifWatermarkSettingList.get(0));
+            mShortVideoEditor.removeGifWatermark(mGifWatermarkSettingList.get(1));
+        }
+    }
+
+    public void onClickRotate(View v) {
+        mRotation = (mRotation + 90) % 360;
+        mShortVideoEditor.setRotation(mRotation);
+
+        if (mIsUseGifWatermark) {
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(0));
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(1));
+        }
     }
 
     public void addText(StrokedTextView selectText) {
@@ -963,6 +1031,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mShortVideoEditor.setBuiltinFilter(mSelectedFilter);
         mShortVideoEditor.setMVEffect(mSelectedMV, mSelectedMask);
         mShortVideoEditor.setWatermark(mIsUseWatermark ? mWatermarkSetting : null);
+        if (mIsUseGifWatermark) {
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(0));
+            mShortVideoEditor.addGifWatermark(mGifWatermarkSettingList.get(1));
+        }
         startPlayback();
     }
 

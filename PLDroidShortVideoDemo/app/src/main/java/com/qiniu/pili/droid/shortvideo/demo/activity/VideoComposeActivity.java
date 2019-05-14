@@ -12,11 +12,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
+import com.qiniu.pili.droid.shortvideo.PLVideoRange;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
@@ -26,6 +30,7 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.VideoListAdapter;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class VideoComposeActivity extends AppCompatActivity {
@@ -40,6 +45,8 @@ public class VideoComposeActivity extends AppCompatActivity {
 
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
+    private CheckBox mVideoRangeCheck;
+    private boolean mIsVideoRange;
 
     private int mDeletePosition = 0;
 
@@ -69,6 +76,15 @@ public class VideoComposeActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
         mEncodingBitrateLevelSpinner.setAdapter(adapter2);
         mEncodingBitrateLevelSpinner.setSelection(2);
+
+        mVideoRangeCheck = (CheckBox) findViewById(R.id.video_range_check);
+        mVideoRangeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mIsVideoRange = isChecked;
+            }
+        });
+
 
         mShortVideoComposer = new PLShortVideoComposer(this);
 
@@ -133,7 +149,26 @@ public class VideoComposeActivity extends AppCompatActivity {
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
-        if (mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener)) {
+
+        boolean isSucc;
+        if (mIsVideoRange) {
+            List<PLVideoRange> videoRanges = new LinkedList<>();
+            for (String video : videos) {
+                PLMediaFile mediaFile = new PLMediaFile(video);
+                long durationMs = mediaFile.getDurationMs();
+                mediaFile.release();
+
+                PLVideoRange videoRange = new PLVideoRange(video);
+                videoRange.setStartTime(0);
+                videoRange.setEndTime(durationMs / 2);
+                videoRanges.add(videoRange);
+            }
+            isSucc = mShortVideoComposer.composeVideoRanges(videoRanges, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+        } else {
+            isSucc = mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+        }
+
+        if (isSucc) {
             mProcessingDialog.show();
         } else {
             ToastUtils.s(this, "开始拼接失败！");

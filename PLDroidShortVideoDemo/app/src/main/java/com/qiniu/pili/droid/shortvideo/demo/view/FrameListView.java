@@ -79,8 +79,10 @@ public class FrameListView extends FrameLayout {
         mVideoPath = path;
         mMediaFile = new PLMediaFile(mVideoPath);
         mDurationMs = mMediaFile.getDurationMs();
-        // if the duration time > 10s, the interval time is 3s, else is 1s
+        // if the duration time >= 10s, the interval time is 3s, else is 1s
         mShowFrameIntervalMs = (mDurationMs >= 1000 * 10) ? 3000 : 1000;
+        // if the duration time >= 500s, the interval time is duration / 15 to avoid too much frame to show.
+        mShowFrameIntervalMs = (mDurationMs >= 1000 * 500) ? mDurationMs / 15 : mShowFrameIntervalMs;
 
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mFrameWidth = mFrameHeight = wm.getDefaultDisplay().getWidth() / 6;

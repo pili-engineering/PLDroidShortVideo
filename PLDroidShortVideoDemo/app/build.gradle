@@ -14,8 +14,8 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 24
-        versionName "2.0.0"
+        versionCode 25
+        versionName "2.1.0"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
         ndk {
@@ -32,7 +32,7 @@ android {
 
 dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.3.11'
-    compile files('libs/pldroid-shortvideo-2.0.0.jar')
+    compile files('libs/pldroid-shortvideo-2.1.0.jar')
     compile files('libs/pldroid-player-2.1.5.jar')
     compile files('libs/EasyAR.jar')
     compile files('libs/EasyAR3D.jar')

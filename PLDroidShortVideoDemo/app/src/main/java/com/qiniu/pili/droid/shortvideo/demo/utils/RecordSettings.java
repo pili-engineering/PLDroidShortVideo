@@ -188,4 +188,12 @@ public class RecordSettings {
             1,
             2,
     };
+
+    public static PLCameraSetting.CAMERA_FACING_ID chooseCameraFacingId() {
+        if (PLCameraSetting.hasCameraFacing(PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT)) {
+            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
+        } else {
+            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
+        }
+    }
 }

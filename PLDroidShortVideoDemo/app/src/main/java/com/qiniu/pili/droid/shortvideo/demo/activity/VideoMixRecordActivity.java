@@ -17,12 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
+import com.qiniu.pili.droid.shortvideo.PLAudioMixMode;
 import com.qiniu.pili.droid.shortvideo.PLCameraSetting;
 import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
 import com.qiniu.pili.droid.shortvideo.PLFaceBeautySetting;
@@ -48,6 +51,7 @@ import com.qiniu.pili.droid.shortvideo.demo.view.VideoMixGLSurfaceView;
 import java.util.Stack;
 
 import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.CAMERA_RECORD_CACHE_PATH;
+import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.chooseCameraFacingId;
 
 public class VideoMixRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener, PLFocusListener {
     private static final String TAG = "VideoMixRecordActivity";
@@ -66,6 +70,9 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     private GLSurfaceView mCameraPreview;
     private GLSurfaceView mSamplePreview;
     private LinearLayout mPreviewParent;
+    private CheckBox mMuteMicrophoneCheck;
+    private CheckBox mMuteSampleCheck;
+    private CheckBox mEarphoneModeCheck;
 
     private TextView mRecordingPercentageView;
     private long mLastRecordingPercentageViewUpdateTime = 0;
@@ -108,6 +115,12 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         mAdjustBrightnessSeekBar = (SeekBar) findViewById(R.id.adjust_brightness);
         mRecordingPercentageView = (TextView) findViewById(R.id.recording_percentage);
         mPreviewParent = (LinearLayout) findViewById(R.id.previewParent);
+        mEarphoneModeCheck = (CheckBox) findViewById(R.id.earphone_mode);
+        mEarphoneModeCheck.setOnCheckedChangeListener(audioCheckedListener);
+        mMuteSampleCheck = (CheckBox) findViewById(R.id.mute_sample);
+        mMuteSampleCheck.setOnCheckedChangeListener(audioCheckedListener);
+        mMuteMicrophoneCheck = (CheckBox) findViewById(R.id.mute_microphone);
+        mMuteMicrophoneCheck.setOnCheckedChangeListener(audioCheckedListener);
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -258,8 +271,11 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         PLVideoMixSetting mixSetting = new PLVideoMixSetting(cameraVideoRect, sampleVideoRect, sampleVideoPath, CAMERA_RECORD_CACHE_PATH);
         mMixRecorder.prepare(mCameraPreview, mSamplePreview, mixSetting, mCameraSetting, mMicrophoneSetting, mVideoEncodeSetting,
                 mAudioEncodeSetting, mFaceBeautySetting, mRecordSetting);
-        mMixRecorder.muteMicrophone(true);
-        mMixRecorder.muteSampleVideo(false);
+
+        mMuteSampleCheck.setChecked(false);
+        mMuteMicrophoneCheck.setChecked(true);
+
+        mMixRecorder.setAudioMixMode(PLAudioMixMode.EARPHONE_MODE);
 
         mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
         mCameraPreview.setOnTouchListener(new View.OnTouchListener() {
@@ -528,21 +544,12 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
             @Override
             public void run() {
                 mDeleteBtn.setEnabled(count > 0);
+                updateCheckBoxClickable(count <= 0);
                 boolean isConcatBtnEnabled = (totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION)
                         || (mRecordSetting != null && totalTime >= mRecordSetting.getMaxRecordDuration());
                 mConcatBtn.setEnabled(isConcatBtnEnabled);
             }
         });
-    }
-
-    private PLCameraSetting.CAMERA_FACING_ID chooseCameraFacingId() {
-        if (PLCameraSetting.hasCameraFacing(PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_3RD)) {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_3RD;
-        } else if (PLCameraSetting.hasCameraFacing(PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT)) {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
-        } else {
-            return PLCameraSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
-        }
     }
 
     private void showChooseDialog() {
@@ -606,4 +613,37 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     public void onAutoFocusStop() {
         Log.i(TAG, "auto focus stop");
     }
+
+    private void updateCheckBoxVisible() {
+        if (!mMuteMicrophoneCheck.isChecked() && !mMuteSampleCheck.isChecked()) {
+            mEarphoneModeCheck.setVisibility(View.VISIBLE);
+        } else {
+            mEarphoneModeCheck.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateCheckBoxClickable(boolean clickable) {
+        mEarphoneModeCheck.setClickable(clickable);
+        mMuteMicrophoneCheck.setClickable(clickable);
+        mMuteSampleCheck.setClickable(clickable);
+    }
+
+    private CompoundButton.OnCheckedChangeListener audioCheckedListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            switch (buttonView.getId()) {
+                case R.id.mute_microphone:
+                    mMixRecorder.muteMicrophone(isChecked);
+                    updateCheckBoxVisible();
+                    break;
+                case R.id.mute_sample:
+                    mMixRecorder.muteSampleVideo(isChecked);
+                    updateCheckBoxVisible();
+                    break;
+                case R.id.earphone_mode:
+                    mMixRecorder.setAudioMixMode(isChecked ? PLAudioMixMode.EARPHONE_MODE : PLAudioMixMode.SPEAKERPHONE_MODE);
+            }
+        }
+    };
 }
