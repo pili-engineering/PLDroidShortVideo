@@ -114,12 +114,20 @@
             android:text="外部录制" />
 
         <Button
-            android:id="@+id/mix_recode"
+            android:id="@+id/mix_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:onClick="onClickMixRecord"
             android:text="分屏录制" />
+
+        <Button
+            android:id="@+id/video_mix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="onClickVideoMix"
+            android:text="视频拼图" />
 
         <View
             android:layout_width="match_parent"

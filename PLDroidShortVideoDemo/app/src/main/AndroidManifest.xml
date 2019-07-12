@@ -98,10 +98,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".activity.VideoMixRecordConfigActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".activity.VideoMixRecordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
+        <activity
+            android:name=".activity.VideoMixActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity android:name=".activity.WebViewActivity" />
     </application>
 
