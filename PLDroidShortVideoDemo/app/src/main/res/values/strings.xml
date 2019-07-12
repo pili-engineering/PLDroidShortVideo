@@ -28,6 +28,7 @@
     <string name="title_all_drafts">草稿列表</string>
     <string name="title_video_divide">视频分割</string>
     <string name="title_transition_make">过场字幕</string>
+    <string name="title_mix_record">合拍</string>
 
     <string name="dlg_save_draft_title">输入草稿标题</string>
     <string name="dlg_save_draft_yes">保存</string>

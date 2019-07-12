@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickMixRecord(View v) {
         if (isPermissionOK()) {
-            jumpToActivity(VideoMixRecordActivity.class);
+            jumpToActivity(VideoMixRecordConfigActivity.class);
         }
     }
 
@@ -160,6 +160,12 @@ public class MainActivity extends AppCompatActivity {
     public void onClickExternalMediaRecord(View v) {
         if (isPermissionOK()) {
             jumpToActivity(ExternalMediaRecordActivity.class);
+        }
+    }
+
+    public void onClickVideoMix(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(VideoMixActivity.class);
         }
     }
 

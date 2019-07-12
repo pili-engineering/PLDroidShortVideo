@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_back"
+            android:onClick="onBack" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:gravity="center"
+            android:text="视频拼图"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_next"
+            android:onClick="onDone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/volumeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@android:color/background_dark"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="0.0"
+                android:textColor="@color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:progress="100" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="1.0"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="0.0"
+                android:textColor="@color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:progress="100" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="1.0"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.SquareLinearLayout
+            android:id="@+id/previewParent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/volumeLayout"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/background_dark"
+            android:clickable="true"
+            android:onClick="onPreview2Click"
+            android:orientation="vertical">
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.VideoMixPlayerLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.pili.pldroid.player.widget.PLVideoTextureView
+                    android:id="@+id/player1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"></com.pili.pldroid.player.widget.PLVideoTextureView>
+
+                <ImageView
+                    android:id="@+id/cover1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.qiniu.pili.droid.shortvideo.demo.view.VideoMixPlayerLayout>
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.VideoMixPlayerLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.pili.pldroid.player.widget.PLVideoTextureView
+                    android:id="@+id/player2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"></com.pili.pldroid.player.widget.PLVideoTextureView>
+
+                <ImageView
+                    android:id="@+id/cover2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.qiniu.pili.droid.shortvideo.demo.view.VideoMixPlayerLayout>
+        </com.qiniu.pili.droid.shortvideo.demo.view.SquareLinearLayout>
+
+        <TextView
+            android:id="@+id/tipTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:text="点击选取视频"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:max="100"
+        android:padding="0dp"
+        android:progress="50" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPlayTogether"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/btn_left_radius"
+                android:gravity="center"
+                android:minHeight="0dp"
+                android:onClick="onPlayTogether"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="一起播放"
+                android:textColor="@drawable/btn_selected_text_color" />
+
+            <Button
+                android:id="@+id/btnPlayOneByOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:background="@drawable/btn_right_radius"
+                android:gravity="center"
+                android:minHeight="0dp"
+                android:onClick="onPlayOneByOne"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="一个一个放"
+                android:textColor="@drawable/btn_selected_text_color" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

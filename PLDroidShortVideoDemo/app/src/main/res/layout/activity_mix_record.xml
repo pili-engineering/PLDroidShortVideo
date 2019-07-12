@@ -4,19 +4,30 @@
     android:layout_height="match_parent"
     android:clipChildren="false">
 
-    <LinearLayout
-        android:id="@+id/previewParent"
+    <FrameLayout
+        android:id="@+id/parentGroup"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    </LinearLayout>
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/linearPreviewParent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"></LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/framePreviewParent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"></FrameLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/brightness_panel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/previewParent"
-        android:layout_alignRight="@id/previewParent"
+        android:layout_alignRight="@id/parentGroup"
+        android:layout_alignBottom="@id/parentGroup"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -32,9 +43,9 @@
             android:id="@+id/adjust_brightness"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="50dp" />
     </LinearLayout>
 
 
@@ -42,31 +53,31 @@
         android:id="@+id/audio_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/previewParent"
-        android:layout_alignLeft="@id/previewParent"
+        android:layout_alignLeft="@id/parentGroup"
+        android:layout_alignBottom="@id/parentGroup"
         android:orientation="vertical">
 
         <CheckBox
             android:id="@+id/mute_microphone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:text="Mute Microphone" />
+            android:text="Mute Microphone"
+            android:textColor="#FFFFFF" />
 
         <CheckBox
             android:id="@+id/mute_sample"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:text="Mute Sample" />
+            android:text="Mute Sample"
+            android:textColor="#FFFFFF" />
 
         <CheckBox
             android:id="@+id/earphone_mode"
             android:layout_width="match_parent"
-            android:textColor="#FFFFFF"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Earphone Mode" />
+            android:text="Earphone Mode"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
     </LinearLayout>
 
     <FrameLayout
@@ -108,7 +119,7 @@
         android:id="@+id/bottom_control_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/previewParent"
+        android:layout_below="@id/parentGroup"
         android:background="@android:color/background_dark"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -123,8 +134,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:gravity="center">
 

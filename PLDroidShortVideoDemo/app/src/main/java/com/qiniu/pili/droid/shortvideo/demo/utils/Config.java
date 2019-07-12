@@ -22,4 +22,5 @@ public class Config {
     public static final String VIDEO_DIVIDE_FILE_PATH = VIDEO_STORAGE_DIR + "divide_composed.mp4";
     public static final String MIX_RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "mix_record.mp4";
     public static final String CAMERA_RECORD_CACHE_PATH = VIDEO_STORAGE_DIR + "mix_camera_cache.mp4";
+    public static final String VIDEO_MIX_PATH = VIDEO_STORAGE_DIR + "video_mix.mp4";
 }

@@ -141,7 +141,6 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
         mShortVideoRecorder = new PLShortVideoRecorder();
         mShortVideoRecorder.setRecordStateListener(this);
-        mShortVideoRecorder.setFocusListener(this);
 
         mRecordSpeed = RECORD_SPEED_ARRAY[2];
         mSpeedTextView = (TextView) findViewById(R.id.normal_speed_text);
@@ -444,6 +443,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onReady() {
+        mShortVideoRecorder.setFocusListener(this);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
