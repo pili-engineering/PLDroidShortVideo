@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.qiniu.pili.droid.shortvideo.PLAuthenticationResultCallback;
+import com.qiniu.pili.droid.shortvideo.PLShortVideoEnv;
 import com.qiniu.pili.droid.shortvideo.demo.BuildConfig;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
@@ -68,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.AUDIO_CHANNEL_NUM_TIPS_ARRAY);
         mAudioChannelNumSpinner.setAdapter(adapter);
         mAudioChannelNumSpinner.setSelection(0);
+
+        PLShortVideoEnv.checkAuthentication(getApplicationContext(), new PLAuthenticationResultCallback() {
+            @Override
+            public void onAuthorizationResult(int result) {
+                if (result == PLAuthenticationResultCallback.UnCheck) {
+                    ToastUtils.s(MainActivity.this, "UnCheck");
+                } else if (result == PLAuthenticationResultCallback.UnAuthorized) {
+                    ToastUtils.s(MainActivity.this, "UnAuthorized");
+                } else {
+                    ToastUtils.s(MainActivity.this, "Authorized");
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private boolean isPermissionOK() {
