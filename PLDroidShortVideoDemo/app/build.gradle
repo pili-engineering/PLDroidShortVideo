@@ -15,7 +15,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 26
-        versionName "2.2.0"
+        versionName "2.2.1"
         multiDexEnabled true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
         ndk {
@@ -32,7 +32,7 @@ android {
 
 dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.3.11'
-    compile files('libs/pldroid-shortvideo-2.2.0.jar')
+    compile files('libs/pldroid-shortvideo-2.2.1.jar')
     compile files('libs/pldroid-player-2.1.8.jar')
     compile files('libs/EasyAR.jar')
     compile files('libs/EasyAR3D.jar')
