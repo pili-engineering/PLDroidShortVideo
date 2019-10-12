@@ -21,6 +21,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.ConfigActivity"></activity>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +38,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.VideoEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ImportAndEditActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.VideoTranscodeActivity"

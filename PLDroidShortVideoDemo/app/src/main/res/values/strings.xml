@@ -9,10 +9,11 @@
     <string name="title_record">视频拍摄</string>
     <string name="title_audio_record">音频录制</string>
     <string name="title_compose">视频拼接</string>
-    <string name="title_image_compose">图片合成</string>
+    <string name="title_image_compose">制作图片电影</string>
     <string name="title_multiple_compose">图片视频混排</string>
     <string name="title_player">视频播放</string>
     <string name="title_screen_record">屏幕录制</string>
+    <string name="title_import_and_edit">素材导入编辑</string>
     <string name="title_transcode">视频转码</string>
     <string name="title_trim">视频剪辑</string>
     <string name="title_gif">制作GIF动画</string>
@@ -23,7 +24,7 @@
     <string name="title_audio_file_name">音频文件：</string>
     <string name="title_add_image">添加图片</string>
     <string name="title_add_music">添加音乐</string>
-    <string name="title_ar_effect">AR 特效</string>
+    <string name="title_ar_effect">制作AR视频</string>
     <string name="title_from_draft_box">草稿箱</string>
     <string name="title_all_drafts">草稿列表</string>
     <string name="title_video_divide">视频分割</string>

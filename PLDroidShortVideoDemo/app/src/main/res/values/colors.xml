@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#0090CC</color>
+    <color name="colorPrimaryDark">#0090CC</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorTextBG">#cc222222</color>
     <color name="colorSpeedPanel">#99222222</color>
@@ -56,6 +56,7 @@
     <color name="lsq_color_black">#000000</color>
     <color name="lsq_color_red">#ff0000</color>
     <color name="lsq_color_gray">#707070</color>
+    <color name="lsq_color_gray_bg">#F0F0F0</color>
     <color name="lsq_color_orange">#ff6633</color>
     <color name="lsq_color_transparent">#00000000</color>
     <color name="lsq_color_semitransparent">#7f000000</color>

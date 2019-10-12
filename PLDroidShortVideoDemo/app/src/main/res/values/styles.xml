@@ -1,9 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
 
     <style name="AppThemeFullscreen" parent="Theme.AppCompat.NoActionBar">
@@ -28,4 +30,8 @@
         <item name="android:paddingRight">13dp</item>
         <item name="android:paddingBottom">10dp</item>
     </style>
+
+    <declare-styleable name="ItemView">
+        <attr name="text" format="string|reference"/>
+    </declare-styleable>
 </resources>
