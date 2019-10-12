@@ -1,238 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/video_record_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickCapture"
-            android:text="@string/title_record" />
-
-        <Button
-            android:id="@+id/audio_record_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickAudioCapture"
-            android:text="@string/title_audio_record" />
-
-        <Button
-            android:id="@+id/video_trim_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickImport"
-            android:text="@string/title_trim" />
-
-        <Button
-            android:id="@+id/video_transcode_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickTranscode"
-            android:text="@string/title_transcode" />
-
-        <Button
-            android:id="@+id/gif_make_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickMakeGIF"
-            android:text="@string/title_gif" />
-
-        <Button
-            android:id="@+id/screen_record_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickScreenRecord"
-            android:text="@string/title_screen_record" />
-
-        <Button
-            android:id="@+id/video_compose_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickVideoCompose"
-            android:text="@string/title_compose" />
-
-        <Button
-            android:id="@+id/image_compose_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickImageCompose"
-            android:text="@string/title_image_compose" />
-
-        <Button
-            android:id="@+id/multiple_compose_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickMultipleCompose"
-            android:text="@string/title_multiple_compose" />
-
-        <Button
-            android:id="@+id/ar_make_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickAR"
-            android:text="@string/title_ar_effect" />
-
-        <Button
-            android:id="@+id/draft_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickDraftBox"
-            android:text="@string/title_from_draft_box" />
-
-        <Button
-            android:id="@+id/video_divide_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickTransitionMake"
-            android:text="@string/title_video_divide" />
-
-        <Button
-            android:id="@+id/external_media_record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickExternalMediaRecord"
-            android:text="外部录制" />
-
-        <Button
-            android:id="@+id/mix_record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickMixRecord"
-            android:text="分屏录制" />
-
-        <Button
-            android:id="@+id/video_mix"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:onClick="onClickVideoMix"
-            android:text="视频拼图" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000" />
+        android:layout_height="48dp">
 
         <TextView
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/iv_config"
+            android:scaleType="centerInside"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_settings_white_24dp"
+            android:onClick="onClickSetting"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    </FrameLayout>
+
+    <ScrollView
+        android:background="@color/lsq_color_gray_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="录制参数配置"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="预览比例"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/video_record_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onClickCapture"
+                android:layout_marginTop="1px"
+                app:text="@string/title_record" />
 
-        <Spinner
-            android:id="@+id/PreviewSizeRatioSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/audio_record_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1px"
+                android:onClick="onClickAudioCapture"
+                app:text="@string/title_audio_record" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="预览尺寸"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/screen_record_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickScreenRecord"
+                app:text="@string/title_screen_record" />
 
-        <Spinner
-            android:id="@+id/PreviewSizeLevelSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="onClickImportAndRecord"
+                app:text="@string/title_import_and_edit" />
 
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/mix_record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickMixRecord"
+                app:text="制作视频合拍" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="音频声道"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/video_mix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickVideoMix"
+                app:text="制作视频拼图" />
 
-        <Spinner
-            android:id="@+id/AudioChannelNumSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/image_compose_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickImageCompose"
+                app:text="@string/title_image_compose" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="编码类型"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/gif_make_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickMakeGIF"
+                app:text="@string/title_gif" />
 
-        <Spinner
-            android:id="@+id/EncodingModeLevelSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/ar_make_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="onClickAR"
+                app:text="@string/title_ar_effect" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="编码尺寸"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/draft_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickDraftBox"
+                app:text="@string/title_from_draft_box" />
 
-        <Spinner
-            android:id="@+id/EncodingSizeLevelSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/item_version_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:text="版本信息" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="编码码率"
-            android:textStyle="bold" />
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:id="@+id/item_compile_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                app:text="编译时间" />
 
-        <Spinner
-            android:id="@+id/EncodingBitrateLevelSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+        </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000" />
-
-        <TextView
-            android:id="@+id/VersionInfoTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="20dp" />
-
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

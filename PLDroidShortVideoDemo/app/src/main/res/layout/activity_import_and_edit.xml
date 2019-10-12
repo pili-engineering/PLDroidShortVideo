@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lsq_color_gray_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:onClick="onClickBack"
+            android:src="@mipmap/btn_back"
+            android:scaleType="centerInside"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+        <TextView
+            android:text="@string/title_import_and_edit"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/video_trim_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1px"
+            android:onClick="onClickImport"
+            app:text="@string/title_trim" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/video_divide_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickTransitionMake"
+            app:text="@string/title_video_divide" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/video_compose_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickVideoCompose"
+            app:text="@string/title_compose" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/video_transcode_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickTranscode"
+            app:text="@string/title_transcode" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/multiple_compose_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickMultipleCompose"
+            app:text="@string/title_multiple_compose" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:id="@+id/external_media_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickExternalMediaRecord"
+            app:text="外部裸数据导入" />
+    </LinearLayout>
+</LinearLayout>
