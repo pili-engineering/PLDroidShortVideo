@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.lasque.tusdkdemohelper.tusdk.filter.FilterConfigView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:id="@+id/lsq_configWrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical" >
+
+        <!-- 参数调节栏 代码中自动添加 -->
+
+    </LinearLayout>
+
+</org.lasque.tusdkdemohelper.tusdk.filter.FilterConfigView>

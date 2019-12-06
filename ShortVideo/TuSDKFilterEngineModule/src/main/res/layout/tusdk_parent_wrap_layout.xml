@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lsq_effect_container_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <!-- 贴纸 -->
+    <RelativeLayout
+        android:id="@+id/lsq_record_sticker_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+        <include layout="@layout/tusdk_record_sticker_layout" />
+    </RelativeLayout>
+
+
+    <!-- 滤镜栏 -->
+    <RelativeLayout
+        android:id="@+id/lsq_filter_group_bottom_view_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+        <include layout="@layout/tusdk_filter_list_config_view" />
+    </RelativeLayout>
+
+
+    <!-- 漫画 -->
+    <RelativeLayout
+        android:id="@+id/lsq_cartoon_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+        <include layout="@layout/tusdk_cartoon_list_view" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lsq_beauty_bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+        <include layout="@layout/tusdk_record_beauty_wrap_layout" />
+    </RelativeLayout>
+</RelativeLayout>

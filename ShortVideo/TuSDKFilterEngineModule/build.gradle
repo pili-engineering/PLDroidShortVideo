@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+
+    compileOnly 'com.android.support:appcompat-v7:25.4.0'
+
+    compileOnly 'com.android.support:recyclerview-v7:25.3.1'
+
+    api files('libs/TuSDKCore-3.0.6.jar')
+    api files('libs/TuSDKFace-3.0.1.jar')
+    api files('libs/TuSDKVideo-3.3.1.jar')
+    compileOnly files('libs/universal-image-loader-1.9.4.jar')
+    compileOnly 'com.github.bumptech.glide:glide:4.9.0'
+}

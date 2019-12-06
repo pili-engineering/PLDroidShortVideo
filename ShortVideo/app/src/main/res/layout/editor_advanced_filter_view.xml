@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <include
+        android:id="@+id/filter_config_view"
+        layout="@layout/tusdk_filter_config_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:background="@drawable/bottom_sheet_dialog_background" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced_filter_string"
+            android:textColor="@color/colorWhite"
+            android:layout_centerInParent="true"/>
+
+        <ImageButton
+            android:id="@+id/confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_confirm"
+            android:background="@null"
+            android:layout_marginEnd="8dp"
+            android:layout_alignParentEnd="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/confirm_btn"
+            android:background="@color/alpha_white_26" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/advanced_filter_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/colorEditorBackground" />
+</LinearLayout>

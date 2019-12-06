@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/puzzle_config_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBackgroundColor">
+
+    <ImageView
+        android:id="@+id/back_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="TODO"
+        android:onClick="onClickBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back_arrow" />
+
+    <TextView
+        android:id="@+id/puzzle_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_puzzle_video_title"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back_btn" />
+
+    <ImageView
+        android:id="@+id/puzzle_2video_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:onClick="onClickPuzzle2Video"
+        app:layout_constraintBottom_toTopOf="@+id/puzzle_3video_img"
+        app:layout_constraintEnd_toEndOf="@+id/puzzle_3video_img"
+        app:layout_constraintStart_toStartOf="@+id/puzzle_3video_img"
+        app:srcCompat="@mipmap/puzzle_2video" />
+
+    <ImageView
+        android:id="@+id/puzzle_3video_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:onClick="onClickPuzzle3Video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/puzzle_title"
+        app:srcCompat="@mipmap/puzzle_3video" />
+
+    <ImageView
+        android:id="@+id/puzzle_4video_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:onClick="onClickPuzzle4Video"
+        app:layout_constraintEnd_toEndOf="@+id/puzzle_3video_img"
+        app:layout_constraintStart_toStartOf="@+id/puzzle_3video_img"
+        app:layout_constraintTop_toBottomOf="@+id/puzzle_3video_img"
+        app:srcCompat="@mipmap/puzzle_4video" />
+</android.support.constraint.ConstraintLayout>

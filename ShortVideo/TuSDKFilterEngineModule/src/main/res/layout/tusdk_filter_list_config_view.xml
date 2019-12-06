@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lsq_filter_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:layout_alignParentBottom="true">
+
+    <include
+        android:id="@+id/lsq_filter_config_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/tusdk_filter_config_view" />
+
+    <LinearLayout
+        android:background="@color/lsq_color_semitransparent"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:layout_below="@id/lsq_filter_config_view"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lsq_filter_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_gravity="center_vertical">
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+</RelativeLayout>

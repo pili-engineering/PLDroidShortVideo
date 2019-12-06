@@ -1,0 +1,29 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.tusdkdemohelper" >
+
+    <!-- 访问网络 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取WIFI信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 允许访问GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 允许应用程序写数据到外部存储设备（主要是SD卡） -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 请求访问使用照相设备 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 开启闪光灯权限 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true" >
+    </application>
+</manifest>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="camera_focus">
+        <attr name="focus_width" format="integer|dimension" />
+        <attr name="focus_height" format="integer|dimension" />
+        <attr name="focus_scale" format="float" />
+    </declare-styleable>
+</resources>

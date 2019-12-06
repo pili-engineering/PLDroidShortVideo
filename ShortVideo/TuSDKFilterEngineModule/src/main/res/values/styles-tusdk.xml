@@ -1,0 +1,32 @@
+<resources>
+
+
+    <style name="lsq_record_filter_list_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">90dp</item>
+
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+
+    <style name="lsq_sticker_list_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingLeft">13dp</item>
+        <item name="android:paddingRight">13dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <declare-styleable name="TabPagerIndicator">
+        <attr name="default_display_counts" format="integer"></attr>
+        <attr name="normal_text_color" format="color"/>
+        <attr name="high_light_text_color" format="color"/>
+        <attr name="text_size" format="integer"/>
+        <attr name="line_color" format="color"/>
+        <attr name="line_size" format="integer"/>
+        <attr name="line_width" format="dimension"></attr>
+    </declare-styleable>
+
+</resources>

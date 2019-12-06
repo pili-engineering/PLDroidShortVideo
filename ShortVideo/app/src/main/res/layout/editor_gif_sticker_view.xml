@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bottom_sheet_dialog_background"
+              android:alpha="0.8"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/bottom_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageButton
+            android:id="@+id/confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="4dp"
+            android:background="@null"
+            android:src="@drawable/ic_confirm"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/alpha_white_26" />
+
+    <com.qiniu.shortvideo.app.view.thumbline.ThumbLineView
+        android:id="@+id/thumb_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thumbnail_height" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gif_sticker_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_margin_10dp"
+        android:layout_marginLeft="@dimen/layout_margin_10dp"
+        android:layout_marginRight="@dimen/layout_margin_10dp"
+        android:layout_marginBottom="@dimen/layout_margin_10dp" />
+</LinearLayout>

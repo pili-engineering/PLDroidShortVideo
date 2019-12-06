@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             xmlns:seekbar="http://schemas.android.com/apk/res-auto"
+                                             android:id="@+id/music_item_layout"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:paddingLeft="16dp"
+                                             android:paddingTop="8dp"
+                                             android:paddingRight="16dp"
+                                             android:paddingBottom="8dp">
+
+    <ImageView
+        android:id="@+id/play_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/darker_gray"
+        android:padding="4dp"
+        android:src="@drawable/ic_music_play"
+        app:layout_constraintBottom_toBottomOf="@+id/music_singer_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/music_name_text"/>
+
+    <TextView
+        android:id="@+id/music_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toEndOf="@+id/play_btn"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/music_singer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/music_name_text"
+        app:layout_constraintTop_toBottomOf="@+id/music_name_text"/>
+
+    <Button
+        android:id="@+id/confirm_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rectangle_btn_background"
+        android:duplicateParentState="false"
+        android:text="@string/confirm_to_use"
+        android:textColor="@android:color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/music_singer_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/music_name_text"/>
+
+    <FrameLayout
+        android:id="@+id/music_select_layout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/music_singer_text">
+
+        <com.qiniu.shortvideo.app.view.MusicWaveView
+            android:id="@+id/music_wave_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <com.qiniu.shortvideo.app.view.RangeSlider
+            android:id="@+id/music_select_range_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            seekbar:leftThumbDrawable="@mipmap/qn_video_pan"
+            seekbar:leftThumbIndex="0"
+            seekbar:lineColor="@color/colorAccent"
+            seekbar:lineHeight="3dp"
+            seekbar:rightThumbDrawable="@mipmap/qn_video_pan"
+            seekbar:thumbWidth="10dp"
+            seekbar:tickCount="100"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/music_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/music_select_layout"
+        app:layout_constraintTop_toBottomOf="@+id/music_select_layout"/>
+
+    <TextView
+        android:id="@+id/music_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/music_select_layout"
+        app:layout_constraintTop_toBottomOf="@+id/music_select_layout"/>
+
+    <android.support.constraint.Group
+        android:id="@+id/music_select_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="music_start_time,music_select_layout,music_end_time"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="8dp"/>
+
+</android.support.constraint.ConstraintLayout>

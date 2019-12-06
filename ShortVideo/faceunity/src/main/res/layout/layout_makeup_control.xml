@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_makeup_item"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:background="#BD050F14">
+
+        <com.faceunity.fulivedemo.ui.seekbar.DiscreteSeekBar
+            android:id="@+id/makeup_seek_bar"
+            android:layout_width="@dimen/x528"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x196"
+            android:visibility="gone"
+            app:dsb_indicatorColor="@color/main_color"
+            app:dsb_indicatorElevation="0dp"
+            app:dsb_indicatorPopupEnabled="true"
+            app:dsb_max="100"
+            app:dsb_min="0"
+            app:dsb_progressColor="@color/main_color"
+            app:dsb_rippleColor="@color/main_color"
+            app:dsb_scrubberHeight="@dimen/x4"
+            app:dsb_thumbSize="@dimen/x32"
+            app:dsb_trackBaseHeight="@dimen/x16"
+            app:dsb_trackColor="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/makeup_line"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_makeup_back"
+            android:layout_width="@dimen/x108"
+            android:layout_height="@dimen/x108"
+            android:layout_marginLeft="@dimen/x34"
+            android:layout_marginBottom="@dimen/x49"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_return_nor"
+            app:layout_constraintBottom_toTopOf="@+id/makeup_line"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <View
+            android:id="@+id/makeup_mid_line"
+            android:layout_width="@dimen/x1"
+            android:layout_height="@dimen/x80"
+            android:layout_marginLeft="@dimen/x20"
+            android:background="#33E5E5E5"
+            app:layout_constraintBottom_toBottomOf="@id/iv_makeup_back"
+            app:layout_constraintLeft_toRightOf="@id/iv_makeup_back"
+            app:layout_constraintTop_toTopOf="@id/iv_makeup_back" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/makeup_mid_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x116"
+            android:layout_marginLeft="@dimen/x163"
+            android:paddingLeft="@dimen/x5"
+            android:paddingRight="@dimen/x5"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="@id/iv_makeup_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_makeup_back" />
+
+        <View
+            android:id="@+id/makeup_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="#33E5E5E5"
+            app:layout_constraintBottom_toTopOf="@id/rv_makeup_item" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_makeup_item"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x98"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_face_makeup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x268"
+        android:layout_gravity="bottom"
+        android:background="#BD050F14"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_custom_makeup"
+            android:layout_width="@dimen/x108"
+            android:layout_height="@dimen/x108"
+            android:layout_marginLeft="@dimen/x34"
+            android:layout_marginBottom="@dimen/x58"
+            android:padding="@dimen/x4"
+            android:src="@drawable/icon_custom_nor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:layout_width="@dimen/x108"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x16"
+            android:gravity="center_horizontal"
+            android:text="@string/makeup_customize"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_20"
+            app:layout_constraintLeft_toLeftOf="@id/iv_custom_makeup"
+            app:layout_constraintRight_toRightOf="@id/iv_custom_makeup"
+            app:layout_constraintTop_toBottomOf="@id/iv_custom_makeup" />
+
+        <View
+            android:layout_width="@dimen/x1"
+            android:layout_height="@dimen/x80"
+            android:layout_marginLeft="@dimen/x20"
+            android:background="@color/divider_line_color"
+            app:layout_constraintBottom_toBottomOf="@id/iv_custom_makeup"
+            app:layout_constraintLeft_toRightOf="@id/iv_custom_makeup"
+            app:layout_constraintTop_toTopOf="@id/iv_custom_makeup" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_face_makeup"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x166"
+            android:layout_marginLeft="@dimen/x25"
+            android:scrollbars="none"
+            app:layout_constraintLeft_toRightOf="@id/iv_custom_makeup"
+            app:layout_constraintTop_toTopOf="@id/iv_custom_makeup" />
+
+        <com.faceunity.fulivedemo.ui.seekbar.DiscreteSeekBar
+            android:id="@+id/seek_bar_makeup"
+            android:layout_width="@dimen/x528"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x30"
+            android:visibility="visible"
+            app:dsb_indicatorColor="@color/main_color"
+            app:dsb_indicatorElevation="0dp"
+            app:dsb_indicatorPopupEnabled="true"
+            app:dsb_max="100"
+            app:dsb_min="0"
+            app:dsb_progressColor="@color/main_color"
+            app:dsb_rippleColor="@color/main_color"
+            app:dsb_scrubberHeight="@dimen/x4"
+            app:dsb_thumbSize="@dimen/x32"
+            app:dsb_trackBaseHeight="@dimen/x16"
+            app:dsb_trackColor="@color/colorWhite"
+            app:dsb_value="0"
+            app:layout_constraintBottom_toTopOf="@id/iv_custom_makeup"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>

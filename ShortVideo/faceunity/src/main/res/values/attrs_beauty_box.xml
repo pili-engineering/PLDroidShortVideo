@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BeautyBox">
+        <attr name="checked" format="boolean"/>
+        <attr name="open" format="boolean"/>
+        <attr name="checked_model" format="integer">
+            <flag name="radio" value="1"/>
+            <flag name="open" value="2"/>
+            <flag name="open_double" value="3"/>
+        </attr>
+        <attr name="drawable_open_normal" format="reference"/>
+        <attr name="drawable_open_checked" format="reference"/>
+        <attr name="drawable_close_normal" format="reference"/>
+        <attr name="drawable_close_checked" format="reference"/>
+        <attr name="text_normal" format="string"/>
+        <attr name="text_double" format="string"/>
+        <attr name="textColor_normal" format="reference|color"/>
+        <attr name="textColor_checked" format="reference|color"/>
+    </declare-styleable>
+</resources>

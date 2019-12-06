@@ -1,0 +1,32 @@
+{
+    "MVs": [
+                {
+                "name": "川久保玲",
+                "coverDir": "rei",
+                "colorDir": "rei",
+                "alphaDir": "rei_alpha",
+                "category": "default"
+                },
+                {
+                "name": "爱马仕",
+                "coverDir": "hermes",
+                "colorDir": "hermes",
+                "alphaDir": "hermes_alpha",
+                "category": "default"
+                },
+                {
+                "name": "芬迪",
+                "coverDir": "fendi",
+                "colorDir": "fendi",
+                "alphaDir": "fendi_alpha",
+                "category": "default"
+                },
+                {
+                "name": "co",
+                "coverDir": "co",
+                "colorDir": "co",
+                "alphaDir": "co_alpha",
+                "category": "default"
+                }
+            ]
+}

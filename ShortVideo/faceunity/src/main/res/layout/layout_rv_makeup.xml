@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/x108"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_makeup"
+        android:layout_width="@dimen/x108"
+        android:layout_height="@dimen/x108"
+        android:padding="@dimen/x4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/icon_punk_make_up" />
+
+    <TextView
+        android:id="@+id/tv_makeup"
+        android:layout_width="@dimen/x108"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/x16"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_20"
+        app:layout_constraintLeft_toLeftOf="@id/iv_custom_makeup"
+        app:layout_constraintRight_toRightOf="@id/iv_custom_makeup"
+        app:layout_constraintTop_toBottomOf="@id/iv_makeup"
+        tools:text="自定义" />
+
+</android.support.constraint.ConstraintLayout>

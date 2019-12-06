@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 27
+        versionCode 66
+        versionName "6.0.0-release3"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main.assets.srcDirs += ['src/main/assets', 'src/main/effects/bundle']
+        main.res.srcDirs += ['src/main/res', 'src/main/effects/res', 'src/main/filters/res',
+                             'src/main/avatar/res', 'src/main/makeup/res']
+    }
+
+    greendao {
+        schemaVersion 1 //数据库版本号
+        daoPackage 'com.faceunity.greendao' //设置DaoMaster、DaoSession、Dao包名
+        targetGenDir 'src/main/java' //设置DaoMaster、DaoSession、Dao目录
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    api 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}

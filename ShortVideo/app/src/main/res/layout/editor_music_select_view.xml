@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bottom_sheet_dialog_background"
+              android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageButton
+            android:id="@+id/music_add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:src="@mipmap/qn_edit_add"
+            android:background="@color/transparent" />
+
+        <TextView
+            android:id="@+id/choose_music_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_centerInParent="true"
+            android:text="@string/choose_music_title"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageButton
+            android:id="@+id/music_confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_confirm"
+            android:background="@color/transparent" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/alpha_white_26" />
+
+    <com.qiniu.shortvideo.app.view.thumbline.ThumbLineView
+        android:id="@+id/thumb_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thumbnail_height" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/selected_music_rv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="@dimen/layout_margin_10dp"
+        android:layout_marginLeft="@dimen/layout_margin_10dp"
+        android:layout_marginRight="@dimen/layout_margin_10dp"
+        android:layout_marginBottom="@dimen/layout_margin_10dp" />
+</LinearLayout>

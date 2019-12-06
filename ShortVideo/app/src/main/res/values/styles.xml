@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="BottomSheetDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="LaunchScreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@mipmap/qn_launch_image</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+</resources>

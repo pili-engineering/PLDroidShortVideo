@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="built_in_filters">
+        <item>黑白</item>
+        <item>甘菊</item>
+        <item>糖果</item>
+        <item>冷色</item>
+        <item>暗色</item>
+        <item>梦幻</item>
+        <item>优雅</item>
+        <item>青涩</item>
+        <item>时髦</item>
+        <item>漂亮</item>
+        <item>灰色</item>
+        <item>哈瓦那</item>
+        <item>快乐</item>
+        <item>收获</item>
+        <item>旅行</item>
+        <item>蓝紫色</item>
+        <item>零点</item>
+        <item>心念</item>
+        <item>模糊</item>
+        <item>原色</item>
+        <item>拍立得</item>
+        <item>粉红</item>
+        <item>拍立</item>
+        <item>胶片</item>
+        <item>紫色</item>
+        <item>旅行</item>
+        <item>红色</item>
+        <item>怀旧</item>
+        <item>和煦</item>
+        <item>高雅</item>
+        <item>青花瓷</item>
+        <item>华尔兹</item>
+        <item>西方</item>
+    </string-array>
+</resources>

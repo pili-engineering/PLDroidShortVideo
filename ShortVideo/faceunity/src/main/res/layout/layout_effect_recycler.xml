@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/x140"
+    android:layout_height="@dimen/x140"
+    android:orientation="vertical"
+    android:padding="@dimen/x10">
+
+    <com.faceunity.view.CircleImageView
+        android:id="@+id/effect_recycler_img"
+        android:layout_width="@dimen/x120"
+        android:layout_height="@dimen/x120"
+        android:layout_gravity="center"
+        android:padding="@dimen/x5"/>
+
+</FrameLayout>

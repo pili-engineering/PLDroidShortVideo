@@ -22,6 +22,10 @@ PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 S
 * 修复个别视频在 Android Q 上拼图卡住的问题
 * 修复偶现的空指针问题
 
+### 七牛短视频
+
+* 发布七牛短视频 APP V2.0 版本，详情请见 [ShortVideo](https://github.com/pili-engineering/PLDroidShortVideo/tree/master/ShortVideo)
+
 ### 注意事项
 
 * 从 v3.1.0 版本开始，需要在 Application 中初始化 sdk：

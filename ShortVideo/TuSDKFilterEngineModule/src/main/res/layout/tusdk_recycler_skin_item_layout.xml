@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/lsq_reset_image"
+            android:src="@drawable/lsq_ic_nix"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="15dp"
+            android:layout_gravity="center"/>
+
+        <CheckedTextView
+            android:id="@+id/lsq_reset_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/lsq_beauty_name_selector"
+            android:textSize="10sp"
+            android:visibility="invisible"
+            android:text="@string/lsq_filter_set_reset"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/lsq_skin_beauty_image"
+            android:src="@drawable/lsq_ic_skin_precision_nor"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:layout_gravity="center"/>
+
+        <CheckedTextView
+            android:id="@+id/lsq_skin_beauty_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/lsq_beauty_name_selector"
+            android:textSize="10sp"
+            android:visibility="visible"
+            android:text="@string/lsq_filter_set_skin_precision"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_gravity="center"
+        android:background="@drawable/lsq_circle_point"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/lsq_smoothing_image"
+            android:src="@drawable/lsq_ic_smoothing_norl"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:layout_gravity="center"/>
+
+        <CheckedTextView
+            android:id="@+id/lsq_smoothing_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/lsq_beauty_name_selector"
+            android:textSize="10sp"
+            android:visibility="visible"
+            android:text="@string/lsq_filter_set_smoothing"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/lsq_whitening_image"
+            android:src="@drawable/lsq_ic_whitening_norl"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:layout_gravity="center"/>
+
+        <CheckedTextView
+            android:id="@+id/lsq_whitening_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/lsq_beauty_name_selector"
+            android:textSize="10sp"
+            android:visibility="visible"
+            android:text="@string/lsq_filter_set_whitening"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/lsq_ruddy_image"
+            android:src="@drawable/lsq_ic_ruddy_norl"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:layout_gravity="center"/>
+
+        <CheckedTextView
+            android:id="@+id/lsq_ruddy_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/lsq_beauty_name_selector"
+            android:textSize="10sp"
+            android:visibility="visible"
+            android:text="@string/lsq_filter_set_ruddy"/>
+
+    </LinearLayout>
+
+</LinearLayout>
