@@ -45,7 +45,6 @@ import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_INVALID_ARG;
 public class VideoMixActivity extends Activity {
     private static final String TAG = "VideoMixActivity";
 
-    private static final int MAX_DURATION_MS = 15 * 1000;
     private static final int TIMER_TICK_INTERVAL = 50;
     private static final int PLAY_MODE_TOGETHER = 1;
     private static final int PLAY_MODE_ONE_BY_ONE = 2;
@@ -62,10 +61,15 @@ public class VideoMixActivity extends Activity {
     private PLVideoMixItem mVideoMixItem1;
     private PLVideoMixItem mVideoMixItem2;
     private LinearLayout mPreviewParent;
+    private PLMediaFile mMediaFile1;
+    private PLMediaFile mMediaFile2;
 
     private Timer mTimer;
     private TimerTask mTimerTask;
     private volatile long mCurTime;
+
+    private long mPlayTogetherDuration;
+    private long mPlayOneByOneDuration;
 
     private PLVideoTextureView mPlayer1;
     private PLVideoTextureView mPlayer2;
@@ -98,7 +102,6 @@ public class VideoMixActivity extends Activity {
         mSeekBar1 = (SeekBar) findViewById(R.id.seekBar1);
         mSeekBar2 = (SeekBar) findViewById(R.id.seekBar2);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mProgressBar.setMax(MAX_DURATION_MS);
         mBtnPlayTogether = (Button) findViewById(R.id.btnPlayTogether);
         mBtnPlayOneByOne = (Button) findViewById(R.id.btnPlayOneByOne);
         mTipTextView = (TextView) findViewById(R.id.tipTextView);
@@ -128,14 +131,6 @@ public class VideoMixActivity extends Activity {
         mSeekBar1.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
         mSeekBar2.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
 
-        mShortVideoMixer = new PLShortVideoMixer(this, Config.VIDEO_MIX_PATH, MAX_DURATION_MS);
-        PLVideoEncodeSetting videoEncodeSetting = new PLVideoEncodeSetting(this);
-        videoEncodeSetting.setEncodingSizeLevel(PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_480P_1);
-        videoEncodeSetting.setEncodingBitrate(2000 * 1000);
-        videoEncodeSetting.setHWCodecEnabled(true);
-        videoEncodeSetting.setConstFrameRateEnabled(true);
-        mShortVideoMixer.setVideoEncodeSetting(videoEncodeSetting);
-
         chooseVideo();
     }
 
@@ -164,6 +159,8 @@ public class VideoMixActivity extends Activity {
         if (mBtnPlayTogether.isSelected()) {
             return;
         }
+        mProgressBar.setMax((int) mPlayTogetherDuration);
+
         mBtnPlayOneByOne.setSelected(mBtnPlayTogether.isSelected());
         mBtnPlayTogether.setSelected(!mBtnPlayTogether.isSelected());
 
@@ -191,12 +188,13 @@ public class VideoMixActivity extends Activity {
         if (mBtnPlayOneByOne.isSelected()) {
             return;
         }
+        mProgressBar.setMax((int) mPlayOneByOneDuration);
 
         mBtnPlayTogether.setSelected(mBtnPlayOneByOne.isSelected());
         mBtnPlayOneByOne.setSelected(!mBtnPlayOneByOne.isSelected());
 
         if (mBtnPlayOneByOne.isSelected()) {
-            mVideoMixItem2.setStartTimeMs(MAX_DURATION_MS / 2);
+            mVideoMixItem2.setStartTimeMs((int) mMediaFile1.getDurationMs());
 
             mPlayMode = PLAY_MODE_ONE_BY_ONE;
             mCurTime = 0;
@@ -230,6 +228,8 @@ public class VideoMixActivity extends Activity {
             mVideoMixItem1.setDisplayMode(PLDisplayMode.FIT);
             mVideoMixItem1.setStartTimeMs(0);
 
+            mMediaFile1 = new PLMediaFile(path);
+
             Bitmap bitmap = getFirstFrame(path);
             if (bitmap != null) {
                 mCover1.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -245,6 +245,8 @@ public class VideoMixActivity extends Activity {
             mVideoMixItem2.setDisplayMode(PLDisplayMode.FIT);
             mVideoMixItem2.setStartTimeMs(0);
 
+            mMediaFile2 = new PLMediaFile(path);
+
             mTipTextView.setVisibility(View.INVISIBLE);
             mPreviewParent.setClickable(false);
             mBtnPlayTogether.setSelected(true);
@@ -258,6 +260,10 @@ public class VideoMixActivity extends Activity {
             mPlayer2.setAVOptions(getAVOptions());
             mPlayer2.setVideoPath(path);
 
+            mPlayOneByOneDuration = mMediaFile1.getDurationMs() + mMediaFile2.getDurationMs();
+            mPlayTogetherDuration = Math.max(mMediaFile1.getDurationMs(), mMediaFile2.getDurationMs());
+            mProgressBar.setMax((int) mPlayTogetherDuration);
+
             initTimerTask();
         }
     }
@@ -267,6 +273,15 @@ public class VideoMixActivity extends Activity {
     }
 
     public void onDone(View v) {
+        mShortVideoMixer = new PLShortVideoMixer(this, Config.VIDEO_MIX_PATH,
+                mPlayMode == PLAY_MODE_TOGETHER ? mPlayTogetherDuration : mPlayOneByOneDuration);
+        PLVideoEncodeSetting videoEncodeSetting = new PLVideoEncodeSetting(this);
+        videoEncodeSetting.setEncodingSizeLevel(PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_480P_1);
+        videoEncodeSetting.setEncodingBitrate(2000 * 1000);
+        videoEncodeSetting.setHWCodecEnabled(true);
+        videoEncodeSetting.setConstFrameRateEnabled(true);
+        mShortVideoMixer.setVideoEncodeSetting(videoEncodeSetting);
+
         mProcessingDialog.show();
 
         List<PLVideoMixItem> items = new LinkedList<>();
@@ -374,7 +389,7 @@ public class VideoMixActivity extends Activity {
 
                             checkToPlay();
 
-                            if (mCurTime >= MAX_DURATION_MS) {
+                            if (mIsPlayer1Completed && mIsPlayer2Completed) {
                                 mCurTime = 0;
                                 mPlayer1.seekTo(0);
                                 if (mIsPlayer1Completed) {
@@ -463,7 +478,7 @@ public class VideoMixActivity extends Activity {
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
-        boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
+        boolean disableLog = getIntent().getBooleanExtra("disable-log", true);
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         return options;
     }

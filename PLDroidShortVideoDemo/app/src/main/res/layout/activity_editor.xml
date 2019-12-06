@@ -59,6 +59,12 @@
             android:onClick="onClickTogglePlayback"
             android:src="@mipmap/btn_pause" />
 
+        <FrameLayout
+            android:id="@+id/sticker_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent" />
+
         <com.qiniu.pili.droid.shortvideo.demo.view.FrameListView
             android:id="@+id/frame_list_view"
             android:layout_width="match_parent"
@@ -321,6 +327,15 @@
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel
             android:id="@+id/image_selector_panel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/background_dark"
+            android:visibility="gone" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.GifSelectorPanel
+            android:id="@+id/gif_selector_panel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"

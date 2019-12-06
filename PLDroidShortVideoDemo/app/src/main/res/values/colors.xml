@@ -76,4 +76,5 @@
     <color name="lsq_alpha_black_B4">#B4000000</color>
     <color name="lsq_alpha_black_CO">#C0000000</color>
 
+    <color name="transparent">#00000000</color>
 </resources>
