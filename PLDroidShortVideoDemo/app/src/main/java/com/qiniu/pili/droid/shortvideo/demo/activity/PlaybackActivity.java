@@ -104,6 +104,16 @@ public class PlaybackActivity extends Activity implements
         }
 
         mSurfaceView = (SurfaceView) findViewById(R.id.video);
+        mSurfaceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mMediaController.isShowing()) {
+                    mMediaController.show(0);
+                } else {
+                    mMediaController.hide();
+                }
+            }
+        });
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -169,16 +179,6 @@ public class PlaybackActivity extends Activity implements
         }
 
         mSurfaceHolder.setFixedSize(displayWidth, displayHeight);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!mMediaController.isShowing()) {
-            mMediaController.show(0);
-        } else {
-            mMediaController.hide();
-        }
-        return super.onTouchEvent(event);
     }
 
     @Override

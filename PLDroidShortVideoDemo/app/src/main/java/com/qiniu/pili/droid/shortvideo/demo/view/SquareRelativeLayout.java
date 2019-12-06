@@ -17,11 +17,11 @@ public class SquareRelativeLayout extends RelativeLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int width = View.MeasureSpec.getSize(widthMeasureSpec);
-        int height = View.MeasureSpec.getSize(heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        Log.i(TAG, "specify width mode:" + View.MeasureSpec.toString(widthMeasureSpec) + " size:" + width);
-        Log.i(TAG, "specify height mode:" + View.MeasureSpec.toString(heightMeasureSpec) + " size:" + height);
+        Log.i(TAG, "specify width mode:" + MeasureSpec.toString(widthMeasureSpec) + " size:" + width);
+        Log.i(TAG, "specify height mode:" + MeasureSpec.toString(heightMeasureSpec) + " size:" + height);
 
         setMeasuredDimension(width, width);
     }

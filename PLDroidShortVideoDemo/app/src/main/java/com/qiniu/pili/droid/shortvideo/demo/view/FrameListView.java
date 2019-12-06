@@ -109,7 +109,7 @@ public class FrameListView extends FrameLayout {
 
     public FrameSelectorView addSelectorView() {
         mCurSelectorView = new FrameSelectorView(mContext);
-        final FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mFrameHeight);
+        final LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mFrameHeight);
         mCurSelectorView.setVisibility(View.INVISIBLE);
         mScrollViewParent.addView(mCurSelectorView, layoutParams);
 
@@ -264,7 +264,7 @@ public class FrameListView extends FrameLayout {
 
         @Override
         public void onBindViewHolder(final ItemViewHolder holder, final int position) {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(mFrameWidth, mFrameHeight);
+            LayoutParams params = new LayoutParams(mFrameWidth, mFrameHeight);
             params.width = mFrameWidth;
             holder.mImageView.setLayoutParams(params);
 

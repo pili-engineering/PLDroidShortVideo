@@ -136,7 +136,7 @@ public class PaintSelectorPanel extends LinearLayout {
         }
     }
 
-    private class PaintColorListAdapter extends RecyclerView.Adapter<PaintSelectorPanel.ItemViewHolder> {
+    private class PaintColorListAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         private int[] mColors;
         private int mPosition = 0;
 
@@ -149,16 +149,16 @@ public class PaintSelectorPanel extends LinearLayout {
         }
 
         @Override
-        public PaintSelectorPanel.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
             View contactView = inflater.inflate(R.layout.item_paint_color, parent, false);
-            PaintSelectorPanel.ItemViewHolder viewHolder = new PaintSelectorPanel.ItemViewHolder(contactView);
+            ItemViewHolder viewHolder = new ItemViewHolder(contactView);
             return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(final PaintSelectorPanel.ItemViewHolder holder, int position) {
+        public void onBindViewHolder(final ItemViewHolder holder, int position) {
             final int color = mColors[position];
             holder.mImageView.setColorFilter(mContext.getResources().getColor(color));
             holder.mImageView.setOnClickListener(new OnClickListener() {

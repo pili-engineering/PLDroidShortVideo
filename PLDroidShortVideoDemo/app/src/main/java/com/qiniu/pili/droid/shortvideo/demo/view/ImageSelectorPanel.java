@@ -3,6 +3,7 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +38,7 @@ public class ImageSelectorPanel extends LinearLayout {
         mImageListView = (RecyclerView) view.findViewById(R.id.recycler_paint_image);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mImageListView.setLayoutManager(layoutManager);
-        mImageListView.setAdapter(new ImageListAdapter(imagePaths));
+        mImageListView.setAdapter(new ImageListAdapter());
     }
 
     public void setOnImageSelectedListener(OnImageSelectedListener listener) {
@@ -45,7 +46,7 @@ public class ImageSelectorPanel extends LinearLayout {
     }
 
     public interface OnImageSelectedListener {
-        void onImageSelected(String imagePath);
+        void onImageSelected(Drawable drawable);
     }
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -59,15 +60,10 @@ public class ImageSelectorPanel extends LinearLayout {
         }
     }
 
-    private class ImageListAdapter extends RecyclerView.Adapter<ImageSelectorPanel.ItemViewHolder> {
-        private String[] mImagePaths;
-
-        public ImageListAdapter(String[] imagePaths) {
-            this.mImagePaths = imagePaths;
-        }
+    private class ImageListAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         @Override
-        public ImageSelectorPanel.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
             View contactView = inflater.inflate(R.layout.filter_item, parent, false);
@@ -76,18 +72,18 @@ public class ImageSelectorPanel extends LinearLayout {
         }
 
         @Override
-        public void onBindViewHolder(final ImageSelectorPanel.ItemViewHolder holder, int position) {
+        public void onBindViewHolder(final ItemViewHolder holder, int position) {
             try {
-                final String imagePath = "filters/" + mImagePaths[position] + "/thumb.png";
+                final String imagePath = "filters/" + imagePaths[position] + "/thumb.png";
                 InputStream is = mContext.getAssets().open(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 holder.mName.setVisibility(GONE);
                 holder.mIcon.setImageBitmap(bitmap);
-                holder.mIcon.setOnClickListener(new View.OnClickListener() {
+                holder.mIcon.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (mOnImageSelectedListener != null) {
-                            mOnImageSelectedListener.onImageSelected(imagePath);
+                            mOnImageSelectedListener.onImageSelected(holder.mIcon.getDrawable());
                         }
                     }
                 });
@@ -98,7 +94,7 @@ public class ImageSelectorPanel extends LinearLayout {
 
         @Override
         public int getItemCount() {
-            return mImagePaths.length;
+            return imagePaths.length;
         }
     }
 }

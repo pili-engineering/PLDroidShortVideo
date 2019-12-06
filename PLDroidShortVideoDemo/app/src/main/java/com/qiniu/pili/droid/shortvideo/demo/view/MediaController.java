@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class MediaController extends FrameLayout implements IMediaController{
     private static final String TAG = "PLMediaController";
-    private IMediaController.MediaPlayerControl mPlayer;
+    private MediaPlayerControl mPlayer;
     private Context mContext;
     private PopupWindow mWindow;
     private int mAnimStyle;
@@ -344,7 +344,7 @@ public class MediaController extends FrameLayout implements IMediaController{
         return super.dispatchKeyEvent(event);
     }
 
-    private View.OnClickListener mPauseListener = new View.OnClickListener() {
+    private OnClickListener mPauseListener = new OnClickListener() {
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickNormal();
@@ -414,7 +414,7 @@ public class MediaController extends FrameLayout implements IMediaController{
         }
     };
 
-    private View.OnClickListener mRewListener = new View.OnClickListener() {
+    private OnClickListener mRewListener = new OnClickListener() {
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickSlower();
@@ -423,7 +423,7 @@ public class MediaController extends FrameLayout implements IMediaController{
         }
     };
 
-    private View.OnClickListener mFfwdListener = new View.OnClickListener() {
+    private OnClickListener mFfwdListener = new OnClickListener() {
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickFaster();
@@ -451,14 +451,14 @@ public class MediaController extends FrameLayout implements IMediaController{
             removeAllViews();
             mRoot = makeControllerView();
             mWindow.setContentView(mRoot);
-            mWindow.setWidth(FrameLayout.LayoutParams.MATCH_PARENT);
-            mWindow.setHeight(FrameLayout.LayoutParams.WRAP_CONTENT);
+            mWindow.setWidth(LayoutParams.MATCH_PARENT);
+            mWindow.setHeight(LayoutParams.WRAP_CONTENT);
         }
         initControllerView(mRoot);
     }
 
     @Override
-    public void setMediaPlayer(IMediaController.MediaPlayerControl player) {
+    public void setMediaPlayer(MediaPlayerControl player) {
         mPlayer = player;
         updatePausePlay();
     }
