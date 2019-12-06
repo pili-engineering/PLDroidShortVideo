@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--获取焦点和没有按下的时候-->
+    <item android:drawable="@color/colorAccent" android:state_focused="true" android:state_pressed="false"/>
+    <!--获取焦点但按下的时候-->
+    <item android:drawable="@color/colorAccent" android:state_focused="true" android:state_pressed="true"/>
+    <!--没有获取焦点按下的时候-->
+    <item android:drawable="@color/colorAccent" android:state_focused="false" android:state_pressed="true"/>
+    <!--默认的时候-->
+    <item android:drawable="@color/colorAccent"/>
+</selector>

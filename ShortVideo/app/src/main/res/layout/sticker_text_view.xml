@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qiniu.shortvideo.app.view.layer.StickerTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overlay_touch_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layerType="software"
+    android:text="七牛"
+    android:textSize="50sp"
+    app:controlDrawable="@mipmap/qn_rotate"
+    app:controlLocation="right_bottom"
+    app:deleteDrawable="@mipmap/qn_delete"
+    app:editDrawable="@mipmap/qn_edit"
+    app:frameColor="@color/white"
+    app:frameWidth="1dp"
+    app:scale="1.0" />

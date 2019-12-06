@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activity.MainActivity">
+
+    <com.youth.banner.Banner
+        android:id="@+id/image_banner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/qn_fence"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/qn_fenge"
+        app:layout_constraintBottom_toBottomOf="@id/guideline6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/qn_logo_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/qn_logo" />
+
+    <ImageView
+        android:id="@+id/setting_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="onClickSetting"
+        android:src="@mipmap/qn_setting"
+        app:layout_constraintBottom_toBottomOf="@+id/qn_logo_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/qn_logo_image" />
+
+    <ImageButton
+        android:id="@+id/video_recording_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@color/colorTransparent"
+        android:onClick="onClickVideoRecording"
+        android:src="@mipmap/qn_video_record"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/video_edit_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <ImageButton
+        android:id="@+id/video_edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        android:onClick="onClickVideoEdit"
+        android:src="@mipmap/qn_video_editing"
+        app:layout_constraintBottom_toBottomOf="@+id/video_recording_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/video_recording_btn"
+        app:layout_constraintTop_toTopOf="@+id/video_recording_btn" />
+
+    <ImageButton
+        android:id="@+id/mix_recording_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        android:onClick="onClickVideoMix"
+        android:src="@mipmap/qn_mix_record"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline6" />
+
+    <TextView
+        android:id="@+id/mix_recording_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/video_mix_recording_string"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/mix_recording_btn"
+        app:layout_constraintStart_toStartOf="@+id/mix_recording_btn"
+        app:layout_constraintTop_toBottomOf="@+id/mix_recording_btn" />
+
+    <ImageView
+        android:id="@+id/video_puzzle_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickVideoPuzzle"
+        android:src="@mipmap/qn_puzzle"
+        app:layout_constraintBottom_toBottomOf="@+id/mix_recording_btn"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/mix_recording_btn" />
+
+    <TextView
+        android:id="@+id/video_puzzle_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/video_puzzle_string"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/video_puzzle_btn"
+        app:layout_constraintStart_toStartOf="@+id/video_puzzle_btn"
+        app:layout_constraintTop_toBottomOf="@+id/video_puzzle_btn" />
+
+    <ImageView
+        android:id="@+id/video_splice_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickVideoSplice"
+        android:src="@mipmap/qn_splice"
+        app:layout_constraintBottom_toBottomOf="@+id/mix_recording_btn"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/mix_recording_btn" />
+
+    <TextView
+        android:id="@+id/video_splice_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/video_splice_string"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/video_splice_btn"
+        app:layout_constraintStart_toStartOf="@+id/video_splice_btn"
+        app:layout_constraintTop_toBottomOf="@+id/video_splice_btn" />
+
+    <ImageButton
+        android:id="@+id/function_list_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        android:onClick="onClickFunctionList"
+        android:src="@mipmap/qn_features"
+        app:layout_constraintBottom_toBottomOf="@+id/mix_recording_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/mix_recording_btn" />
+
+    <TextView
+        android:id="@+id/function_list_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/video_mix_string"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/function_list_btn"
+        app:layout_constraintStart_toStartOf="@+id/function_list_btn"
+        app:layout_constraintTop_toBottomOf="@+id/function_list_btn" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.75"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/video_edit_btn" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="292dp"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+</android.support.constraint.ConstraintLayout>

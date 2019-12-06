@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:id="@+id/video_mix_layout"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:background="@color/mainBackgroundColor">
+
+    <com.qiniu.shortvideo.app.view.SectionProgressBar
+        android:id="@+id/section_progress_bar"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:drawableTop="@mipmap/qn_icon_close"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:onClick="onClickBack"
+        android:text="@string/quit"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/section_progress_bar"/>
+
+    <TextView
+        android:id="@+id/flash_light_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:drawableTop="@mipmap/qn_flash_off"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:onClick="onClickSwitchFlash"
+        android:text="@string/flash_light"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintStart_toEndOf="@+id/back_btn"
+        app:layout_constraintTop_toTopOf="@+id/back_btn"/>
+
+    <TextView
+        android:id="@+id/switch_camera_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:drawableTop="@mipmap/qn_flip"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:onClick="onClickSwitchCamera"
+        android:text="@string/switch_camera"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintStart_toEndOf="@+id/flash_light_btn"
+        app:layout_constraintTop_toTopOf="@+id/back_btn"/>
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="64dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rectangle_btn_background"
+        android:onClick="onClickSaveVideos"
+        android:text="@string/go_to_edit"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/back_btn"/>
+
+    <com.qiniu.shortvideo.app.view.VideoMixGLSurfaceView
+        android:id="@+id/camera_preview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/sticker_btn"
+        app:layout_constraintEnd_toStartOf="@+id/preview_guide_line"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back_btn"/>
+
+    <com.qiniu.shortvideo.app.view.VideoMixGLSurfaceView
+        android:id="@+id/sample_preview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/camera_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/preview_guide_line"
+        app:layout_constraintTop_toTopOf="@+id/camera_preview"/>
+
+    <TextView
+        android:id="@+id/filter_description_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/camera_preview"
+        app:layout_constraintStart_toStartOf="@+id/camera_preview"
+        app:layout_constraintTop_toTopOf="@+id/camera_preview"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/preview_guide_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintWidth_percent="0.5"/>
+
+    <TextView
+        android:id="@+id/sticker_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:drawableTop="@mipmap/qn_filter"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:onClick="onClickFilterSelect"
+        android:text="@string/filter_string"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/record_btn"
+        app:layout_constraintEnd_toStartOf="@+id/sample_preview"
+        app:layout_constraintStart_toStartOf="@+id/camera_preview"
+        />
+
+    <TextView
+        android:id="@+id/beauty_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawableTop="@mipmap/qn_record_beauty_on"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:onClick="onClickBeautyEnabled"
+        android:text="@string/beauty_string"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/sticker_btn"
+        app:layout_constraintEnd_toEndOf="@+id/sample_preview"
+        app:layout_constraintStart_toStartOf="@+id/sample_preview"
+        app:layout_constraintTop_toTopOf="@+id/sticker_btn"/>
+
+    <Button
+        android:id="@+id/record_btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="48dp"
+        android:background="@mipmap/qn_video"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/beauty_btn"
+        app:layout_constraintStart_toEndOf="@+id/sticker_btn"/>
+
+    <ImageButton
+        android:id="@+id/delete_section_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="48dp"
+        android:background="@android:color/transparent"
+        android:onClick="onClickDeleteLastSection"
+        android:src="@mipmap/qn_delete_section_inactive"
+        app:layout_constraintBottom_toBottomOf="@+id/record_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/record_btn"/>
+
+    <com.qiniu.shortvideo.app.view.ListBottomView
+        android:id="@+id/filter_select_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <android.support.constraint.Group
+        android:id="@+id/mix_btn_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="delete_section_btn,record_btn"/>
+
+</android.support.constraint.ConstraintLayout>

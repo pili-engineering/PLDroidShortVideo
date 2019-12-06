@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:layout_gravity="bottom">
+
+    <com.faceunity.view.seekbar.DiscreteSeekBar
+        android:id="@+id/beauty_seek_bar"
+        android:layout_width="@dimen/x528"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x300"
+        android:visibility="invisible"
+        app:dsb_indicatorColor="@color/main_color"
+        app:dsb_indicatorElevation="0dp"
+        app:dsb_indicatorPopupEnabled="true"
+        app:dsb_max="100"
+        app:dsb_min="0"
+        app:dsb_progressColor="@color/main_color"
+        app:dsb_rippleColor="@color/main_color"
+        app:dsb_scrubberHeight="@dimen/x4"
+        app:dsb_thumbSize="@dimen/x32"
+        app:dsb_trackBaseHeight="@dimen/x16"
+        app:dsb_trackColor="@color/colorWhite"
+        app:dsb_value="0"
+        app:layout_constraintBottom_toTopOf="@+id/face_control_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <RelativeLayout
+        android:id="@+id/face_shape_radio_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x69"
+        android:background="#BD050F14"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line">
+
+        <RadioGroup
+            android:id="@+id/face_shape_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/beauty_face_shape_checked_line"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/face_shape_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="@dimen/x12"
+                android:text="@string/face_shape_4"
+                android:textColor="@drawable/beauty_control_bottom_shape_radio_color"
+                android:textSize="@dimen/text_size_24"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/face_shape_3_default"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="@dimen/x12"
+                android:text="@string/face_shape_3_default"
+                android:textColor="@drawable/beauty_control_bottom_shape_radio_color"
+                android:textSize="@dimen/text_size_24"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/face_shape_0_nvshen"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="@dimen/x12"
+                android:text="@string/face_shape_0_nvshen"
+                android:textColor="@drawable/beauty_control_bottom_shape_radio_color"
+                android:textSize="@dimen/text_size_24"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/face_shape_1_wanghong"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="@dimen/x12"
+                android:text="@string/face_shape_1_wanghong"
+                android:textColor="@drawable/beauty_control_bottom_shape_radio_color"
+                android:textSize="@dimen/text_size_24"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/face_shape_2_ziran"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="@dimen/x12"
+                android:text="@string/face_shape_2_ziran"
+                android:textColor="@drawable/beauty_control_bottom_shape_radio_color"
+                android:textSize="@dimen/text_size_24"/>
+        </RadioGroup>
+
+        <View
+            android:id="@+id/beauty_face_shape_checked_line"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/x4"
+            android:layout_above="@+id/beauty_face_shape_line"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:background="@drawable/fu_beauty_face_shape_checked_line"/>
+
+        <View
+            android:id="@+id/beauty_face_shape_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:layout_alignParentBottom="true"
+            android:background="#33E5E5E5"/>
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/skin_beauty_select_block"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line">
+
+        <com.faceunity.view.BeautyBoxGroup
+            android:id="@+id/beauty_group_skin_beauty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_skin_detect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:checked_model="open"
+                app:drawable_close_checked="@drawable/beauty_skin_control_all_blur_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_all_blur_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_all_blur_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_all_blur_open_normal"
+                app:text_normal="@string/beauty_box_skin_detect"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_heavy_blur"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:checked_model="open_double"
+                app:drawable_close_checked="@drawable/beauty_skin_control_type_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_type_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_type_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_type_open_normal"
+                app:text_double="@string/beauty_box_heavy_blur_double"
+                app:text_normal="@string/beauty_box_heavy_blur_normal"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_blur_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:drawable_close_checked="@drawable/beauty_skin_control_blur_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_blur_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_blur_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_blur_open_normal"
+                app:text_normal="@string/beauty_box_blur_level"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_color_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_skin_control_color_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_color_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_color_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_color_open_normal"
+                app:text_normal="@string/beauty_box_color_level"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_red_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_skin_control_red_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_red_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_red_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_red_open_normal"
+                app:text_normal="@string/beauty_box_red_level"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_eye_bright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_skin_control_bright_eyes_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_bright_eyes_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_bright_eyes_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_bright_eyes_open_normal"
+                app:text_normal="@string/beauty_box_eye_bright"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_tooth_whiten"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_skin_control_teeth_close_checked"
+                app:drawable_close_normal="@drawable/beauty_skin_control_teeth_close_normal"
+                app:drawable_open_checked="@drawable/beauty_skin_control_teeth_open_checked"
+                app:drawable_open_normal="@drawable/beauty_skin_control_teeth_open_normal"
+                app:text_normal="@string/beauty_box_tooth_whiten"/>
+
+        </com.faceunity.view.BeautyBoxGroup>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/face_shape_select_block"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/face_shape_radio_layout">
+
+        <com.faceunity.view.BeautyBoxGroup
+            android:id="@+id/beauty_group_face_shape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_face_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_face_shape_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_face_shape_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_face_shape_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_face_shape_normal"
+                app:text_normal="@string/beauty_box_face_shape"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_eye_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_enlarge_eye_level_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_enlarge_eye_level_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_enlarge_eye_level_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_enlarge_eye_level_open_normal"
+                app:text_normal="@string/beauty_box_eye_enlarge"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_cheek_thinning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_cheekthin_level_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_cheekthin_level_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_cheekthin_level_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_cheekthin_level_open_normal"
+                app:text_normal="@string/beauty_box_cheek_thinning"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_intensity_chin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_chin_level_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_chin_level_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_chin_level_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_chin_level_open_normal"
+                app:text_normal="@string/beauty_box_intensity_chin"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_intensity_forehead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_forehead_level_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_forehead_level_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_forehead_level_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_forehead_level_open_normal"
+                app:text_normal="@string/beauty_box_intensity_forehead"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_intensity_nose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_thin_nose_level_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_thin_nose_level_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_thin_nose_level_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_thin_nose_level_open_normal"
+                app:text_normal="@string/beauty_box_intensity_nose"/>
+
+            <com.faceunity.view.BeautyBox
+                android:id="@+id/beauty_box_intensity_mouth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawable_close_checked="@drawable/beauty_type_control_mouth_shape_close_checked"
+                app:drawable_close_normal="@drawable/beauty_type_control_mouth_shape_close_normal"
+                app:drawable_open_checked="@drawable/beauty_type_control_mouth_shape_open_checked"
+                app:drawable_open_normal="@drawable/beauty_type_control_mouth_shape_open_normal"
+                app:text_normal="@string/beauty_box_intensity_mouth"/>
+
+        </com.faceunity.view.BeautyBoxGroup>
+    </HorizontalScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/filter_recycle_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/x14"
+        android:background="#BD050F14"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_face_makeup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/x14"
+        android:background="#BD050F14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_animoji"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_cartoon_filter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_hair"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_ar_mask"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_gesture"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_normal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_face_change"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_expression"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_haha_mirror"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_effect_portrait_drive"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#BD050F14"
+        android:padding="@dimen/x14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_line"/>
+
+    <View
+        android:id="@+id/beauty_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x1"
+        android:background="#33E5E5E5"
+        app:layout_constraintTop_toBottomOf="@+id/face_control_layout"/>
+
+    <LinearLayout
+        android:id="@+id/face_control_layout"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:background="#BD050F14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beauty_seek_bar">
+
+        <ImageView
+            android:id="@+id/clear_face_shape_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:src="@drawable/qn_none_filter"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="#33E5E5E5" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sticker_option_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

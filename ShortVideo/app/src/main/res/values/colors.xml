@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#0682FF</color>
+    <color name="mainBackgroundColor">#000000</color>
+    <color name="colorSpeedPanel">#99222222</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorLightPink">#FFB6C1</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorEditorBackground">#333333</color>
+
+    <color name="alpha_white_26">#26ffffff</color>
+    <color name="alpha_white_66">#66ffffff</color>
+    <color name="alpha_white_99">#99ffffff</color>
+    <color name="alpha_black_99">#99000000</color>
+
+    <color name="paint1">#FFFFFF</color>
+    <color name="paint2">#000000</color>
+    <color name="paint3">#ffefa8</color>
+    <color name="paint4">#fccaff</color>
+    <color name="paint5">#61dcff</color>
+    <color name="paint6">#ffc502</color>
+    <color name="paint7">#ff8621</color>
+    <color name="paint8">#7777ff</color>
+    <color name="paint9">#00ff00</color>
+    <color name="paint10">#0000ff</color>
+
+    <color name="lsq_seekbar_drag_color">#FFFFFF</color>
+    <color name="lsq_seekbar_view_color">#20FFFFFF</color>
+    <color name="lsq_filter_config_highlight">#FFFFFF</color>
+    <color name="lsq_color_api_gray">#c0c0c0</color>
+    <color name="lsq_color_transparent">#00000000</color>
+
+    <color name="timeline_bar_active_overlay">#660682FF</color>
+
+    <!-- 场景特效编辑时颜色 -->
+    <color name="lsq_scence_effect_color_LiveShake01">#b3fa7652</color>
+    <color name="lsq_scence_effect_color_LiveMegrim01">#b3f4a11a</color>
+    <color name="lsq_scence_effect_color_EdgeMagic01">#b3fffd50</color>
+    <color name="lsq_scence_effect_color_LiveFancy01_1">#b35bf254</color>
+    <color name="lsq_scence_effect_color_LiveSoulOut01">#b316cefc</color>
+    <color name="lsq_scence_effect_color_LiveSignal01">#b36ea0f2</color>
+    <color name="lsq_scence_effect_color_LiveLightning01">#b36ea011</color>
+    <color name="lsq_scence_effect_color_LiveXRay01">#b3ff9be0</color>
+    <color name="lsq_scence_effect_color_LiveHeartbeat01">#b36e11f2</color>
+    <color name="lsq_scence_effect_color_LiveMirrorImage01">#b399e111</color>
+    <color name="lsq_scence_effect_color_LiveSlosh01">#b3ffefff</color>
+    <color name="lsq_scence_effect_color_LiveOldTV01">#b36efeee</color>
+    <color name="lsq_scence_effect_color_title">#999999</color>
+</resources>

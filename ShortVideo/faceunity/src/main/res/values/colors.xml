@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+    <color name="percent15translucentBlack">#26000000</color>
+    <color name="percent30translucentBlack">#4D000000</color>
+    <color name="percent40translucentBlack">#66000000</color>
+    <color name="percent50translucentBlack">#80000000</color>
+    <color name="percent60translucentBlack">#99000000</color>
+    <color name="percent70translucentWhite">#00FFFFFF</color>
+
+    <color name="colorWhite">#FFFFFFFF</color>
+    <color name="main_color">#1FB2FF</color>
+    <color name="main_color_79CDF9">#FF79CDF9</color>
+    <color name="main_color_gray">#FFA8A8A8</color>
+    <color name="main_color_c5c5c5">#FFC5C5C5</color>
+    <color name="main_color_090017">#FF090017</color>
+    <color name="divider_line_color">#E5E5E5</color>
+
+    <color name="line_302D33">#FF302D33</color>
+
+    <color name="black_dialog_text">#31373E</color>
+    <color name="btn_magic_text">#2C2E30</color>
+    <color name="magic_button_disable">#C6C6C6</color>
+
+    <color name="avatar_blue_btn">#1FB2FF</color>
+    <color name="avatar_list_bg">#BF050F14</color>
+    <color name="avatar_model_bg">#F9F9FC</color>
+    <color name="avatar_model_name_text">#666666</color>
+
+</resources>

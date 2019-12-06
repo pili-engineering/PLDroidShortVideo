@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qiniu.shortvideo.app.tusdk.playview.TuSdkRangeSelectionBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lsq_range_select"
+    android:layout_width="match_parent"
+    android:background="@color/mainBackgroundColor"
+    android:clickable="true"
+    android:layout_height="45dp">
+
+    <com.qiniu.shortvideo.app.tusdk.playview.rangeselect.TuSdkMovieGrayView
+        android:id="@+id/lsq_left_bar"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/lsq_left_bar_rect"
+            />
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/edit_ic_arrow_left"
+            android:padding="5dp"
+            android:background="@drawable/lsq_left_bar"
+            android:layout_gravity="right"
+            />
+    </com.qiniu.shortvideo.app.tusdk.playview.rangeselect.TuSdkMovieGrayView>
+
+    <FrameLayout
+        android:id="@+id/lsq_center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/lsq_left_bar"
+        android:layout_toLeftOf="@+id/lsq_right_bar"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorWhite"
+            android:layout_gravity="top"
+            ></View>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorWhite"
+            android:layout_gravity="bottom"
+            ></View>
+    </FrameLayout>
+
+    <com.qiniu.shortvideo.app.tusdk.playview.rangeselect.TuSdkMovieGrayView
+        android:id="@+id/lsq_right_bar"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/lsq_right_bar_rect"
+            />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/lsq_right_bar"
+            android:src="@mipmap/edit_ic_arrow_right"
+            android:padding="5dp"
+            android:layout_gravity="left"
+            />
+    </com.qiniu.shortvideo.app.tusdk.playview.rangeselect.TuSdkMovieGrayView>
+
+</com.qiniu.shortvideo.app.tusdk.playview.TuSdkRangeSelectionBar>

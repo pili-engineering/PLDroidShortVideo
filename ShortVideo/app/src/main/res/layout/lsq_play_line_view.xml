@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.qiniu.shortvideo.app.tusdk.playview.TuSdkMovieScrollView
+        android:id="@+id/lsq_play_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <ImageView
+        android:layout_width="2dp"
+        android:layout_height="50dp"
+        android:background="@color/colorWhite"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>

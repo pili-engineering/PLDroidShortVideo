@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                xmlns:seekbar="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <com.qiniu.shortvideo.app.view.RangeSlider
+        android:id="@+id/range_slider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        seekbar:leftThumbDrawable="@mipmap/qn_video_pan"
+        seekbar:rightThumbDrawable="@mipmap/qn_video_pan"
+        seekbar:lineColor="@color/colorAccent"
+        seekbar:thumbWidth="10dp"
+        seekbar:leftThumbIndex="0"
+        seekbar:lineHeight="3dp"
+        seekbar:tickCount="100" />
+</RelativeLayout>

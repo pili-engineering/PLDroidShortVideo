@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@drawable/bottom_sheet_dialog_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/special_effect_title"
+            android:textColor="@color/colorWhite"
+            android:layout_centerInParent="true" />
+
+        <ImageButton
+            android:id="@+id/confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_confirm"
+            android:background="@null"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/alpha_white_26" />
+
+    <LinearLayout
+        android:id="@+id/lsq_editor_text_play_content"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="@dimen/layout_margin_20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.qiniu.shortvideo.app.tusdk.TuSdkMovieScrollPlayLineView
+            android:id="@+id/lsq_editor_scene_play_range"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+        <ImageView
+            android:id="@+id/delete_effect_btn"
+            android:layout_width="76dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="64dp"
+            android:clickable="false"
+            android:alpha="0.3"
+            android:src="@mipmap/qn_revocation" />
+
+    </LinearLayout>
+
+    <!--文字控制content-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lsq_editor_effect_scene_list"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="@dimen/layout_margin_20dp"
+        android:layout_marginLeft="@dimen/layout_margin_10dp">
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

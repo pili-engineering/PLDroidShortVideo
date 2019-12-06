@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp">
+
+    <RelativeLayout
+        android:id="@+id/lsq_item_wrap"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/lsq_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+        <ImageView
+			android:visibility="gone"
+            android:id="@+id/lsq_progress_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/lsq_loading_icon"  />
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/lsq_item_state_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/lsq_video_ic_download"
+            android:layout_alignRight="@id/lsq_item_image"
+            android:layout_alignBottom="@id/lsq_item_image" />
+
+        <ImageView
+            android:id="@+id/lsq_item_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/lsq_sticker_del"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

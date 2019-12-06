@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="video_frame_list_margin">10dp</dimen>
+    <dimen name="drawable_padding">4dp</dimen>
+    <dimen name="layout_margin_30dp">30dp</dimen>
+    <dimen name="layout_margin_20dp">20dp</dimen>
+    <dimen name="layout_margin_12dp">12dp</dimen>
+    <dimen name="layout_margin_10dp">10dp</dimen>
+    <dimen name="layout_margin_5dp">5dp</dimen>
+    <dimen name="layout_padding_15dp">15dp</dimen>
+    <dimen name="thumbnail_height">50dp</dimen>
+    <dimen name="bottom_bar_width">72dp</dimen>
+    <dimen name="drawable_width">32dp</dimen>
+    <dimen name="drawable_height">32dp</dimen>
+</resources>

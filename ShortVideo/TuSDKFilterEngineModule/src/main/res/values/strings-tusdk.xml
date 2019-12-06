@@ -1,0 +1,55 @@
+<resources>
+    <string name="lsq_text">TuSDK 涂图</string>
+
+
+    <!--  滤镜参数 -->
+    <string name="lsq_filter_set_reset">重置</string>
+    <string name="lsq_filter_set_smoothing">磨皮</string>
+    <string name="lsq_filter_set_whitening">白皙</string>
+    <string name="lsq_filter_set_mixied">效果</string>
+    <string name="lsq_filter_set_eyesize">大眼</string>
+    <string name="lsq_filter_set_jawsize">下巴</string>
+    <string name="lsq_filter_set_eyedis">眼距</string>
+    <string name="lsq_filter_set_archeyebrow">眉型</string>
+    <string name="lsq_filter_set_eyeangle">眼角</string>
+    <string name="lsq_filter_set_chinsize">瘦脸</string>
+    <string name="lsq_filter_set_mouthwidth">嘴型</string>
+    <string name="lsq_filter_set_nosesize">瘦鼻</string>
+    <string name="lsq_filter_set_ruddy">红润</string>
+    <string name="lsq_filter_set_skin_precision">精准美颜</string>
+    <string name="lsq_filter_set_skin_extreme">极致美颜</string>
+    <string name="lsq_beauty_skin">美肤</string>
+
+
+    <!-- 滤镜代号对应的滤镜名称 -->
+    <string name="lsq_filter_Normal">原始</string>
+    <string name="lsq_filter_Relaxed_1">轻松</string>
+    <string name="lsq_filter_Instant_1">鲜艳</string>
+    <string name="lsq_filter_Artistic_1">艺术</string>
+    <string name="lsq_filter_Olympus_1">奥林巴斯</string>
+    <string name="lsq_filter_Beautiful_1">唯美</string>
+    <string name="lsq_filter_Elad_1">艾拉</string>
+    <string name="lsq_filter_Green_1">秋实</string>
+    <string name="lsq_filter_Qiushi_1">秋实</string>
+    <string name="lsq_filter_Winter_1">冬日</string>
+    <string name="lsq_filter_Elegant_1">淡雅</string>
+    <string name="lsq_filter_Vatican_1">梵蒂冈</string>
+    <string name="lsq_filter_Leica_1">莱卡</string>
+    <string name="lsq_filter_Gloomy_1">阴郁</string>
+    <string name="lsq_filter_SilentEra_1">无声时代</string>
+    <string name="lsq_filter_s1950_1">1950s</string>
+    <string name="lsq_filter_nature_1">自然</string>
+    <string name="lsq_filter_whitening_1">美白</string>
+    <string name="lsq_filter_timber_1">小森林</string>
+    <string name="lsq_filter_pink_1">粉嫩</string>
+    <string name="lsq_filter_ruddy_1">红润</string>
+
+
+    <string name="lsq_filter_chcomics_video">国漫</string>
+    <string name="lsq_filter_lightcolor_video">淡彩</string>
+    <string name="lsq_filter_uscomics_video">美漫</string>
+    <string name="lsq_filter_ink_video">墨水</string>
+    <string name="lsq_filter_monochrome_video">单色</string>
+    <string name="lsq_filter_jpcomics_video">日漫</string>
+
+</resources>

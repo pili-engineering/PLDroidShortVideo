@@ -1,0 +1,103 @@
+<resources>
+    <string name="app_name">七牛短视频</string>
+    <string name="video_recording_string">视频录制</string>
+    <string name="video_mix_recording_string">素材合拍</string>
+    <string name="video_puzzle_string">视频拼图</string>
+    <string name="video_splice_string">素材拼接</string>
+    <string name="video_editor_string">视频编辑</string>
+    <string name="video_mix_string">功能清单</string>
+    <string name="quit">退出</string>
+    <string name="back">返回</string>
+    <string name="go_to_edit">编 辑</string>
+    <string name="next_step">下一步</string>
+    <string name="finish">完 成</string>
+    <string name="click_to_record">点击拍摄</string>
+    <string name="super_slow">极慢</string>
+    <string name="slow">慢</string>
+    <string name="normal">标准</string>
+    <string name="fast">快</string>
+    <string name="super_fast">极快</string>
+    <string name="text_string">文字</string>
+    <string name="volume_string">音量</string>
+    <string name="audio_mix_string">音乐</string>
+    <string name="speed_string">倍速</string>
+    <string name="special_effect_string">特效</string>
+    <string name="special_effect_title">长按特效按钮添加特效</string>
+    <string name="background_music">音乐</string>
+    <string name="record_voice">原声</string>
+    <string name="volume_value">%1$d%%</string>
+    <string name="filter_string">滤镜</string>
+    <string name="beauty_string">美颜</string>
+    <string name="confirm_string">确定</string>
+    <string name="choose_music_title">添加音乐</string>
+    <string name="confirm_to_use">确定使用</string>
+    <string name="cancel_string">取 消</string>
+    <string name="media_file_choose">相机胶卷</string>
+    <string name="choose_video_string">请选择媒体文件！</string>
+    <string name="choose_media_compose_string">请选择至少 2 个媒体文件！</string>
+    <string name="choose_media_overflow_string">最多可选择 1 个媒体文件！</string>
+    <string name="choose_media_puzzle_2video_string">请选择 2 个视频！</string>
+    <string name="choose_media_puzzle_3video_string">请选择 3 个视频！</string>
+    <string name="choose_media_puzzle_4video_string">请选择 4 个视频！</string>
+    <string name="if_edit_video">是否编辑视频</string>
+    <string name="dlg_yes">是</string>
+    <string name="dlg_no">否</string>
+    <string name="no_music">无音乐</string>
+    <string name="switch_camera">切换</string>
+    <string name="flash_light">补光</string>
+
+    <string name="config_title">参数配置</string>
+    <string name="choose_puzzle_video_title">选择拼图样式</string>
+    <string name="video_puzzle_title">视频拼图</string>
+
+    <string name="can_not_add_music_tips">需要删除已经录制的视频才可以操作音乐</string>
+    <string name="record_mode_video">单击拍摄</string>
+    <string name="record_mode_picture">拍照</string>
+
+    <string name="rotate_video_string">旋转</string>
+
+    <string name="paint_string">涂鸦</string>
+    <string name="desc_paint_undo">撤销</string>
+    <string name="desc_paint_clear">清除</string>
+    <string name="desc_paint_color">画笔颜色</string>
+    <string name="desc_paint_size">画笔大小</string>
+
+    <string name="mv_btn_string">MV</string>
+    <string name="gif_sticker_string">动态贴纸</string>
+    <string name="gif_btn_string">动图</string>
+    <string name="text_effect_string">文字特效</string>
+
+    <!-- 短视频编辑滤镜 -->
+    <string name="advanced_filter_string">高级滤镜</string>
+    <string name="lsq_filter_Relaxed_1">轻松</string>
+    <string name="lsq_filter_Instant_1">鲜艳</string>
+    <string name="lsq_filter_Artistic_1">艺术</string>
+    <string name="lsq_filter_Olympus_1">奥林巴斯</string>
+    <string name="lsq_filter_Beautiful_1">唯美</string>
+    <string name="lsq_filter_Elad_1">艾拉</string>
+    <string name="lsq_filter_Green_1">绿意</string>
+    <string name="lsq_filter_Qiushi_1">秋实</string>
+    <string name="lsq_filter_Winter_1">冬日</string>
+    <string name="lsq_filter_Elegant_1">淡雅</string>
+    <string name="lsq_filter_Vatican_1">梵蒂冈</string>
+    <string name="lsq_filter_Leica_1">莱卡</string>
+    <string name="lsq_filter_Gloomy_1">阴郁</string>
+    <string name="lsq_filter_SilentEra_1">无声时代</string>
+    <string name="lsq_filter_s1950_1">1950s</string>
+    <string name="lsq_filter_set_mixied">效果</string>
+    <string name="lsq_filter_set_vignette">暗角</string>
+
+    <!-- 场景特效 -->
+    <string name="lsq_filter_LiveShake01">抖动</string>
+    <string name="lsq_filter_LiveMegrim01">幻觉</string>
+    <string name="lsq_filter_EdgeMagic01">魔法</string>
+    <string name="lsq_filter_LiveFancy01_1">70s</string>
+    <string name="lsq_filter_LiveSoulOut01">灵魂出窍</string>
+    <string name="lsq_filter_LiveSignal01">信号</string>
+    <string name="lsq_filter_LiveLightning01">闪电</string>
+    <string name="lsq_filter_LiveXRay01">X光</string>
+    <string name="lsq_filter_LiveHeartbeat01">心跳</string>
+    <string name="lsq_filter_LiveMirrorImage01">镜像</string>
+    <string name="lsq_filter_LiveSlosh01">晃动</string>
+    <string name="lsq_filter_LiveOldTV01">旧电视</string>
+</resources>

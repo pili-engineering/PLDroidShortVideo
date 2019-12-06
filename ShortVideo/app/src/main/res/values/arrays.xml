@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gif_name">
+        <item>night.gif</item>
+        <item>sunset.gif</item>
+        <item>test.gif</item>
+        <item>watermark.gif</item>
+    </string-array>
+    <integer-array name="banner_img">
+        <item>@mipmap/qn_banner</item>
+        <item>@mipmap/qn_banner_kuaikan</item>
+    </integer-array>
+    <string-array name="banner_url">
+        <item>https://www.qiniu.com/products/plsv</item>
+        <item>https://mp.weixin.qq.com/s?__biz=MjM5NzAwNDI4Mg==&amp;mid=2652197155&amp;idx=1&amp;sn=5b98396dea26d50d05bc7c496aaaca76&amp;chksm=bd0167b68a76eea0e83d973eba38cc820abe54497de2c996bcb629b8cb9e524125fc0c088da4&amp;mpshare=1&amp;scene=1&amp;srcid=&amp;sharer_sharetime=1573799071092&amp;sharer_shareid=075391af76ee582c2f3d042327abb408&amp;rd2werd=1#wechat_redirect</item>
+    </string-array>
+</resources>

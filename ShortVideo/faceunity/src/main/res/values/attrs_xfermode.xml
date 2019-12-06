@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="xfermode_radio_btn">
+        <attr name="text_xfermode" format="string"/>
+        <attr name="text_size_xfermode" format="dimension"/>
+    </declare-styleable>
+</resources>

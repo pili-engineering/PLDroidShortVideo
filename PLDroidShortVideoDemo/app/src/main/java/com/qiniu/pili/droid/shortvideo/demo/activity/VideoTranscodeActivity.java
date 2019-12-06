@@ -8,29 +8,34 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.qiniu.android.utils.StringUtils;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
+import com.qiniu.pili.droid.shortvideo.PLMixAudioFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
+import com.qiniu.pili.droid.shortvideo.PLWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
-
 import java.io.File;
 
 public class VideoTranscodeActivity extends AppCompatActivity {
     private static final String TAG = "VideoTranscodeActivity";
+
+    private static final int REQUEST_MIX_AUDIO = 100;
 
     private CustomProgressDialog mProcessingDialog;
 
@@ -54,6 +59,9 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private Spinner mTranscodingRotationSpinner;
     private EditText mTranscodingMaxFPSEditText;
 
+    private TextView mMixAudioFileText;
+    private PLMixAudioFile mMixAudioFile;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +75,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         setTitle(R.string.title_transcode);
 
+        mMixAudioFileText = (TextView) findViewById(R.id.tv_mix_audio_file);
         mVideoFilePathText = (TextView) findViewById(R.id.SrcVideoPathText);
         mVideoSizeText = (TextView) findViewById(R.id.SrcVideoSizeText);
         mVideoRotationText = (TextView) findViewById(R.id.SrcVideoRotationText);
@@ -97,6 +106,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
             }
         });
 
+        ((AppCompatCheckBox)findViewById(R.id.cb_add_watermark)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    mShortVideoTranscoder.setWatermark(createWatermarkSetting());
+                }else {
+                    mShortVideoTranscoder.setWatermark(null);
+                }
+            }
+        });
+
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -124,11 +144,21 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
-            Log.i(TAG, "Select file: " + selectedFilepath);
-            if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
-                onVideoFileSelected(selectedFilepath);
-                return;
+            if(requestCode == REQUEST_MIX_AUDIO){
+                //增加混音文件
+                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                Log.i(TAG, "Select mix audio file: " + selectedFilepath);
+                if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
+                    onMixAudioFileSelected(selectedFilepath);
+                    return;
+                }
+            }else {
+                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                Log.i(TAG, "Select file: " + selectedFilepath);
+                if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
+                    onVideoFileSelected(selectedFilepath);
+                    return;
+                }
             }
         }
 
@@ -141,6 +171,12 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         if (mMediaFile != null) {
             mMediaFile.release();
         }
+    }
+
+    private void onMixAudioFileSelected(String filepath){
+        mMixAudioFileText.setText(filepath);
+        PLMediaFile mediaFile = new PLMediaFile(filepath);
+        mShortVideoTranscoder.setMixAudioFile(filepath, 0, mediaFile.getDurationMs(), true);
     }
 
     private void onVideoFileSelected(String filepath) {
@@ -166,6 +202,10 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         mTranscodingClipWidthText.setText(String.valueOf(videoWidthRotated));
         mTranscodingClipHeightText.setText(String.valueOf(videoHeightRotated));
         mTranscodingBitrateText.setText(String.valueOf(bitrateInKbps));
+    }
+
+    public void onClickAddMixAudio(View c){
+        chooseMixAudioFile();
     }
 
     public void onClickTranscode(View v) {
@@ -274,4 +314,24 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    private PLWatermarkSetting createWatermarkSetting() {
+        PLWatermarkSetting watermarkSetting = new PLWatermarkSetting();
+        watermarkSetting.setResourceId(R.drawable.qiniu_logo);
+        watermarkSetting.setPosition(0.01f, 0.01f);
+        watermarkSetting.setAlpha(128);
+        return watermarkSetting;
+    }
+
+    private void chooseMixAudioFile(){
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < 19) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("audio/*");
+        }
+        startActivityForResult(Intent.createChooser(intent, "选择要的增加的混音文件"), REQUEST_MIX_AUDIO);
+    }
 }
