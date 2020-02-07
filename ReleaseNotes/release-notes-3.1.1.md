@@ -1,4 +1,4 @@
-# PLDroidShortVideo Release Notes for 3.0.1
+# PLDroidShortVideo Release Notes for 3.1.1
 
 ### 简介
 
@@ -6,16 +6,27 @@ PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 S
 
 ### 版本
 
-* 发布 pldroid-shortvideo-3.0.1.jar
+* 发布 pldroid-shortvideo-3.1.1.jar
+* 更新 libpldroid_shortvideo_core.so
+* 更新 libpldroid_amix.so
 
 ### 缺陷
 
-* 提高机型兼容性
+* 升级 FFmpeg 版本，修复版本漏洞问题
 
 ### 注意事项
+
+* 从 v3.1.0 版本开始，需要在 Application 中初始化 sdk：
+
+```java
+PLShortVideoEnv.init(getApplicationContext());
+```
+
 * 七牛短视频 SDK 自 v3.0.0 版本起, 划分为精简版、基础版、进阶版、专业版。不同版本 SDK 可以使用的功能点数量有差别，请按照购买的 License 版本使用对应的短视频 SDK 版本。
 * 上传 SDK 的依赖需要更新到如下版本：
 
 ```java
 compile 'com.qiniu:qiniu-android-sdk:7.3.11'
 ```
+
+
