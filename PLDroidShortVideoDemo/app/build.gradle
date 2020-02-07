@@ -15,7 +15,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 26
         versionCode 28
-        versionName "3.1.0"
+        versionName "3.1.1"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation 'com.qiniu:qiniu-android-sdk:7.3.11'
-    implementation files('libs/pldroid-shortvideo-3.1.0.jar')
+    implementation files('libs/pldroid-shortvideo-3.1.1.jar')
     implementation files('libs/pldroid-player-2.1.8.jar')
     implementation files('libs/EasyAR.jar')
     implementation files('libs/EasyAR3D.jar')
