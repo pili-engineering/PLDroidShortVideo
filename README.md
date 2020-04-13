@@ -1,6 +1,6 @@
 # PLDroidShortVideo
 
-PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 SDK，提供了包括美颜、滤镜、水印、断点录制、分段回删、视频编辑、混音特效、本地/云端存储在内的多种功能，支持高度定制以及二次开发。我们提供 80+ 功能供开发使用，[点击此处](https://portal.qiniu.com/sdk/licenses?showDrawer&ref=www.qiniu.com)即可获得 **0 元体验**。
+PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 SDK，提供了包括美颜、滤镜、水印、断点录制、分段回删、视频编辑、混音特效、本地/云端存储在内的多种功能，支持高度定制以及二次开发。我们提供 80+ 功能供开发使用，[点击此处](https://portal.qiniu.com/sdk/licenses?showDrawer&ref=www.qiniu.com) 即可获得 **0 元体验**。
 
 ## 1. 多版本功能分布
 短视频SDK主要区分精简版、基础版、进阶版、专业版 4 个版本，不同版本的功能区别见如下表格
