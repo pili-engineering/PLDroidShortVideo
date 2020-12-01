@@ -9,7 +9,7 @@ import android.media.AudioFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -575,10 +575,10 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
             @Override
             public void run() {
                 mProcessingDialog.dismiss();
-                int screenOrientation = (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == getRequestedOrientation()) ? 0 : 1;
                 if (mIsEditVideo) {
-                    VideoEditActivity.start(VideoMixRecordActivity.this, filePath, screenOrientation);
+                    VideoEditActivity.start(VideoMixRecordActivity.this, filePath);
                 } else {
+                    int screenOrientation = (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == getRequestedOrientation()) ? 0 : 1;
                     PlaybackActivity.start(VideoMixRecordActivity.this, filePath, screenOrientation);
                 }
             }

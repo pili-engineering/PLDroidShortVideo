@@ -14,8 +14,8 @@ android {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 29
-        versionName "3.1.1"
+        versionCode 31
+        versionName "3.2.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -29,23 +29,37 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    implementation 'com.qiniu:qiniu-android-sdk:7.3.11'
-    implementation files('libs/pldroid-shortvideo-3.1.1.jar')
+    // 上传 sdk ，不使用上传功能无需依赖
+    implementation 'com.qiniu:qiniu-android-sdk:7.6.4'
+    // 播放器 sdk ，非必须
     implementation files('libs/pldroid-player-2.1.8.jar')
+    // 如果接入 EasyAR 则需要依赖
     implementation files('libs/EasyAR.jar')
     implementation files('libs/EasyAR3D.jar')
-
-    implementation 'com.android.support:multidex:1.0.3'
+    // UI 控件库，非必须
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
-    implementation files('libs/universal-image-loader-1.9.4.jar')
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6'
+    // 图片加载库，非必须
+    implementation files('libs/universal-image-loader-1.9.4.jar')
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+    // 为了规避单个 DEX 64K 方法数上限，非必须
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    if (buildWithShortVideoLibrary) {
+        implementation project(':library')
+    } else {
+        // 短视频 SDK jar 包，必须依赖
+        implementation files('libs/pldroid-shortvideo-3.2.0.jar')
+    }
 }

@@ -13,9 +13,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,10 +55,10 @@ import com.qiniu.pili.droid.shortvideo.demo.view.GifSelectorPanel;
 import com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel;
 import com.qiniu.pili.droid.shortvideo.demo.view.OnStickerOperateListener;
 import com.qiniu.pili.droid.shortvideo.demo.view.PaintSelectorPanel;
-import com.qiniu.pili.droid.shortvideo.demo.view.sticker.StickerImageView;
-import com.qiniu.pili.droid.shortvideo.demo.view.sticker.StickerTextView;
 import com.qiniu.pili.droid.shortvideo.demo.view.StrokedTextView;
 import com.qiniu.pili.droid.shortvideo.demo.view.TextSelectorPanel;
+import com.qiniu.pili.droid.shortvideo.demo.view.sticker.StickerImageView;
+import com.qiniu.pili.droid.shortvideo.demo.view.sticker.StickerTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +80,6 @@ import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_S
 public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final String TAG = "VideoEditActivity";
     private static final String MP4_PATH = "MP4_PATH";
-    private static final String PREVIOUS_ORIENTATION = "PREVIOUS_ORIENTATION";
 
     private static final int REQUEST_CODE_PICK_AUDIO_MIX_FILE = 0;
     private static final int REQUEST_CODE_DUB = 1;
@@ -127,8 +126,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private TextView mSpeedTextView;
     private View mVisibleView;
 
-    private int mPreviousOrientation;
-
     private FrameListView mFrameListView;
     private TimerTask mScrollTimerTask;
     private Timer mScrollTimer;
@@ -155,13 +152,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         activity.startActivity(intent);
     }
 
-    public static void start(Activity activity, String mp4Path, int previousOrientation) {
-        Intent intent = new Intent(activity, VideoEditActivity.class);
-        intent.putExtra(MP4_PATH, mp4Path);
-        intent.putExtra(PREVIOUS_ORIENTATION, previousOrientation);
-        activity.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,8 +169,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mSpeedPanel = (LinearLayout) findViewById(R.id.speed_panel);
         mFrameListView = (FrameListView) findViewById(R.id.frame_list_view);
         mStickerViewGroup = findViewById(R.id.sticker_container_view);
-
-        mPreviousOrientation = getIntent().getIntExtra(PREVIOUS_ORIENTATION, 1);
 
         initPreviewView();
         initTextSelectorPanel();
@@ -398,17 +386,35 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     /**
      * 添加图片贴图
      */
-    private void addImageView(Drawable drawable) {
-        saveViewTimeAndHideRect();
+    private void addImageView(final Drawable drawable) {
+        if (mCurView != null) {
+            final FrameSelectorView selectedView = (FrameSelectorView) mCurView.getTag(R.id.selector_view);
+            selectedView.post(new Runnable() {
+                @Override
+                public void run() {
 
-        StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
-        stickerImageView.setImageDrawable(drawable);
+                    saveViewTimeAndHideRect();
 
-        mShortVideoEditor.addImageView(stickerImageView);
-        stickerImageView.setOnStickerOperateListener(new StickerOperateListener(stickerImageView));
+                    StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
+                    stickerImageView.setImageDrawable(drawable);
 
-        addSelectorView(stickerImageView);
-        showViewBorder(stickerImageView);
+                    mShortVideoEditor.addImageView(stickerImageView);
+                    stickerImageView.setOnStickerOperateListener(new StickerOperateListener(stickerImageView));
+
+                    addSelectorView(stickerImageView);
+                    showViewBorder(stickerImageView);
+                }
+            });
+        } else {
+            StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
+            stickerImageView.setImageDrawable(drawable);
+
+            mShortVideoEditor.addImageView(stickerImageView);
+            stickerImageView.setOnStickerOperateListener(new StickerOperateListener(stickerImageView));
+
+            addSelectorView(stickerImageView);
+            showViewBorder(stickerImageView);
+        }
     }
 
     /**
@@ -662,16 +668,25 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void saveViewTimeAndHideRect() {
         if (mCurView != null) {
             View rectView = mFrameListView.addSelectedRect((View) mCurView.getTag(R.id.selector_view));
-            mCurView.setTag(R.id.rect_view, rectView);
-            FrameListView.SectionItem sectionItem = mFrameListView.getSectionByRectView(rectView);
-            if (mCurView instanceof StickerImageView && ((StickerImageView) mCurView).getGifPath() != null) {
-                ((StickerImageView) mCurView).setTime(sectionItem.getStartTime(), sectionItem.getEndTime());
-                saveGifSetting();
+            if (rectView != null) {
+                mCurView.setTag(R.id.rect_view, rectView);
+                FrameListView.SectionItem sectionItem = mFrameListView.getSectionByRectView(rectView);
+                if (mCurView instanceof StickerImageView && ((StickerImageView) mCurView).getGifPath() != null) {
+                    ((StickerImageView) mCurView).setTime(sectionItem.getStartTime(), sectionItem.getEndTime());
+                    saveGifSetting();
+                } else {
+                    mShortVideoEditor.setViewTimeline(mCurView, sectionItem.getStartTime(), (sectionItem.getEndTime() - sectionItem.getStartTime()));
+                }
+                mCurView.setSelected(false);
+                mCurView = null;
             } else {
-                mShortVideoEditor.setViewTimeline(mCurView, sectionItem.getStartTime(), (sectionItem.getEndTime() - sectionItem.getStartTime()));
+                if (mCurView instanceof StickerImageView && ((StickerImageView) mCurView).getGifPath() != null) {
+                    ((StickerImageView) mCurView).setTime(0, 0);
+                    saveGifSetting();
+                } else {
+                    mShortVideoEditor.setViewTimeline(mCurView, 0, 0);
+                }
             }
-            mCurView.setSelected(false);
-            mCurView = null;
         }
     }
 
@@ -714,16 +729,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      * 多重混音
      */
     public void onClickMultipleAudioMixing(View v) {
-        PLMediaFile mediaFile = new PLMediaFile(mMp4path);
-        boolean isPureVideo = !mediaFile.hasAudio();
-        mediaFile.release();
-
         if (mAudioMixingMode == 0) {
             ToastUtils.s(this, "已选择单混音，无法再选择多重混音！");
-            return;
-        }
-        if (isPureVideo) {
-            ToastUtils.s(this, "该视频没有音频信息，无法进行多重混音！");
             return;
         }
 
@@ -1125,14 +1132,6 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mScrollTimerTask.cancel();
             mScrollTimerTask = null;
         }
-    }
-
-    @Override
-    public void finish() {
-        if (0 == mPreviousOrientation) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-        super.finish();
     }
 
     /**

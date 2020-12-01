@@ -29,8 +29,8 @@ public class StickerTextView extends PLTextView {
     /**
      * 文字的最大、最小缩放比例
      */
-    private static final float MAX_SCALE = 8.0f;
-    private static final float MIN_SCALE = 0.6f;
+    private static final float MAX_SCALE = 4.0f;
+    private static final float MIN_SCALE = 0.3f;
 
     /**
      * 控制缩放，旋转图标所在四个点得位置

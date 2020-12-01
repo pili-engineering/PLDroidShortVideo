@@ -10,7 +10,7 @@ import android.media.AudioFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -110,6 +110,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     private OrientationEventListener mOrientationListener;
     private boolean mSectionBegan;
+    private long mSectionBeginTSMs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,7 +224,6 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
 
         mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
-            private long mSectionBeginTSMs;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -238,24 +238,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                         ToastUtils.s(VideoRecordActivity.this, "无法开始视频段录制");
                     }
                 } else if (action == MotionEvent.ACTION_UP) {
-                    if (mSectionBegan) {
-                        long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginTSMs;
-                        long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek().longValue());
-                        double sectionVideoDurationMs = sectionRecordDurationMs / mRecordSpeed;
-                        double totalVideoDurationMs = sectionVideoDurationMs + (mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue());
-                        mDurationRecordStack.push(new Long(totalRecordDurationMs));
-                        mDurationVideoStack.push(new Double(totalVideoDurationMs));
-                        if (mRecordSetting.IsRecordSpeedVariable()) {
-                            Log.d(TAG,"SectionRecordDuration: " + sectionRecordDurationMs + "; sectionVideoDuration: " + sectionVideoDurationMs + "; totalVideoDurationMs: " + totalVideoDurationMs + "Section count: " + mDurationVideoStack.size());
-                            mSectionProgressBar.addBreakPointTime((long) totalVideoDurationMs);
-                        } else {
-                            mSectionProgressBar.addBreakPointTime(totalRecordDurationMs);
-                        }
-
-                        mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
-                        mShortVideoRecorder.endSection();
-                        mSectionBegan = false;
-                    }
+                    endSection();
                 }
 
                 return false;
@@ -364,6 +347,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     protected void onPause() {
         super.onPause();
         updateRecordingBtns(false);
+        endSection();
         mShortVideoRecorder.pause();
     }
 
@@ -566,10 +550,10 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             @Override
             public void run() {
                 mProcessingDialog.dismiss();
-                int screenOrientation = (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == getRequestedOrientation()) ? 0 : 1;
                 if (mIsEditVideo) {
-                    VideoEditActivity.start(VideoRecordActivity.this, filePath, screenOrientation);
+                    VideoEditActivity.start(VideoRecordActivity.this, filePath);
                 } else {
+                    int screenOrientation = (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == getRequestedOrientation()) ? 0 : 1;
                     PlaybackActivity.start(VideoRecordActivity.this, filePath, screenOrientation);
                 }
             }
@@ -739,5 +723,26 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     @Override
     public void onAutoFocusStop() {
         Log.i(TAG, "auto focus stop");
+    }
+
+    private void endSection() {
+        if (mSectionBegan) {
+            long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginTSMs;
+            long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek().longValue());
+            double sectionVideoDurationMs = sectionRecordDurationMs / mRecordSpeed;
+            double totalVideoDurationMs = sectionVideoDurationMs + (mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue());
+            mDurationRecordStack.push(new Long(totalRecordDurationMs));
+            mDurationVideoStack.push(new Double(totalVideoDurationMs));
+            if (mRecordSetting.IsRecordSpeedVariable()) {
+                Log.d(TAG, "SectionRecordDuration: " + sectionRecordDurationMs + "; sectionVideoDuration: " + sectionVideoDurationMs + "; totalVideoDurationMs: " + totalVideoDurationMs + "Section count: " + mDurationVideoStack.size());
+                mSectionProgressBar.addBreakPointTime((long) totalVideoDurationMs);
+            } else {
+                mSectionProgressBar.addBreakPointTime(totalRecordDurationMs);
+            }
+
+            mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
+            mShortVideoRecorder.endSection();
+            mSectionBegan = false;
+        }
     }
 }

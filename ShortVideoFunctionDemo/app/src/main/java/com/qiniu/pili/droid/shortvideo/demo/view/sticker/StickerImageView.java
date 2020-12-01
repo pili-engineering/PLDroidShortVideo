@@ -12,15 +12,14 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
-
 
 import com.qiniu.pili.droid.shortvideo.PLImageView;
 import com.qiniu.pili.droid.shortvideo.demo.R;
@@ -28,7 +27,6 @@ import com.qiniu.pili.droid.shortvideo.demo.gif.GifDecoder;
 import com.qiniu.pili.droid.shortvideo.demo.gif.GifFrameLoader;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Utils;
 import com.qiniu.pili.droid.shortvideo.demo.view.OnStickerOperateListener;
-
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -212,6 +210,8 @@ public class StickerImageView extends PLImageView {
     private String mGifFilePath;
 
     private OnStickerOperateListener mClickListener;
+
+    private Rect mImagePosition;
 
     public StickerImageView(Context context) {
         this(context, null);
@@ -479,6 +479,15 @@ public class StickerImageView extends PLImageView {
             mViewPaddingLeft = newPaddingLeft;
             mViewPaddingTop = newPaddingTop;
         }
+
+        if (mImagePosition == null) {
+            mImagePosition = new Rect();
+        }
+        mImagePosition.left = newPaddingLeft;
+        mImagePosition.top = newPaddingTop;
+        mImagePosition.right = newPaddingLeft + actualWidth;
+        mImagePosition.bottom = newPaddingTop + actualHeight;
+
         layout(newPaddingLeft, newPaddingTop, newPaddingLeft + actualWidth, newPaddingTop + actualHeight);
 
         mX = newPaddingLeft + mControlDrawableWidth / 2;
@@ -932,4 +941,15 @@ public class StickerImageView extends PLImageView {
             invalidate();
         }
     };
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        // 避免非预期的布局变化
+        if (changed && mImagePosition != null
+                && (left != mImagePosition.left || top != mImagePosition.top
+                || right != mImagePosition.right || bottom != mImagePosition.bottom)) {
+            layout(mImagePosition.left, mImagePosition.top, mImagePosition.right, mImagePosition.bottom);
+        }
+    }
 }

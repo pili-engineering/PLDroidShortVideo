@@ -1,10 +1,10 @@
 package com.qiniu.pili.droid.shortvideo.demo;
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEnv;
 
-public class ShortVideoApplication extends Application {
+public class ShortVideoApplication extends MultiDexApplication {
 
     @Override
     public void onCreate() {

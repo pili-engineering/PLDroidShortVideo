@@ -3,9 +3,9 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -42,7 +42,8 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
             screenSetting.setRecordFile(Config.SCREEN_RECORD_FILE_PATH)
                             .setInputAudioEnabled(false)
                             .setSize(width, height)
-                            .setDpi(dpi);
+                            .setDpi(dpi)
+                            .setFps(60);
             PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
             mScreenRecorder.prepare(screenSetting, microphoneSetting);
         }

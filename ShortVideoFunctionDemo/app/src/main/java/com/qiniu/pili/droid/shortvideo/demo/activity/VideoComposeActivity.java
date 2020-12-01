@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -15,8 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
@@ -43,6 +47,7 @@ public class VideoComposeActivity extends AppCompatActivity {
     private VideoListAdapter mVideoListAdapter;
     private ListView mVideoListView;
 
+    private RadioButton mRbModeFit;
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
     private CheckBox mVideoRangeCheck;
@@ -110,6 +115,8 @@ public class VideoComposeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        mRbModeFit = findViewById(R.id.rb_mode_fit);
     }
 
     @Override
@@ -146,11 +153,14 @@ public class VideoComposeActivity extends AppCompatActivity {
             ToastUtils.s(this, "请先添加至少 2 个视频");
             return;
         }
+
+        PLDisplayMode displayMode = mRbModeFit.isChecked() ? PLDisplayMode.FIT : PLDisplayMode.FULL;
+
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
 
-        boolean isSucc;
+        boolean composeSuccess;
         if (mIsVideoRange) {
             List<PLVideoRange> videoRanges = new LinkedList<>();
             for (String video : videos) {
@@ -163,12 +173,12 @@ public class VideoComposeActivity extends AppCompatActivity {
                 videoRange.setEndTime(durationMs / 2);
                 videoRanges.add(videoRange);
             }
-            isSucc = mShortVideoComposer.composeVideoRanges(videoRanges, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+            composeSuccess = mShortVideoComposer.composeVideoRanges(videoRanges, Config.COMPOSE_FILE_PATH, displayMode, setting, mVideoSaveListener);
         } else {
-            isSucc = mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, setting, mVideoSaveListener);
+            composeSuccess = mShortVideoComposer.composeVideos(videos, Config.COMPOSE_FILE_PATH, displayMode, setting, mVideoSaveListener);
         }
 
-        if (isSucc) {
+        if (composeSuccess) {
             mProcessingDialog.show();
         } else {
             ToastUtils.s(this, "开始拼接失败！");

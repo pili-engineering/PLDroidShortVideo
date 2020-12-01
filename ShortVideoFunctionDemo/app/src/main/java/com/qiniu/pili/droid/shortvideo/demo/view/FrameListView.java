@@ -3,10 +3,10 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,6 @@ import com.qiniu.pili.droid.shortvideo.PLVideoFrame;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -110,18 +109,9 @@ public class FrameListView extends FrameLayout {
     public FrameSelectorView addSelectorView() {
         mCurSelectorView = new FrameSelectorView(mContext);
         final FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mFrameHeight);
-        mCurSelectorView.setVisibility(View.INVISIBLE);
+        layoutParams.leftMargin = (mScrollViewParent.getWidth() - mCurSelectorView.getWidth()) / 2;
+        mCurSelectorView.setLayoutParams(layoutParams);
         mScrollViewParent.addView(mCurSelectorView, layoutParams);
-
-        mCurSelectorView.post(new Runnable() {
-            @Override
-            public void run() {
-                // put mCurSelectorView to the middle of the horizontal
-                layoutParams.leftMargin = (mScrollViewParent.getWidth() - mCurSelectorView.getWidth()) / 2;
-                mCurSelectorView.setLayoutParams(layoutParams);
-                mCurSelectorView.setVisibility(View.VISIBLE);
-            }
-        });
         return mCurSelectorView;
     }
 

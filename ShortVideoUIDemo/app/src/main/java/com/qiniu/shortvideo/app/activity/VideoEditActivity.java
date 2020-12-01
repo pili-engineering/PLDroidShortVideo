@@ -677,8 +677,13 @@ public class VideoEditActivity extends AppCompatActivity implements
                 // copy mv assets to sdcard
                 if (!dir.exists()) {
                     dir.mkdirs();
-                    String[] fs = getAssets().list("mvs");
+                }
+                String[] fs = getAssets().list("mvs");
+                if (fs != null) {
                     for (String file : fs) {
+                        if (new File(dir, file).exists()) {
+                            continue;
+                        }
                         InputStream is = getAssets().open("mvs/" + file);
                         FileOutputStream fos = new FileOutputStream(new File(dir, file));
                         byte[] buffer = new byte[1024];
