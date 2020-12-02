@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <FrameLayout
-        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/iv_config"
-            android:scaleType="centerInside"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_settings_white_24dp"
-            android:onClick="onClickSetting"
             android:layout_width="48dp"
-            android:layout_height="48dp"/>
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:onClick="onClickSetting"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_settings_white_24dp" />
 
     </FrameLayout>
 
     <ScrollView
-        android:background="@color/lsq_color_gray_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/lsq_color_gray_bg">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,8 +43,8 @@
                 android:id="@+id/video_record_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="onClickCapture"
                 android:layout_marginTop="1px"
+                android:onClick="onClickCapture"
                 app:text="@string/title_record" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
@@ -95,6 +96,13 @@
                 app:text="@string/title_image_compose" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:onClick="onClickImageCompose2"
+                app:text="图片拼接（预览+转场）" />
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
                 android:id="@+id/gif_make_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,4 +144,5 @@
         </LinearLayout>
 
     </ScrollView>
+
 </LinearLayout>

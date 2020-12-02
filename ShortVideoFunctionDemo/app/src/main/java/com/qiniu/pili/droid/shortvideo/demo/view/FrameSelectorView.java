@@ -118,6 +118,9 @@ public class FrameSelectorView extends RelativeLayout {
     }
 
     public int getBodyLeft() {
+        if (mGroupLayoutParam == null){
+            mGroupLayoutParam = (FrameLayout.LayoutParams) getLayoutParams();
+        }
         return mGroupLayoutParam.leftMargin + mHandlerLeft.getWidth();
     }
 
@@ -126,7 +129,18 @@ public class FrameSelectorView extends RelativeLayout {
     }
 
     public int getBodyWidth() {
-        return mHandlerBody.getWidth();
+        int width = mHandlerBody.getWidth();
+        if (width == 0) {
+            float scale = getResources().getDisplayMetrics().density;
+            int preferWidth = (int) ((100 * scale) + 0.5f);
+            int preferHeight = getLayoutParams().height;
+
+            int widthMeasureSpec = MeasureSpec.makeMeasureSpec(preferWidth, MeasureSpec.EXACTLY);
+            int heightMeasureSpec = MeasureSpec.makeMeasureSpec(preferHeight, MeasureSpec.EXACTLY);
+            mHandlerBody.measure(widthMeasureSpec, heightMeasureSpec);
+            return mHandlerBody.getMeasuredWidth();
+        }
+        return width;
     }
 
     public int getBodyRight() {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:text="3000"
+        android:id="@+id/et_image_duration"
+        android:hint="时长（毫秒）"
+        android:inputType="number"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <EditText
+        android:text="1000"
+        android:id="@+id/et_transition_duration"
+        android:hint="时长（毫秒）"
+        android:inputType="number"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <Spinner
+        android:id="@+id/spinner_transition_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

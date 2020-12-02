@@ -2,9 +2,9 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.view.View;
 import android.widget.SeekBar;
 
@@ -37,8 +37,8 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_audio_mix);
+        super.onCreate(savedInstanceState);
 
         mSrcVolumeSeekBar = (SeekBar) findViewById(R.id.fg_volume);
         mSrcVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -133,7 +133,7 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
     }
 
     private void setBehaviorCallback() {
-        View view = getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet);
+        View view = getDelegate().findViewById(R.id.design_bottom_sheet);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(view);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override

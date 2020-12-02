@@ -5,7 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import com.qiniu.pili.droid.shortvideo.PLAuthenticationResultCallback;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEnv;
@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
     public void onClickImageCompose(View v) {
         if (isPermissionOK()) {
             jumpToActivity(ImageComposeActivity.class);
+        }
+    }
+
+    public void onClickImageCompose2(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(ImageComposeWithTransitionActivity.class);
         }
     }
 

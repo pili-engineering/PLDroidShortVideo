@@ -1,0 +1,368 @@
+package com.qiniu.pili.droid.shortvideo.demo.activity;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.SurfaceTexture;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.TextureView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.qiniu.pili.droid.shortvideo.PLComposeItem;
+import com.qiniu.pili.droid.shortvideo.PLImageComposer;
+import com.qiniu.pili.droid.shortvideo.PLPreviewListener;
+import com.qiniu.pili.droid.shortvideo.PLTransitionType;
+import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
+import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
+import com.qiniu.pili.droid.shortvideo.demo.R;
+import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ImageComposeWithTransitionActivity extends AppCompatActivity {
+
+    private static final String TAG = "ImageCompose2";
+
+    private TextureView mTexturePreview;
+    private SeekBar mProgressBar;
+    private Button mBtnAddImage;
+    private Button mBtnStart;
+    private Button mBtnResume;
+    private Button mBtnPause;
+    private Button mBtnStop;
+    private Button mBtnSave;
+    private RecyclerView mRVVideo;
+    private List<PLComposeItem> mImageItemList = new ArrayList<>();
+    private RecyclerView.Adapter<RecyclerView.ViewHolder> mAdapter;
+    private Map<String, PLTransitionType> mTransitionMap = new HashMap<>();
+    private PLImageComposer mImageComposer;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_image_compose_with_transition);
+        prepareTransitions();
+
+        mTexturePreview = (TextureView) findViewById(R.id.texture_preview);
+        mProgressBar = (SeekBar) findViewById(R.id.seek_bar);
+        mBtnAddImage = (Button) findViewById(R.id.btn_add_image);
+        mBtnStart = (Button) findViewById(R.id.btn_start);
+        mBtnResume = (Button) findViewById(R.id.btn_resume);
+        mBtnPause = (Button) findViewById(R.id.btn_pause);
+        mBtnStop = (Button) findViewById(R.id.btn_stop);
+        mBtnSave = (Button) findViewById(R.id.btn_save);
+        mRVVideo = (RecyclerView) findViewById(R.id.rv_video);
+
+        mAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return new ImageComposeWithTransitionActivity.ItemViewHolder(ImageComposeWithTransitionActivity.this);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+                ImageComposeWithTransitionActivity.ItemViewHolder h = (ImageComposeWithTransitionActivity.ItemViewHolder) holder;
+
+                PLComposeItem item = mImageItemList.get(position);
+                Glide.with(ImageComposeWithTransitionActivity.this).load(item.getFilePath()).into(h.imageView);
+
+                if (position == mImageItemList.size() - 1) {
+                    h.textView.setVisibility(View.GONE);
+                } else {
+                    h.textView.setVisibility(View.VISIBLE);
+                    PLTransitionType transitionType = item.getTransitionType();
+                    h.textView.setText(getTransitionName(transitionType));
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return mImageItemList.size();
+            }
+        };
+        mRVVideo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRVVideo.setAdapter(mAdapter);
+
+        mImageComposer = new PLImageComposer(this);
+        mImageComposer.setPreviewLoop(true);
+        mImageComposer.setPreviewListener(new PLPreviewListener() {
+            @Override
+            public void onProgress(float progress) {
+                mProgressBar.setProgress((int) (progress * 10000));
+            }
+
+            @Override
+            public void onCompleted() {
+                Toast.makeText(ImageComposeWithTransitionActivity.this, "播放完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mProgressBar.setMax(10000);
+        mProgressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    float delta = progress / 10000f;
+                    if (mImageComposer.getDurationMs() != 0) {
+                        long seekTime = (long) (mImageComposer.getDurationMs() * delta);
+                        mImageComposer.seekPreview(seekTime);
+                    }
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        setupAction();
+    }
+
+    private void prepareTransitions() {
+        mTransitionMap.put("淡入淡出", PLTransitionType.FADE);
+        mTransitionMap.put("从左飞入", PLTransitionType.SLIDE_IN_FROM_LEFT);
+        mTransitionMap.put("从上飞入", PLTransitionType.SLIDE_IN_FROM_TOP);
+        mTransitionMap.put("从右飞入", PLTransitionType.SLIDE_IN_FROM_RIGHT);
+        mTransitionMap.put("从下飞入", PLTransitionType.SLIDE_IN_FROM_BOTTOM);
+        mTransitionMap.put("从左擦除", PLTransitionType.WIPE_FROM_LEFT);
+        mTransitionMap.put("从上擦除", PLTransitionType.WIPE_FROM_TOP);
+        mTransitionMap.put("从右擦除", PLTransitionType.WIPE_FROM_RIGHT);
+        mTransitionMap.put("从下擦除", PLTransitionType.WIPE_FROM_BOTTOM);
+        mTransitionMap.put("闪黑", PLTransitionType.FADE_COLOR_BLACK);
+        mTransitionMap.put("闪白", PLTransitionType.FADE_COLOR_WHITE);
+        mTransitionMap.put("圆形缩放", PLTransitionType.CIRCLE_CROP);
+    }
+
+    private void setupAction() {
+        mTexturePreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                mImageComposer.setPreviewTexture(surface);
+                mImageComposer.setPreviewSize(width, height);
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                mImageComposer.setPreviewSize(width, height);
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+            }
+        });
+
+        mBtnAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                }
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "请选择要拼接的图片"), 100);
+            }
+        });
+
+        mBtnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageComposer.startPreview();
+            }
+        });
+
+        mBtnResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageComposer.resumePreview();
+            }
+        });
+
+        mBtnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageComposer.pausePreview();
+            }
+        });
+
+        mBtnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageComposer.stopPreview();
+            }
+        });
+
+        mBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PLVideoEncodeSetting exportConfig = new PLVideoEncodeSetting(ImageComposeWithTransitionActivity.this);
+                String outputPath = Environment.getExternalStorageDirectory() + "/test_image_composition.mp4";
+                mImageComposer.save(outputPath, exportConfig, new PLVideoSaveListener() {
+                    @Override
+                    public void onSaveVideoSuccess(final String s) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ImageComposeWithTransitionActivity.this, "合成成功", Toast.LENGTH_SHORT).show();
+                                PlaybackActivity.start(ImageComposeWithTransitionActivity.this, s);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onSaveVideoFailed(int i) {
+
+                    }
+
+                    @Override
+                    public void onSaveVideoCanceled() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ImageComposeWithTransitionActivity.this, "停止合成", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onProgressUpdate(float v) {
+                        mProgressBar.setProgress((int) (10000 * v));
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 100) {
+                final String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                Log.i(TAG, "Select file: " + selectedFilepath);
+                if (selectedFilepath != null && !"".equals(selectedFilepath)) {
+                    showAddItemDialog(selectedFilepath);
+                }
+            }
+        }
+    }
+
+    private void showAddItemDialog(final String selectedFilepath) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_image_transition, null);
+        final EditText etImageDuration = view.findViewById(R.id.et_image_duration);
+        final EditText etTransitionDuration = view.findViewById(R.id.et_transition_duration);
+        Spinner spinnerTransitionType = view.findViewById(R.id.spinner_transition_type);
+
+        final String[] transitionTypes = mTransitionMap.keySet().toArray(new String[0]);
+        final String[] currentKey = {transitionTypes[0]};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transitionTypes);
+        spinnerTransitionType.setAdapter(adapter);
+        spinnerTransitionType.setSelection(0);
+        spinnerTransitionType.setAdapter(adapter);
+        spinnerTransitionType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentKey[0] = transitionTypes[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setView(view)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        long imageDuration = Long.parseLong(etImageDuration.getText().toString());
+                        long transitionDuration = Long.parseLong(etTransitionDuration.getText().toString());
+                        PLTransitionType transitionType = mTransitionMap.get(currentKey[0]);
+                        addItem(selectedFilepath, imageDuration, transitionDuration, transitionType);
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mImageComposer != null) {
+            mImageComposer.release();
+        }
+    }
+
+    private void addItem(String path, long imageDuration, long transitionDuration, PLTransitionType transitionType) {
+        PLComposeItem item = new PLComposeItem(path);
+        item.setDurationMs(imageDuration);
+        item.setTransitionTimeMs(transitionDuration);
+        item.setItemType(PLComposeItem.ItemType.IMAGE);
+        item.setTransitionType(transitionType);
+        mImageComposer.addItem(item);
+        mImageItemList.add(item);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private String getTransitionName(PLTransitionType type) {
+        for (Map.Entry<String, PLTransitionType> entry : mTransitionMap.entrySet()) {
+            if (entry.getValue() == type) {
+                return entry.getKey();
+            }
+        }
+        return "未知转场";
+    }
+
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView imageView;
+        public TextView textView;
+
+        public ItemViewHolder(Context context) {
+            super(LayoutInflater.from(context).inflate(R.layout.holder_image_composer, null));
+            imageView = (ImageView) itemView.findViewById(R.id.image_view);
+            textView = (TextView) itemView.findViewById(R.id.text_view);
+        }
+    }
+
+}

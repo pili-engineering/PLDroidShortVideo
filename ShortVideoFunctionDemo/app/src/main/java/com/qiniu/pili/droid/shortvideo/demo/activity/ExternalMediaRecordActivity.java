@@ -7,7 +7,7 @@ import com.qiniu.pili.droid.shortvideo.PLExternalRecordStateListener;
 
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -79,12 +79,12 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
         mExternalMediaRecorder.setRecordStateListener(this);
         mExternalMediaRecorder.prepare(videoEncodeSetting, audioEncodeSetting, recordSetting);
 
-        mPlayButton = (Button)findViewById(R.id.play);
-        mStopButton = (Button)findViewById(R.id.stop);
+        mPlayButton = (Button) findViewById(R.id.play);
+        mStopButton = (Button) findViewById(R.id.stop);
         mPlayButton.setOnClickListener(this);
         mStopButton.setOnClickListener(this);
 
-        mVideoTextureView = (PLVideoTextureView)findViewById(R.id.video);
+        mVideoTextureView = (PLVideoTextureView) findViewById(R.id.video);
         mVideoTextureView.setVideoPath(SRC_VIDEO_FILE_PATH);
 
         AVOptions options = new AVOptions();
@@ -132,7 +132,7 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
         view.setEnabled(false);
         switch (view.getId()) {
             case R.id.play:
-                if ((mVideoTextureView != null) && (!mVideoTextureView.isPlaying())) {
+                if (!mVideoTextureView.isPlaying()) {
                     mVideoTextureView.start();
                     mExternalMediaRecorder.start();
                 }
@@ -151,7 +151,9 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
 
     @Override
     protected void onDestroy() {
-        mExternalMediaRecorder.stop();
+        if (mVideoTextureView != null && mVideoTextureView.isPlaying()) {
+            mExternalMediaRecorder.stop();
+        }
         if (mVideoTextureView != null) {
             mVideoTextureView.stopPlayback();
             mVideoTextureView = null;

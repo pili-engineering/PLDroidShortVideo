@@ -22,7 +22,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ConfigActivity"></activity>
+        <activity android:name=".activity.ConfigActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.VideoRecordActivity" />
+        <activity
+            android:name=".activity.VideoRecordActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AudioRecordActivity"
             android:screenOrientation="portrait" />
@@ -115,6 +117,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.WebViewActivity" />
+        <activity
+            android:name=".activity.ImageComposeWithTransitionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

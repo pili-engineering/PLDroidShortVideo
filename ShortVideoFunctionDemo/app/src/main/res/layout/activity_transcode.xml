@@ -306,7 +306,7 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cb_add_watermark"
             android:text="增加水印"
             android:checked="false"
