@@ -635,7 +635,7 @@ public class GifDecoder {
                             for (int i = 0; i < 11; i++) {
                                 app += (char) block[i];
                             }
-                            if (app.equals("NETSCAPE2.0")) {
+                            if ("NETSCAPE2.0".equals(app)) {
                                 readNetscapeExt();
                             } else {
                                 skip(); // don't care

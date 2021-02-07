@@ -3,9 +3,12 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,7 +25,10 @@ import com.qiniu.pili.droid.shortvideo.PLScreenRecorderSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
+
+import java.io.File;
 
 public class ScreenRecordActivity extends AppCompatActivity implements PLScreenRecordStateListener {
     private static final String TAG = "ScreenRecordActivity";
@@ -85,7 +91,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
                 PermissionChecker checker = new PermissionChecker(ScreenRecordActivity.this);
                 boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
                 if (!isPermissionOK) {
-                    ToastUtils.s(view.getContext(), "相关权限申请失败 !!!");
+                    ToastUtils.showShortToast(view.getContext(), "相关权限申请失败 !!!");
                     return;
                 }
 
@@ -126,7 +132,6 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (mScreenRecorder != null) {
             mScreenRecorder.stop();
             mScreenRecorder = null;
@@ -135,6 +140,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLScreenRecorder.REQUEST_CODE) {
             if (data == null) {
                 String tip = "录屏申请启动失败！";
@@ -169,34 +175,24 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
         Log.e(TAG, "onError: code = " + code);
         if (code == PLErrorCode.ERROR_UNSUPPORTED_ANDROID_VERSION) {
             final String tip = "录屏只支持 Android 5.0 以上系统";
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateTip(tip);
-                }
-            });
+            runOnUiThread(() -> updateTip(tip));
         }
     }
 
     @Override
     public void onRecordStarted() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String tip = "正在录屏……";
-                updateTip(tip);
-            }
+        runOnUiThread(() -> {
+            String tip = "正在录屏……";
+            updateTip(tip);
         });
     }
 
     @Override
     public void onRecordStopped() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String tip =  "已经停止录屏！";
-                updateTip(tip);
-            }
+        MediaStoreUtils.storeVideo(ScreenRecordActivity.this, new File(Config.SCREEN_RECORD_FILE_PATH), "video/mp4");
+        runOnUiThread(() -> {
+            String tip = "已经停止录屏！";
+            updateTip(tip);
         });
     }
 

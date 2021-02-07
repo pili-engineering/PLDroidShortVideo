@@ -3,9 +3,11 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;

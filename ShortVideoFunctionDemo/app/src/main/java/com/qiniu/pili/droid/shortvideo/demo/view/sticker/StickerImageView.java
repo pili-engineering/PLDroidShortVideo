@@ -343,7 +343,7 @@ public class StickerImageView extends PLImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mIsTouchable){
+        if (!mIsTouchable) {
             return true;
         }
         switch (event.getAction()) {
@@ -946,9 +946,10 @@ public class StickerImageView extends PLImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         // 避免非预期的布局变化
-        if (changed && mImagePosition != null
+        boolean viewLocationChanged = changed && mImagePosition != null
                 && (left != mImagePosition.left || top != mImagePosition.top
-                || right != mImagePosition.right || bottom != mImagePosition.bottom)) {
+                || right != mImagePosition.right || bottom != mImagePosition.bottom);
+        if (viewLocationChanged) {
             layout(mImagePosition.left, mImagePosition.top, mImagePosition.right, mImagePosition.bottom);
         }
     }

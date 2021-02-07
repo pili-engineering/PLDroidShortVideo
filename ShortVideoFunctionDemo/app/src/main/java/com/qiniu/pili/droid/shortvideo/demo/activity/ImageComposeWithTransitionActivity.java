@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -38,8 +36,11 @@ import com.qiniu.pili.droid.shortvideo.PLTransitionType;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
+import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,63 +189,34 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
             }
         });
 
-        mBtnAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                } else {
-                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                }
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "请选择要拼接的图片"), 100);
-            }
+        mBtnAddImage.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("image/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(intent, 100);
         });
 
-        mBtnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mImageComposer.startPreview();
-            }
-        });
+        mBtnStart.setOnClickListener(v -> mImageComposer.startPreview());
 
-        mBtnResume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mImageComposer.resumePreview();
-            }
-        });
+        mBtnResume.setOnClickListener(v -> mImageComposer.resumePreview());
 
-        mBtnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mImageComposer.pausePreview();
-            }
-        });
+        mBtnPause.setOnClickListener(v -> mImageComposer.pausePreview());
 
-        mBtnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mImageComposer.stopPreview();
-            }
-        });
+        mBtnStop.setOnClickListener(v -> mImageComposer.stopPreview());
 
         mBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PLVideoEncodeSetting exportConfig = new PLVideoEncodeSetting(ImageComposeWithTransitionActivity.this);
-                String outputPath = Environment.getExternalStorageDirectory() + "/test_image_composition.mp4";
-                mImageComposer.save(outputPath, exportConfig, new PLVideoSaveListener() {
+                mImageComposer.save(Config.COMPOSE_WITH_TRANSITION_FILE_PATH, exportConfig, new PLVideoSaveListener() {
                     @Override
-                    public void onSaveVideoSuccess(final String s) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ImageComposeWithTransitionActivity.this, "合成成功", Toast.LENGTH_SHORT).show();
-                                PlaybackActivity.start(ImageComposeWithTransitionActivity.this, s);
-                            }
+                    public void onSaveVideoSuccess(final String filepath) {
+                        MediaStoreUtils.storeVideo(ImageComposeWithTransitionActivity.this, new File(filepath), "video/mp4");
+                        runOnUiThread(() -> {
+                            Toast.makeText(ImageComposeWithTransitionActivity.this, "合成成功", Toast.LENGTH_SHORT).show();
+                            PlaybackActivity.start(ImageComposeWithTransitionActivity.this, filepath);
                         });
                     }
 
@@ -255,12 +227,7 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
 
                     @Override
                     public void onSaveVideoCanceled() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ImageComposeWithTransitionActivity.this, "停止合成", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(ImageComposeWithTransitionActivity.this, "停止合成", Toast.LENGTH_SHORT).show());
                     }
 
                     @Override

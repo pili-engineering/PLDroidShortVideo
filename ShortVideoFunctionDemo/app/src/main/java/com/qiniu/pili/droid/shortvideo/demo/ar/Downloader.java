@@ -108,9 +108,15 @@ class Downloader {
                         throw new Exception("Cannot move downloaded file into position");
                     }
                 } finally {
-                    if (os != null) os.close();
-                    if (is != null) is.close();
-                    if (conn != null) conn.disconnect();
+                    if (os != null) {
+                        os.close();
+                    }
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
             } catch (Exception e) {
                 mThrowable = e;
@@ -120,8 +126,11 @@ class Downloader {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mThrowable != null) mCb.onFail(mThrowable);
-            else mCb.onSuccess(mDst);
+            if (mThrowable != null) {
+                mCb.onFail(mThrowable);
+            } else {
+                mCb.onSuccess(mDst);
+            }
         }
 
         @Override

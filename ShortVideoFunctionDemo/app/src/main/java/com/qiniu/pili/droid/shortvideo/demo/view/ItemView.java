@@ -2,7 +2,9 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+
 import androidx.annotation.Nullable;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -33,14 +35,14 @@ public class ItemView extends FrameLayout {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView);
         String text = typedArray.getString(R.styleable.ItemView_text);
 
-        if(!TextUtils.isEmpty(text)){
+        if (!TextUtils.isEmpty(text)) {
             tvName.setText(text);
         }
 
         typedArray.recycle();
     }
 
-    public void setValue(String v){
+    public void setValue(String v) {
         tvValue.setText(v);
     }
 

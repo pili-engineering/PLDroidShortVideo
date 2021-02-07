@@ -1,18 +1,16 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Movie;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -24,11 +22,13 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.ComposeItemListAdapter;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -82,26 +82,13 @@ public class MultipleComposeActivity extends AppCompatActivity {
         mShortVideoComposer = new PLShortVideoComposer(this);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoComposer.cancelComposeItems();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeItems());
 
-        mVideoListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.add(0, 0, 0, "删除");
-            }
-        });
+        mVideoListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
 
-        mVideoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                mDeletePosition = position;
-                return false;
-            }
+        mVideoListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            mDeletePosition = position;
+            return false;
         });
     }
 
@@ -146,25 +133,23 @@ public class MultipleComposeActivity extends AppCompatActivity {
         if (mShortVideoComposer.composeItems(itemList, Config.COMPOSE_FILE_PATH, setting, mMixFilePath, 1, 1, mVideoSaveListener)) {
             mProcessingDialog.show();
         } else {
-            ToastUtils.s(this, "开始拼接失败！");
+            ToastUtils.showShortToast(this, "开始拼接失败！");
         }
     }
 
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
+            MediaStoreUtils.storeVideo(MultipleComposeActivity.this, new File(filepath), "video/mp4");
             mProcessingDialog.dismiss();
             PlaybackActivity.start(MultipleComposeActivity.this, filepath);
         }
 
         @Override
         public void onSaveVideoFailed(final int errorCode) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.dismiss();
-                    ToastUtils.toastErrorCode(MultipleComposeActivity.this, errorCode);
-                }
+            runOnUiThread(() -> {
+                mProcessingDialog.dismiss();
+                ToastUtils.toastErrorCode(MultipleComposeActivity.this, errorCode);
             });
         }
 
@@ -175,12 +160,7 @@ public class MultipleComposeActivity extends AppCompatActivity {
 
         @Override
         public void onProgressUpdate(final float percentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.setProgress((int) (100 * percentage));
-                }
-            });
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
         }
     };
 
@@ -217,42 +197,27 @@ public class MultipleComposeActivity extends AppCompatActivity {
 
     private void chooseImageFile() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要拼接的图片"), REQUEST_IMAGE_CODE);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_IMAGE_CODE);
     }
 
     private void chooseVideoFile() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要拼接的视频"), REQUEST_VIDEO_CODE);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_VIDEO_CODE);
     }
 
 
     public void onClickAddMusic(View v) {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("audio/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("audio/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择背景音乐"), REQUEST_AUDIO_CODE);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("audio/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_AUDIO_CODE);
     }
 
     private PLComposeItem createImageItem(String path) {

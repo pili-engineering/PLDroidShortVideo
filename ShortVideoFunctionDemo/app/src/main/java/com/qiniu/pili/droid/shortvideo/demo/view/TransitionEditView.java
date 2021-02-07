@@ -3,7 +3,9 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+
 import androidx.annotation.Nullable;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -71,20 +73,17 @@ public class TransitionEditView extends LinearLayout {
         mNumberPickerGroup = (ViewGroup) view.findViewById(R.id.number_picker_group);
         mConfirmText = (TextView) view.findViewById(R.id.text_confirm);
 
-        mConfirmText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mNumberPickerGroup.setVisibility(GONE);
+        mConfirmText.setOnClickListener(v -> {
+            mNumberPickerGroup.setVisibility(GONE);
 
-                if (mCurFocusText == mTitleEditText && null != mTransitionTitle) {
-                    cloneEditText(mTransitionTitle, mCurFocusText);
-                }
-                if (mCurFocusText == mSubtitleEditText && null != mTransitionSubtitle) {
-                    cloneEditText(mTransitionSubtitle, mCurFocusText);
-                }
-
-                mTransition.updateTransitions();
+            if (mCurFocusText == mTitleEditText && null != mTransitionTitle) {
+                cloneEditText(mTransitionTitle, mCurFocusText);
             }
+            if (mCurFocusText == mSubtitleEditText && null != mTransitionSubtitle) {
+                cloneEditText(mTransitionSubtitle, mCurFocusText);
+            }
+
+            mTransition.updateTransitions();
         });
 
         mColorGroup.setOnClickListener(mOnClickListener);
@@ -93,12 +92,9 @@ public class TransitionEditView extends LinearLayout {
         mTitleEditText.setOnFocusChangeListener(mOnFocusChangeListener);
         mSubtitleEditText.setOnFocusChangeListener(mOnFocusChangeListener);
 
-        mBackBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                setVisibility(GONE);
-            }
+        mBackBtn.setOnClickListener(v -> {
+            hideSoftInput();
+            setVisibility(GONE);
         });
 
         initTypeFaces();
@@ -128,7 +124,7 @@ public class TransitionEditView extends LinearLayout {
 
     private void showNumberPicker(final View view) {
         if (null == mCurFocusText) {
-            ToastUtils.s(mContext, "请先选中需要修改的文字");
+            ToastUtils.showShortToast(mContext, "请先选中需要修改的文字");
             return;
         }
 

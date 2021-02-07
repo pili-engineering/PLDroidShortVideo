@@ -3,8 +3,10 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 
 import com.qiniu.pili.droid.shortvideo.demo.R;
@@ -59,7 +61,7 @@ public class ImportAndEditActivity extends AppCompatActivity {
         PermissionChecker checker = new PermissionChecker(this);
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
         if (!isPermissionOK) {
-            ToastUtils.s(this, "Some permissions is not approved !!!");
+            ToastUtils.showShortToast(this, "Some permissions is not approved !!!");
         }
         return isPermissionOK;
     }

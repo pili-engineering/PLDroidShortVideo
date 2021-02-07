@@ -1,13 +1,14 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
-import com.pili.pldroid.player.PLOnCompletionListener;
 import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLExternalMediaRecorder;
 import com.qiniu.pili.droid.shortvideo.PLExternalRecordStateListener;
 
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,19 +19,17 @@ import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 
 import com.pili.pldroid.player.AVOptions;
-import com.pili.pldroid.player.PLOnAudioFrameListener;
-import com.pili.pldroid.player.PLOnVideoFrameListener;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 
 import java.io.IOException;
+
+import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.EXTERNAL_RECORD_FILE_PATH;
+import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.RECORD_FILE_PATH;
 
 public class ExternalMediaRecordActivity extends AppCompatActivity implements View.OnClickListener, PLExternalRecordStateListener {
     private static final String TAG = "ExternalRecordActivity";
 
     private PLExternalMediaRecorder mExternalMediaRecorder;
-
-    private final static String OUTPUT_VIDEO_PATH = "/sdcard/ShortVideo/ExternalRecord.mp4";
-    private final static String SRC_VIDEO_FILE_PATH = "/sdcard/ShortVideo/record.mp4";
 
     // video parameters
     private int mVideoFrameWidth = 480;
@@ -73,7 +72,7 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
         audioEncodeSetting.setChannels(mChannels);
 
         PLRecordSetting recordSetting = new PLRecordSetting();
-        recordSetting.setVideoFilepath(OUTPUT_VIDEO_PATH);
+        recordSetting.setVideoFilepath(EXTERNAL_RECORD_FILE_PATH);
 
         mExternalMediaRecorder = new PLExternalMediaRecorder(this);
         mExternalMediaRecorder.setRecordStateListener(this);
@@ -85,44 +84,35 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
         mStopButton.setOnClickListener(this);
 
         mVideoTextureView = (PLVideoTextureView) findViewById(R.id.video);
-        mVideoTextureView.setVideoPath(SRC_VIDEO_FILE_PATH);
+        mVideoTextureView.setVideoPath(RECORD_FILE_PATH);
 
         AVOptions options = new AVOptions();
         options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
         mVideoTextureView.setAVOptions(options);
-        mVideoTextureView.setOnVideoFrameListener(new PLOnVideoFrameListener() {
-            @Override
-            public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
-                if (format == 0) {
-                    mExternalMediaRecorder.inputVideoFrame(data, width, height, 0, ts * 1000000);
-                }
+        mVideoTextureView.setOnVideoFrameListener((data, size, width, height, format, ts) -> {
+            if (format == 0) {
+                mExternalMediaRecorder.inputVideoFrame(data, width, height, 0, ts * 1000000);
             }
         });
 
-        mVideoTextureView.setOnAudioFrameListener(new PLOnAudioFrameListener() {
-            @Override
-            public void onAudioFrameAvailable(byte[] data, int size, int samplerate, int channels, int datawidth, long ts) {
-                long audioPacketDuration = 1000 * size / (samplerate * channels * (datawidth / 8));
-                long packetTimestamp = audioPacketDuration * mAudioPacketCount;
-                mExternalMediaRecorder.inputAudioFrame(data, size, packetTimestamp * 1000000);
-                mAudioPacketCount++;
-            }
+        mVideoTextureView.setOnAudioFrameListener((data, size, sampleRate, channels, datawidth, ts) -> {
+            long audioPacketDuration = 1000 * size / (sampleRate * channels * (datawidth / 8));
+            long packetTimestamp = audioPacketDuration * mAudioPacketCount;
+            mExternalMediaRecorder.inputAudioFrame(data, size, packetTimestamp * 1000000);
+            mAudioPacketCount++;
         });
 
-        mVideoTextureView.setOnCompletionListener(new PLOnCompletionListener() {
-            @Override
-            public void onCompletion() {
-                if (mPlayButton.isEnabled()) {
-                    mPlayButton.setEnabled(false);
-                }
-                if (mStopButton.isEnabled()) {
-                    mStopButton.setEnabled(false);
-                }
-                mExternalMediaRecorder.stop();
-                if (mVideoTextureView != null) {
-                    mVideoTextureView.stopPlayback();
-                    mVideoTextureView = null;
-                }
+        mVideoTextureView.setOnCompletionListener(() -> {
+            if (mPlayButton.isEnabled()) {
+                mPlayButton.setEnabled(false);
+            }
+            if (mStopButton.isEnabled()) {
+                mStopButton.setEnabled(false);
+            }
+            mExternalMediaRecorder.stop();
+            if (mVideoTextureView != null) {
+                mVideoTextureView.stopPlayback();
+                mVideoTextureView = null;
             }
         });
     }
@@ -165,7 +155,7 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
     private boolean getSourceVideoParameters() {
         mSrcMediaExtractor = new MediaExtractor();
         try {
-            mSrcMediaExtractor.setDataSource(SRC_VIDEO_FILE_PATH);
+            mSrcMediaExtractor.setDataSource(RECORD_FILE_PATH);
         } catch (IOException e) {
             Log.e(TAG, "file video setDataSource failed: " + e.getMessage());
             return false;

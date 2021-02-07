@@ -118,7 +118,7 @@ public class FrameSelectorView extends RelativeLayout {
     }
 
     public int getBodyLeft() {
-        if (mGroupLayoutParam == null){
+        if (mGroupLayoutParam == null) {
             mGroupLayoutParam = (FrameLayout.LayoutParams) getLayoutParams();
         }
         return mGroupLayoutParam.leftMargin + mHandlerLeft.getWidth();
@@ -152,7 +152,7 @@ public class FrameSelectorView extends RelativeLayout {
         setLayoutParams(mGroupLayoutParam);
     }
 
-    public void setBodyWidth(int width){
+    public void setBodyWidth(int width) {
         mOriginParam = mHandlerBody.getLayoutParams();
         mOriginParam.width = width;
         mHandlerBody.setLayoutParams(mOriginParam);

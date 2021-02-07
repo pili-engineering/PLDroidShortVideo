@@ -3,7 +3,9 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,7 +47,6 @@ import cn.easyar.RecordVideoOrientation;
 import cn.easyar.RecordZoomMode;
 import cn.easyar.Scene;
 import cn.easyar.engine.EasyAR3D;
-
 
 public class ArRecordActivity extends AppCompatActivity implements View.OnClickListener {
     private String recorderResources;
@@ -77,12 +79,12 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
         recorderResources = getFilesDir().getAbsolutePath() + "/easyar3d/RecorderResources.zip";
         unpackerPath = getFilesDir().getAbsolutePath() + "/easyar3d";
 
-        File srcfile=new File(recorderResources);
-        if(!srcfile.exists()){
+        File srcfile = new File(recorderResources);
+        if (!srcfile.exists()) {
             srcfile.mkdir();
         }
-        File dstfile=new File(unpackerPath);
-        if(!dstfile.exists()){
+        File dstfile = new File(unpackerPath);
+        if (!dstfile.exists()) {
             dstfile.mkdir();
         }
         loadResourcesToMobile(recorderResources);
@@ -138,11 +140,11 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
         Scene.setUriTranslator(new Scene.IUriTranslator() {
             @Override
             public String tryTranslateUriPathToLocalPath(String uri) {
-                if (uri.equals("local://Recorder.json")) {
+                if ("local://Recorder.json".equals(uri)) {
                     return getFilesDir().getAbsolutePath() + "/easyar3d/Recorder.json";
-                } else if (uri.equals("local://Recorder.js")) {
+                } else if ("local://Recorder.js".equals(uri)) {
                     return getFilesDir().getAbsolutePath() + "/easyar3d/Recorder.js";
-                } else if (uri.equals("local://PostBasic.effect")) {
+                } else if ("local://PostBasic.effect".equals(uri)) {
                     return getFilesDir().getAbsolutePath() + "/easyar3d/PostBasic.effect";
                 }
                 return sm.getURLLocalPath(uri);
@@ -172,9 +174,9 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
         progressText = (TextView) findViewById(R.id.progress_text);
 
         loadScene("scene.js");
-        if(TextUtils.isEmpty(appKey)&&TextUtils.isEmpty(appSecret)&&TextUtils.isEmpty(arid)){
+        if (TextUtils.isEmpty(appKey) && TextUtils.isEmpty(appSecret) && TextUtils.isEmpty(arid)) {
             Toast.makeText(this, "数据KEY为空,无法加载", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             loadARID(arid);
         }
     }
@@ -183,15 +185,16 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
         String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
         String fileName = "EasyAR_Recording_" + timestamp + ".mp4";
         File folder = new File(Config.VIDEO_STORAGE_DIR + "ArMovies");
-        if (!folder.exists())
+        if (!folder.exists()) {
             folder.mkdirs();
+        }
         return Config.VIDEO_STORAGE_DIR + "ArMovies/" + fileName;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(scene!=null){
+        if (scene != null) {
             scene.onResume();
         }
     }
@@ -199,7 +202,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onPause() {
         super.onPause();
-        if(scene!=null){
+        if (scene != null) {
             scene.onPause();
         }
     }
@@ -228,8 +231,9 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-        if (script == null)
+        if (script == null) {
             return;
+        }
 
         final String final_script = script;
 
@@ -240,16 +244,16 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
                 scene.setMessageReceiver(new Scene.IReceiver() {
                     @Override
                     public void receiveMessage(String name, String[] params) {
-                        if (name.equals("request:JsNativeBinding.openWebView")) {
+                        if ("request:JsNativeBinding.openWebView".equals(name)) {
                             if (null != params && params.length > 0) {
-                                Intent intent=new Intent(ArRecordActivity.this,WebViewActivity.class);
-                                intent.putExtra("web",params[0]);
+                                Intent intent = new Intent(ArRecordActivity.this, WebViewActivity.class);
+                                intent.putExtra("web", params[0]);
                                 startActivity(intent);
                             }
-                        } else if (name.equals("request:JsNativeBinding.targetLost")) {
+                        } else if ("request:JsNativeBinding.targetLost".equals(name)) {
                             scene.sendMessage("request:NativeJsBinding.showARWithIMU", new String[]{});
                             uid = params[0];
-                        } else if (name.equals("request:JsNativeBinding.targetFound")) {
+                        } else if ("request:JsNativeBinding.targetFound".equals(name)) {
                             if (!params[0].equals(uid)) {
                                 Log.d("TAG", "=-=-=js hidear-=-=-111111" + params[0]);
                                 scene.sendMessage("request:NativeJsBinding.hideAR", new String[]{});
@@ -278,12 +282,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
                     String manifestPath = sm.getURLLocalPath(manifestURL);
                     Log.d("SPAR", manifestPath);
 
-                    scene.runOnLoaded(new Runnable() {
-                        @Override
-                        public void run() {
-                            scene.loadManifest(manifestURL);
-                        }
-                    });
+                    scene.runOnLoaded(() -> scene.loadManifest(manifestURL));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -296,7 +295,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
         final Handler h = new Handler(getMainLooper());
         switch (view.getId()) {
             case R.id.center:
-                scene.sendMessage("request:NativeJsBinding.resetContent",new String[]{});
+                scene.sendMessage("request:NativeJsBinding.resetContent", new String[]{});
                 break;
             case R.id.ar_record:
                 if (started) {
@@ -322,6 +321,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
                         String s = progressText.getText().toString();
                         int min = Integer.parseInt(s.substring(0, 2));
                         int sec = Integer.parseInt(s.substring(3, 5));
+
                         @Override
                         public void run() {
                             sec++;
@@ -379,7 +379,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
                                                     break;
 
                                             }
-                                            Log.i("HelloAR", "Recorder Callback status: " + Integer.toString(status) + ", MSG: " + value);
+                                            Log.i("HelloAR", "Recorder Callback status: " + status + ", MSG: " + value);
                                         }
                                     });
                                     recorder.start();
@@ -404,7 +404,7 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private  abstract class DefaultCallback<T> implements AsyncCallback<T> {
+    private abstract class DefaultCallback<T> implements AsyncCallback<T> {
         @Override
         public void onFail(Throwable t) {
             t.printStackTrace();
@@ -412,11 +412,11 @@ public class ArRecordActivity extends AppCompatActivity implements View.OnClickL
 
         @Override
         public void onProgress(String taskName, float progress) {
-            if (null != taskName && taskName.equals("download")) {
+            if (null != taskName && "download".equals(taskName)) {
                 rlAnim.setVisibility(View.VISIBLE);
                 tvLoading.setText(String.format("loading...\n%.2f%%", progress * 100));
-                System.out.println("正在下载"+String.format("loading...\n%.2f%%", progress * 100));
-            } else if (null != taskName && taskName.equals("unpack")) {
+                System.out.println("正在下载" + String.format("loading...\n%.2f%%", progress * 100));
+            } else if (null != taskName && "unpack".equals(taskName)) {
                 if (rlAnim.getVisibility() != View.GONE) {
                     rlAnim.setVisibility(View.GONE);
                 }

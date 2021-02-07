@@ -1,7 +1,9 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.MenuItem;
 
 import com.qiniu.pili.droid.shortvideo.demo.R;

@@ -2,7 +2,9 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+
 import androidx.appcompat.widget.AppCompatSeekBar;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -20,6 +22,7 @@ public class VerticalSeekBar extends AppCompatSeekBar {
         super(context, attrs);
     }
 
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(h, w, oldh, oldw);
     }
@@ -36,6 +39,7 @@ public class VerticalSeekBar extends AppCompatSeekBar {
         onSizeChanged(getWidth(), getHeight(), 0, 0);
     }
 
+    @Override
     protected void onDraw(Canvas c) {
         c.rotate(-90);
         c.translate(-getHeight(), 0);

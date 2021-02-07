@@ -45,8 +45,12 @@ class JSONLoader {
                     }
                     return new JSONObject(sb.toString());
                 } finally {
-                    if (conn != null) conn.disconnect();
-                    if (br != null) br.close();
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                    if (br != null) {
+                        br.close();
+                    }
                 }
             } catch (Exception e) {
                 mThrowable = e;
@@ -56,8 +60,11 @@ class JSONLoader {
 
         @Override
         protected void onPostExecute(JSONObject jso) {
-            if (mThrowable != null) mCb.onFail(mThrowable);
-            else mCb.onSuccess(jso);
+            if (mThrowable != null) {
+                mCb.onFail(mThrowable);
+            } else {
+                mCb.onSuccess(jso);
+            }
         }
 
     }

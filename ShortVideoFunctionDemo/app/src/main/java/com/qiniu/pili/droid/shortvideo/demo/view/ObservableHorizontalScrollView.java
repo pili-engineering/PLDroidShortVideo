@@ -53,6 +53,7 @@ public class ObservableHorizontalScrollView extends HorizontalScrollView {
             }
 
             mScrollingRunnable = new Runnable() {
+                @Override
                 public void run() {
                     if (mIsScrolling && !mIsTouching) {
                         if (mOnScrollListener != null) {

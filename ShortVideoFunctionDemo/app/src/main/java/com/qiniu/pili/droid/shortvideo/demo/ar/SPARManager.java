@@ -124,8 +124,12 @@ public class SPARManager {
             jso.put(KEY_ARID, app.get(KEY_ARID));
             jso.put(KEY_PACKAGE_URL, app.getJSONObject(KEY_SCENE).getString(KEY_PACKAGE));
             jso.put(KEY_TIMESTAMP, app.get(KEY_TIMESTAMP));
-            if (app.has(KEY_TARGET_TYPE)) jso.put(KEY_TARGET_TYPE, app.get(KEY_TARGET_TYPE));
-            if (app.has(KEY_TARGET_DESC)) jso.put(KEY_TARGET_DESC, app.get(KEY_TARGET_DESC));
+            if (app.has(KEY_TARGET_TYPE)) {
+                jso.put(KEY_TARGET_TYPE, app.get(KEY_TARGET_TYPE));
+            }
+            if (app.has(KEY_TARGET_DESC)) {
+                jso.put(KEY_TARGET_DESC, app.get(KEY_TARGET_DESC));
+            }
             apps.add(SPARApp.fromJSONObject(mContext, jso));
         }
         return apps;
@@ -202,7 +206,9 @@ public class SPARManager {
 
             @Override
             public void onFail(Throwable t) {
-                if (!tryPreloadFromCache(preloadID, force, cb)) cb.onFail(t);
+                if (!tryPreloadFromCache(preloadID, force, cb)) {
+                    cb.onFail(t);
+                }
             }
 
             @Override
@@ -284,7 +290,9 @@ public class SPARManager {
 
             @Override
             public void onFail(Throwable t) {
-                if (!tryFromCache(arid, force, cb)) cb.onFail(t);
+                if (!tryFromCache(arid, force, cb)) {
+                    cb.onFail(t);
+                }
             }
 
             @Override

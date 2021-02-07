@@ -1,18 +1,16 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -33,10 +31,12 @@ import com.qiniu.pili.droid.shortvideo.PLVideoFrame;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.FrameSelectorView;
 import com.qiniu.pili.droid.shortvideo.demo.view.ObservableHorizontalScrollView;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -72,8 +72,8 @@ public class VideoDivideActivity extends Activity {
     private int mFrameHeight;
     private int mCurTrimNum;
 
-    private ArrayList<SectionItem> mSectionList = new ArrayList<>();
-    private ArrayList<String> mPathList = new ArrayList<>();
+    private final ArrayList<SectionItem> mSectionList = new ArrayList<>();
+    private final ArrayList<String> mPathList = new ArrayList<>();
 
     private TimerTask mScrollTimerTask;
     private Timer mScrollTimer;
@@ -82,27 +82,16 @@ public class VideoDivideActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoTrimmer.cancelTrim();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoTrimmer.cancelTrim());
 
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -206,12 +195,7 @@ public class VideoDivideActivity extends Activity {
 
     private void initVideoPlayer() {
         mPreview.setVideoPath(mSrcVideoPath);
-        mPreview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                play();
-            }
-        });
+        mPreview.setOnCompletionListener(mediaPlayer -> play());
         play();
     }
 
@@ -219,13 +203,10 @@ public class VideoDivideActivity extends Activity {
         mScrollTimerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final int position = mPreview.getCurrentPosition();
-                        if (mPreview.isPlaying()) {
-                            scrollToTime(position);
-                        }
+                runOnUiThread(() -> {
+                    final int position = mPreview.getCurrentPosition();
+                    if (mPreview.isPlaying()) {
+                        scrollToTime(position);
                     }
                 });
             }
@@ -292,14 +273,11 @@ public class VideoDivideActivity extends Activity {
         mCurSelectorView.setVisibility(View.INVISIBLE);
         mScrollViewParent.addView(mCurSelectorView, layoutParams);
 
-        mCurSelectorView.post(new Runnable() {
-            @Override
-            public void run() {
-                // put mCurSelectorView to the middle of the horizontal
-                layoutParams.leftMargin = (mScrollViewParent.getWidth() - mCurSelectorView.getWidth()) / 2;
-                mCurSelectorView.setLayoutParams(layoutParams);
-                mCurSelectorView.setVisibility(View.VISIBLE);
-            }
+        mCurSelectorView.post(() -> {
+            // put mCurSelectorView to the middle of the horizontal
+            layoutParams.leftMargin = (mScrollViewParent.getWidth() - mCurSelectorView.getWidth()) / 2;
+            mCurSelectorView.setLayoutParams(layoutParams);
+            mCurSelectorView.setVisibility(View.VISIBLE);
         });
     }
 
@@ -413,16 +391,12 @@ public class VideoDivideActivity extends Activity {
         }
     }
 
-    private PLVideoSaveListener mSaveListener = new PLVideoSaveListener() {
+    private final PLVideoSaveListener mSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String destFile) {
+            MediaStoreUtils.storeVideo(VideoDivideActivity.this, new File(destFile), "video/mp4");
             mPathList.add(destFile);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    trimOnce();
-                }
-            });
+            runOnUiThread(() -> trimOnce());
         }
 
         @Override
@@ -435,18 +409,13 @@ public class VideoDivideActivity extends Activity {
 
         @Override
         public void onProgressUpdate(final float percentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.setProgress((int) (100 * percentage));
-                }
-            });
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
         }
     };
 
     private class RectViewTouchListener implements View.OnTouchListener {
         private View mRectView;
-        private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        private final GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 SectionItem item = (SectionItem) mRectView.getTag();
@@ -455,7 +424,7 @@ public class VideoDivideActivity extends Activity {
                 return false;
             }
         };
-        private GestureDetector mGestureDetector = new GestureDetector(VideoDivideActivity.this, mSimpleOnGestureListener);
+        private final GestureDetector mGestureDetector = new GestureDetector(VideoDivideActivity.this, mSimpleOnGestureListener);
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -484,15 +453,12 @@ public class VideoDivideActivity extends Activity {
         @Override
         public void onScrollChanged(ObservableHorizontalScrollView scrollView, final int x, int y, int oldX, int oldY, boolean dragScroll) {
             if (dragScroll) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mPreview.isPlaying()) {
-                            pausePlayback();
-                        }
-                        int index = x / mFrameWidth;
-                        mPreview.seekTo((int) (index * mShowFrameIntervalMs));
+                runOnUiThread(() -> {
+                    if (mPreview.isPlaying()) {
+                        pausePlayback();
                     }
+                    int index = x / mFrameWidth;
+                    mPreview.seekTo((int) (index * mShowFrameIntervalMs));
                 });
             }
         }

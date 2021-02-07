@@ -19,10 +19,13 @@ import com.qiniu.pili.droid.shortvideo.PLShortAudioRecorder;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
+
+import java.io.File;
 
 public class AudioRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener {
     private static final String TAG = "AudioRecordActivity";
@@ -44,8 +47,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio_record);
 
         int encodingModePos = getIntent().getIntExtra(ENCODING_MODE, 0);
@@ -80,8 +82,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         recordSetting.setVideoCacheDir(Config.VIDEO_STORAGE_DIR);
         recordSetting.setVideoFilepath(Config.AUDIO_RECORD_FILE_PATH);
 
-        mShortAudioRecorder.prepare(this, microphoneSetting,
-                audioEncodeSetting, recordSetting);
+        mShortAudioRecorder.prepare(this, microphoneSetting, audioEncodeSetting, recordSetting);
 
         mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
         mSectionProgressBar.setTotalTime(this, recordSetting.getMaxRecordDuration());
@@ -94,7 +95,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
                     if (mShortAudioRecorder.beginSection()) {
                         updateRecordingBtns(true);
                     } else {
-                        ToastUtils.s(AudioRecordActivity.this, "无法开始视频段录制");
+                        ToastUtils.showShortToast(AudioRecordActivity.this, "无法开始视频段录制");
                     }
                 } else if (action == MotionEvent.ACTION_UP) {
                     mShortAudioRecorder.endSection();
@@ -133,7 +134,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
 
     public void onClickDelete(View v) {
         if (!mShortAudioRecorder.deleteLastSection()) {
-            ToastUtils.s(this, "回删视频段失败");
+            ToastUtils.showShortToast(this, "回删视频段失败");
         }
     }
 
@@ -144,12 +145,9 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onReady() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecordBtn.setEnabled(true);
-                ToastUtils.s(AudioRecordActivity.this, "可以开始录音咯");
-            }
+        runOnUiThread(() -> {
+            mRecordBtn.setEnabled(true);
+            ToastUtils.showShortToast(AudioRecordActivity.this, "可以开始录音咯");
         });
     }
 
@@ -158,22 +156,12 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         if (code == PLErrorCode.ERROR_SETUP_MICROPHONE_FAILED) {
             mRecordErrorMsg = "麦克风配置错误";
         }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.s(AudioRecordActivity.this, mRecordErrorMsg);
-            }
-        });
+        runOnUiThread(() -> ToastUtils.showShortToast(AudioRecordActivity.this, mRecordErrorMsg));
     }
 
     @Override
     public void onDurationTooShort() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.s(AudioRecordActivity.this, "该视频段太短了");
-            }
-        });
+        runOnUiThread(() -> ToastUtils.showShortToast(AudioRecordActivity.this, "该视频段太短了"));
     }
 
     @Override
@@ -191,7 +179,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onSectionRecording(long sectionDurationMs, long videoDurationMs, int sectionCount) {
-        Log.d(TAG,  "sectionDurationMs: " + sectionDurationMs + "; videoDurationMs: " + videoDurationMs + "; sectionCount: " + sectionCount);
+        Log.d(TAG, "sectionDurationMs: " + sectionDurationMs + "; videoDurationMs: " + videoDurationMs + "; sectionCount: " + sectionCount);
     }
 
     @Override
@@ -210,32 +198,19 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onRecordCompleted() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.s(AudioRecordActivity.this, "已达到拍摄总时长");
-            }
-        });
+        runOnUiThread(() -> ToastUtils.showShortToast(AudioRecordActivity.this, "已达到拍摄总时长"));
     }
 
     @Override
     public void onProgressUpdate(final float percentage) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mProcessingDialog.setProgress((int) (100 * percentage));
-            }
-        });
+        runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
     }
 
     @Override
     public void onSaveVideoFailed(final int errorCode) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mProcessingDialog.dismiss();
-                ToastUtils.s(AudioRecordActivity.this, "拼接视频段失败: " + errorCode);
-            }
+        runOnUiThread(() -> {
+            mProcessingDialog.dismiss();
+            ToastUtils.showShortToast(AudioRecordActivity.this, "拼接视频段失败: " + errorCode);
         });
     }
 
@@ -247,22 +222,17 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
     @Override
     public void onSaveVideoSuccess(final String filePath) {
         Log.i(TAG, "concat sections success filePath: " + filePath);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mProcessingDialog.dismiss();
-                PlaybackActivity.start(AudioRecordActivity.this, filePath);
-            }
+        runOnUiThread(() -> {
+            MediaStoreUtils.storeAudio(AudioRecordActivity.this, new File(filePath), "audio/mp3");
+            mProcessingDialog.dismiss();
+            PlaybackActivity.start(AudioRecordActivity.this, filePath);
         });
     }
 
     private void onSectionCountChanged(final int count, final long totalTime) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mDeleteBtn.setEnabled(count > 0);
-                mConcatBtn.setEnabled(totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION);
-            }
+        runOnUiThread(() -> {
+            mDeleteBtn.setEnabled(count > 0);
+            mConcatBtn.setEnabled(totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION);
         });
     }
 }

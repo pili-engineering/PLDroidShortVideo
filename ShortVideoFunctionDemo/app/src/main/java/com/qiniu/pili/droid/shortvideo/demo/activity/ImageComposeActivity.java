@@ -3,15 +3,14 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,11 +26,13 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.ImageListAdapter;
 
+import java.io.File;
 import java.util.List;
 
 public class ImageComposeActivity extends AppCompatActivity {
@@ -85,34 +86,16 @@ public class ImageComposeActivity extends AppCompatActivity {
         mShortVideoComposer = new PLShortVideoComposer(this);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoComposer.cancelComposeImages();
-            }
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeImages());
+
+        mImageListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
+
+        mImageListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            mDeletePosition = position;
+            return false;
         });
 
-        mImageListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.add(0, 0, 0, "删除");
-            }
-        });
-
-        mImageListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                mDeletePosition = position;
-                return false;
-            }
-        });
-
-        mImageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createEditDialog(position);
-            }
-        });
+        mImageListView.setOnItemClickListener((parent, view, position, id) -> createEditDialog(position));
     }
 
     public void createEditDialog(final int position) {
@@ -147,7 +130,7 @@ public class ImageComposeActivity extends AppCompatActivity {
                 try {
                     newItem.setDurationMs(duration);
                 } catch (IllegalArgumentException e) {
-                    ToastUtils.s(ImageComposeActivity.this, "持续时间必须要大于0 ！");
+                    ToastUtils.showShortToast(ImageComposeActivity.this, "持续时间必须要大于0 ！");
                     return;
                 }
                 newItem.setTransitionTimeMs(transTime);
@@ -159,10 +142,7 @@ public class ImageComposeActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        builder.setNegativeButton("取消", (dialog, which) -> {
         });
         builder.create().show();
     }
@@ -202,7 +182,7 @@ public class ImageComposeActivity extends AppCompatActivity {
     public void onClickCompose(View v) {
         List<PLComposeItem> items = mImageListAdapter.getItemList();
         if (items.size() < 1) {
-            ToastUtils.s(this, "请先添加至少 1 个图片");
+            ToastUtils.showShortToast(this, "请先添加至少 1 个图片");
             return;
         }
         mProcessingDialog.show();
@@ -216,18 +196,16 @@ public class ImageComposeActivity extends AppCompatActivity {
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
+            MediaStoreUtils.storeVideo(ImageComposeActivity.this, new File(filepath), "video/mp4");
             mProcessingDialog.dismiss();
             PlaybackActivity.start(ImageComposeActivity.this, filepath);
         }
 
         @Override
         public void onSaveVideoFailed(final int errorCode) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.dismiss();
-                    ToastUtils.toastErrorCode(ImageComposeActivity.this, errorCode);
-                }
+            runOnUiThread(() -> {
+                mProcessingDialog.dismiss();
+                ToastUtils.toastErrorCode(ImageComposeActivity.this, errorCode);
             });
         }
 
@@ -238,29 +216,20 @@ public class ImageComposeActivity extends AppCompatActivity {
 
         @Override
         public void onProgressUpdate(final float percentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.setProgress((int) (100 * percentage));
-                }
-            });
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
         }
     };
 
     private void chooseFile(boolean isAudio) {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-        }
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         if (isAudio) {
             intent.setType("audio/*");
-            startActivityForResult(Intent.createChooser(intent, "请选择音频文件"), REQUEST_AUDIO_CODE);
+            startActivityForResult(intent, REQUEST_AUDIO_CODE);
         } else {
             intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "请选择要拼接的图片"), REQUEST_IMAGE_CODE);
+            startActivityForResult(intent, REQUEST_IMAGE_CODE);
         }
     }
 
@@ -276,7 +245,7 @@ public class ImageComposeActivity extends AppCompatActivity {
                     item.setDurationMs(DEFULT_DURATION).setTransitionTimeMs(DEFULT_TRANS_TIME);
                     mImageListAdapter.addItem(item);
                     mImageListAdapter.notifyDataSetChanged();
-                    ToastUtils.s(this, "单击条目可以进行编辑，长按可以删除");
+                    ToastUtils.showShortToast(this, "单击条目可以进行编辑，长按可以删除");
                 }
             } else if (requestCode == REQUEST_AUDIO_CODE) {
                 mAudioFilePath = GetPathFromUri.getPath(this, data.getData());

@@ -3,14 +3,14 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.collection.LruCache;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +27,10 @@ import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -74,15 +76,10 @@ public class MakeGIFActivity extends AppCompatActivity {
         setTitle(R.string.title_gif);
 
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -159,7 +156,7 @@ public class MakeGIFActivity extends AppCompatActivity {
                     mSelectedFrameIndex.add(i);
                     color = R.color.colorAccent;
                 } else {
-                    mSelectedFrameIndex.remove(mSelectedFrameIndex.indexOf(i));
+                    mSelectedFrameIndex.remove((Integer) i);
                     color = R.color.white;
                 }
                 view.setBackgroundColor(getResources().getColor(color));
@@ -177,7 +174,8 @@ public class MakeGIFActivity extends AppCompatActivity {
                 while (i.hasNext()) {
                     int p = i.next();
                     LoadFrameTask task = mOngoingTasks.get(p);
-                    if (task != null && !(p >= firstVisibleItem && p <= lastVisibleItem)) {
+                    boolean willCancelTask = task != null && !(p >= firstVisibleItem && p <= lastVisibleItem);
+                    if (willCancelTask) {
                         task.cancel(true);
                         i.remove();
                         Log.i(TAG, "cancel task position: " + p);
@@ -200,7 +198,7 @@ public class MakeGIFActivity extends AppCompatActivity {
         if (zoomFactor < 0) {
             zoomFactor = 1;
         } else if ((zoomFactor > 2) || (zoomFactor < 0.5)) {
-            ToastUtils.s(this, "缩放倍数异常，建议范围[0.5, 2]");
+            ToastUtils.showShortToast(this, "缩放倍数异常，建议范围[0.5, 2]");
             return;
         } else {
             outputWeight *= zoomFactor;
@@ -210,12 +208,12 @@ public class MakeGIFActivity extends AppCompatActivity {
         if (totalFrameCount < 0) {
             totalFrameCount = 20;
         } else if (totalFrameCount > 50) {
-            ToastUtils.s(this, "GIF帧数过大，系统运行缓慢，请减小帧数设置");
+            ToastUtils.showShortToast(this, "GIF帧数过大，系统运行缓慢，请减小帧数设置");
             return;
         }
         int gifFrameRate = Integer.parseInt(mGIFFrameRateText.getText().toString());
         if ((gifFrameRate < 0) || (gifFrameRate > 120)) {
-            ToastUtils.s(this, "GIF输出帧率异常，请选择1~120之间的整数");
+            ToastUtils.showShortToast(this, "GIF输出帧率异常，请选择1~120之间的整数");
             return;
         }
         int startTime = Integer.parseInt(mGIFStartTimeText.getText().toString());
@@ -224,7 +222,7 @@ public class MakeGIFActivity extends AppCompatActivity {
         }
         int endTime = Integer.parseInt(mGIFEndTimeText.getText().toString());
         if ((endTime < 0) || (endTime < startTime)) {
-            ToastUtils.s(this, "时间参数异常，请重新设置");
+            ToastUtils.showShortToast(this, "时间参数异常，请重新设置");
             return;
         }
 
@@ -242,13 +240,13 @@ public class MakeGIFActivity extends AppCompatActivity {
                     @Override
                     public void onSaveVideoFailed(int i) {
                         mProcessingDialog.dismiss();
-                        ToastUtils.s(MakeGIFActivity.this, "Failed");
+                        ToastUtils.showShortToast(MakeGIFActivity.this, "Failed");
                     }
 
                     @Override
                     public void onSaveVideoCanceled() {
                         mProcessingDialog.dismiss();
-                        ToastUtils.s(MakeGIFActivity.this, "Canceled");
+                        ToastUtils.showShortToast(MakeGIFActivity.this, "Canceled");
                     }
 
                     @Override
@@ -260,7 +258,7 @@ public class MakeGIFActivity extends AppCompatActivity {
 
     public void onClickMakeGIF(View v) {
         if (mSelectedFrameIndex.size() <= 0) {
-            ToastUtils.s(this, "请先选择帧");
+            ToastUtils.showShortToast(this, "请先选择帧");
             mProcessingDialog.dismiss();
             return;
         }
@@ -273,15 +271,11 @@ public class MakeGIFActivity extends AppCompatActivity {
                     bitmaps.add(mMediaFile.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
                 }
                 mProcessingDialog.setCancelable(true);
-                mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        mShortVideoComposer.cancelComposeToGIF();
-                    }
-                });
+                mProcessingDialog.setOnCancelListener(dialogInterface -> mShortVideoComposer.cancelComposeToGIF());
                 mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
                     @Override
-                    public void onSaveVideoSuccess(String s) {
+                    public void onSaveVideoSuccess(String filepath) {
+                        MediaStoreUtils.storeImage(MakeGIFActivity.this, new File(filepath), "iamge/gif");
                         mProcessingDialog.dismiss();
                         Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
                         intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);
@@ -291,12 +285,12 @@ public class MakeGIFActivity extends AppCompatActivity {
                     @Override
                     public void onSaveVideoFailed(int i) {
                         mProcessingDialog.dismiss();
-                        ToastUtils.s(MakeGIFActivity.this, "Failed");
+                        ToastUtils.showShortToast(MakeGIFActivity.this, "Failed");
                     }
 
                     @Override
                     public void onSaveVideoCanceled() {
-                        ToastUtils.s(MakeGIFActivity.this, "Canceled");
+                        ToastUtils.showShortToast(MakeGIFActivity.this, "Canceled");
 
                     }
 

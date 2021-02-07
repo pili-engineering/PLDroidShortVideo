@@ -3,7 +3,9 @@ package com.qiniu.pili.droid.shortvideo.demo.view;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,8 +108,7 @@ public class DragItemAdapter extends RecyclerView.Adapter<DragItemAdapter.FrameI
         int handleLeft = dragHandle.getLeft();
         int handleTop = dragHandle.getTop();
 
-        return (x >= handleLeft) && (x < handleLeft + handleWidth) &&
-                (y >= handleTop) && (y < handleTop + handleHeight);
+        return (x >= handleLeft) && (x < handleLeft + handleWidth) && (y >= handleTop) && (y < handleTop + handleHeight);
     }
 
     @Override

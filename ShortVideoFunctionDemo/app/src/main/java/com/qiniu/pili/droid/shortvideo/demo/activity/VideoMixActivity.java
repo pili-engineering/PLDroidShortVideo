@@ -1,13 +1,13 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pili.pldroid.player.AVOptions;
-import com.pili.pldroid.player.PLOnCompletionListener;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
@@ -32,9 +31,11 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -85,18 +86,12 @@ public class VideoMixActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_video_mix);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoMixer.cancel();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoMixer.cancel());
 
         mPreviewParent = (LinearLayout) findViewById(R.id.previewParent);
         mSeekBar1 = (SeekBar) findViewById(R.id.seekBar1);
@@ -115,18 +110,8 @@ public class VideoMixActivity extends Activity {
         mPlayer1.setCoverView(mCover1);
         mPlayer2.setCoverView(mCover2);
 
-        mPlayer1.setOnCompletionListener(new PLOnCompletionListener() {
-            @Override
-            public void onCompletion() {
-                mIsPlayer1Completed = true;
-            }
-        });
-        mPlayer2.setOnCompletionListener(new PLOnCompletionListener() {
-            @Override
-            public void onCompletion() {
-                mIsPlayer2Completed = true;
-            }
-        });
+        mPlayer1.setOnCompletionListener(() -> mIsPlayer1Completed = true);
+        mPlayer2.setOnCompletionListener(() -> mIsPlayer2Completed = true);
 
         mSeekBar1.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
         mSeekBar2.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
@@ -291,22 +276,20 @@ public class VideoMixActivity extends Activity {
         mShortVideoMixer.mix(items, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(String destFile) {
+                MediaStoreUtils.storeVideo(VideoMixActivity.this, new File(destFile), "video/mp4");
                 mProcessingDialog.dismiss();
                 PlaybackActivity.start(VideoMixActivity.this, destFile);
             }
 
             @Override
             public void onSaveVideoFailed(final int errorCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.dismiss();
-                        String errorMsg = "" + errorCode;
-                        if (errorCode == ERROR_INVALID_ARG) {
-                            errorMsg = "参数错误！";
-                        }
-                        ToastUtils.s(VideoMixActivity.this, "拼接拼图失败: " + errorMsg);
+                runOnUiThread(() -> {
+                    mProcessingDialog.dismiss();
+                    String errorMsg = "" + errorCode;
+                    if (errorCode == ERROR_INVALID_ARG) {
+                        errorMsg = "参数错误！";
                     }
+                    ToastUtils.showShortToast(VideoMixActivity.this, "拼接拼图失败: " + errorMsg);
                 });
             }
 
@@ -317,12 +300,7 @@ public class VideoMixActivity extends Activity {
 
             @Override
             public void onProgressUpdate(final float percentage) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.setProgress((int) (100 * percentage));
-                    }
-                });
+                runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
             }
         });
     }
@@ -432,18 +410,13 @@ public class VideoMixActivity extends Activity {
 
     private void chooseVideo() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 0);
     }
 
-    private SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+    private final SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (!isVideoReady()) {

@@ -28,7 +28,7 @@ public class PermissionChecker {
      */
     private boolean verifyPermissions(int[] grantResults) {
         // At least one result must be checked.
-        if (grantResults.length < 1){
+        if (grantResults.length < 1) {
             return false;
         }
 
@@ -53,6 +53,9 @@ public class PermissionChecker {
         if (!addPermission(permissionsList, Manifest.permission.RECORD_AUDIO)) {
             permissionsNeeded.add("MICROPHONE");
         }
+        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            permissionsNeeded.add("Read external storage");
+        }
         if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             permissionsNeeded.add("Write external storage");
         }
@@ -65,18 +68,9 @@ public class PermissionChecker {
             }
             // Check for Rationale Option
             if (!mActivity.shouldShowRequestPermissionRationale(permissionsList.get(0))) {
-                showMessageOKCancel(message,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mActivity.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-                            }
-                        });
-            }
-            else {
-                mActivity.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                showMessageOKCancel(message, (dialog, which) -> mActivity.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS));
+            } else {
+                mActivity.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             }
             ret = false;
         }
@@ -85,12 +79,7 @@ public class PermissionChecker {
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(mActivity)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
+        new AlertDialog.Builder(mActivity).setMessage(message).setPositiveButton("OK", okListener).setNegativeButton("Cancel", null).create().show();
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -101,16 +90,5 @@ public class PermissionChecker {
             ret = false;
         }
         return ret;
-    }
-
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS) {
-            if (verifyPermissions(grantResults)) {
-                // all permissions granted
-            } else {
-                // some permissions denied
-                ToastUtils.s(mActivity, "some permissions denied");
-            }
-        }
     }
 }

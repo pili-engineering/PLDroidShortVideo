@@ -7,15 +7,15 @@ repositories {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
 
     defaultConfig {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
-        minSdkVersion 18
-        targetSdkVersion 26
-        versionCode 31
-        versionName "3.2.0"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 32
+        versionName "3.2.1"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -31,6 +31,10 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -60,6 +64,6 @@ dependencies {
         implementation project(':library')
     } else {
         // 短视频 SDK jar 包，必须依赖
-        implementation files('libs/pldroid-shortvideo-3.2.0.jar')
+        implementation files('libs/pldroid-shortvideo-3.2.1.jar')
     }
 }

@@ -1,35 +1,35 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.qiniu.android.utils.StringUtils;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
-import com.qiniu.pili.droid.shortvideo.PLMixAudioFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.PLWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
+
 import java.io.File;
 
 public class VideoTranscodeActivity extends AppCompatActivity {
@@ -60,7 +60,6 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     private EditText mTranscodingMaxFPSEditText;
 
     private TextView mMixAudioFileText;
-    private PLMixAudioFile mMixAudioFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,34 +98,21 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         mTranscodingRotationSpinner.setSelection(0);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoTranscoder.cancelTranscode();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoTranscoder.cancelTranscode());
 
-        ((AppCompatCheckBox)findViewById(R.id.cb_add_watermark)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    mShortVideoTranscoder.setWatermark(createWatermarkSetting());
-                }else {
-                    mShortVideoTranscoder.setWatermark(null);
-                }
+        ((AppCompatCheckBox) findViewById(R.id.cb_add_watermark)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mShortVideoTranscoder.setWatermark(createWatermarkSetting());
+            } else {
+                mShortVideoTranscoder.setWatermark(null);
             }
         });
 
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要转码的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -144,7 +130,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == REQUEST_MIX_AUDIO){
+            if (requestCode == REQUEST_MIX_AUDIO) {
                 //增加混音文件
                 String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
                 Log.i(TAG, "Select mix audio file: " + selectedFilepath);
@@ -152,7 +138,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                     onMixAudioFileSelected(selectedFilepath);
                     return;
                 }
-            }else {
+            } else {
                 String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
                 Log.i(TAG, "Select file: " + selectedFilepath);
                 if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
@@ -173,7 +159,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         }
     }
 
-    private void onMixAudioFileSelected(String filepath){
+    private void onMixAudioFileSelected(String filepath) {
         mMixAudioFileText.setText(filepath);
         PLMediaFile mediaFile = new PLMediaFile(filepath);
         mShortVideoTranscoder.setMixAudioFile(filepath, 0, mediaFile.getDurationMs(), true);
@@ -204,7 +190,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         mTranscodingBitrateText.setText(String.valueOf(bitrateInKbps));
     }
 
-    public void onClickAddMixAudio(View c){
+    public void onClickAddMixAudio(View c) {
         chooseMixAudioFile();
     }
 
@@ -218,7 +204,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
     private void doTranscode(boolean isReverse) {
         if (mShortVideoTranscoder == null) {
-            ToastUtils.s(this, "请先选择转码文件！");
+            ToastUtils.showShortToast(this, "请先选择转码文件！");
             return;
         }
 
@@ -244,72 +230,47 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                 RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
                 isReverse, new PLVideoSaveListener() {
                     @Override
-                    public void onSaveVideoSuccess(final String s) {
-                        Log.i(TAG, "save success: " + s);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mProcessingDialog.dismiss();
-                                showChooseDialog(s);
-                            }
+                    public void onSaveVideoSuccess(final String filePath) {
+                        Log.i(TAG, "save success: " + filePath);
+                        MediaStoreUtils.storeVideo(VideoTranscodeActivity.this, new File(filePath), "video/mp4");
+                        runOnUiThread(() -> {
+                            mProcessingDialog.dismiss();
+                            showChooseDialog(filePath);
                         });
                     }
 
                     @Override
                     public void onSaveVideoFailed(final int errorCode) {
                         Log.i(TAG, "save failed: " + errorCode);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mProcessingDialog.dismiss();
-                                ToastUtils.toastErrorCode(VideoTranscodeActivity.this, errorCode);
-                            }
+                        runOnUiThread(() -> {
+                            mProcessingDialog.dismiss();
+                            ToastUtils.toastErrorCode(VideoTranscodeActivity.this, errorCode);
                         });
                     }
 
                     @Override
                     public void onSaveVideoCanceled() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mProcessingDialog.dismiss();
-                            }
-                        });
+                        runOnUiThread(() -> mProcessingDialog.dismiss());
                     }
 
                     @Override
                     public void onProgressUpdate(final float percentage) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mProcessingDialog.setProgress((int) (100 * percentage));
-                            }
-                        });
+                        runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
                     }
                 });
 
         if (startResult) {
             mProcessingDialog.show();
         } else {
-            ToastUtils.s(this, "开始转码失败！");
+            ToastUtils.showShortToast(this, "开始转码失败！");
         }
     }
 
     private void showChooseDialog(final String filePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.if_edit_video));
-        builder.setPositiveButton(getString(R.string.dlg_yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                VideoEditActivity.start(VideoTranscodeActivity.this, filePath);
-            }
-        });
-        builder.setNegativeButton(getString(R.string.dlg_no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                PlaybackActivity.start(VideoTranscodeActivity.this, filePath);
-            }
-        });
+        builder.setPositiveButton(getString(R.string.dlg_yes), (dialog, which) -> VideoEditActivity.start(VideoTranscodeActivity.this, filePath));
+        builder.setNegativeButton(getString(R.string.dlg_no), (dialog, which) -> PlaybackActivity.start(VideoTranscodeActivity.this, filePath));
         builder.setCancelable(false);
         builder.create().show();
     }
@@ -322,16 +283,11 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         return watermarkSetting;
     }
 
-    private void chooseMixAudioFile(){
+    private void chooseMixAudioFile() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("audio/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("audio/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要的增加的混音文件"), REQUEST_MIX_AUDIO);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("audio/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_MIX_AUDIO);
     }
 }

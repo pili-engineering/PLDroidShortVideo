@@ -53,9 +53,13 @@ public class SPARAppCache {
     public String getURLLocalPath(String url) {
         for (SPARApp app : mApps.values()) {
             SPARTarget target = app.getTarget();
-            if (target != null && url.equals(target.url)) return app.getTargetURLLocalPath();
+            if (target != null && url.equals(target.url)) {
+                return app.getTargetURLLocalPath();
+            }
             String res = app.getPackageFileURLLocalPath(url);
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         return null;
     }
@@ -77,7 +81,9 @@ public class SPARAppCache {
 
     public long getAppLastUpdateTime(String arid) {
         SPARApp app = getApp(arid);
-        if (app == null) return 0;
+        if (app == null) {
+            return 0;
+        }
         return app.getTimestamp();
     }
 

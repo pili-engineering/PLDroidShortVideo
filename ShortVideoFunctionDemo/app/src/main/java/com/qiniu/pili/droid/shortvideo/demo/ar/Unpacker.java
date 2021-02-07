@@ -66,9 +66,12 @@ public class Unpacker {
                     while ((ze = zis.getNextEntry()) != null) {
                         File file = new File(mDst, ze.getName());
                         File dir = ze.isDirectory() ? file : file.getParentFile();
-                        if (!dir.isDirectory() && !dir.mkdirs())
+                        if (!dir.isDirectory() && !dir.mkdirs()) {
                             throw new FileNotFoundException("Failed to ensure directory: " + dir.getAbsolutePath());
-                        if (ze.isDirectory()) continue;
+                        }
+                        if (ze.isDirectory()) {
+                            continue;
+                        }
 
                         FileOutputStream fos = new FileOutputStream(file);
                         try {
@@ -92,8 +95,11 @@ public class Unpacker {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mThrowable != null) mCb.onFail(mThrowable);
-            else mCb.onSuccess(mDst);
+            if (mThrowable != null) {
+                mCb.onFail(mThrowable);
+            } else {
+                mCb.onSuccess(mDst);
+            }
         }
 
         @Override

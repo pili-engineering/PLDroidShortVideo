@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -72,11 +74,11 @@ public class PlaybackActivity extends Activity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playback);
 
         PLUploadSetting uploadSetting = new PLUploadSetting();
+        uploadSetting.setHttpsEnabled(true);
 
         mVideoUploadManager = new PLShortVideoUploader(getApplicationContext(), uploadSetting);
         mVideoUploadManager.setUploadProgressListener(this);
@@ -103,14 +105,11 @@ public class PlaybackActivity extends Activity implements
         }
 
         mSurfaceView = (SurfaceView) findViewById(R.id.video);
-        mSurfaceView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mMediaController.isShowing()) {
-                    mMediaController.show(0);
-                } else {
-                    mMediaController.hide();
-                }
+        mSurfaceView.setOnClickListener(v -> {
+            if (!mMediaController.isShowing()) {
+                mMediaController.show(0);
+            } else {
+                mMediaController.hide();
             }
         });
         mSurfaceHolder = mSurfaceView.getHolder();
@@ -162,18 +161,18 @@ public class PlaybackActivity extends Activity implements
 
         screenWidth = outMetrics.widthPixels;
         screenHeight = outMetrics.heightPixels;
-        screenAspectRatio = (float)screenHeight / screenWidth;
+        screenAspectRatio = (float) screenHeight / screenWidth;
         Log.i(TAG, "Screen size: " + screenWidth + " × " + screenHeight);
         videoWidth = mMediaPlayer.getVideoWidth();
         videoHeight = mMediaPlayer.getVideoHeight();
-        videoAspectRatio = (float)videoHeight / videoWidth;
+        videoAspectRatio = (float) videoHeight / videoWidth;
         Log.i(TAG, "Video size: " + screenWidth + " × " + screenHeight);
 
         if (screenAspectRatio > videoAspectRatio) {
             displayWidth = screenWidth;
-            displayHeight = (int) ((float)screenWidth / videoWidth * videoHeight);
+            displayHeight = (int) ((float) screenWidth / videoWidth * videoHeight);
         } else {
-            displayWidth = (int) ((float)screenHeight / videoHeight * videoWidth);
+            displayWidth = (int) ((float) screenHeight / videoHeight * videoWidth);
             displayHeight = screenHeight;
         }
 
@@ -286,12 +285,7 @@ public class PlaybackActivity extends Activity implements
         try {
             final String filePath = "http://" + Config.DOMAIN + "/" + response.getString("key");
             copyToClipboard(filePath);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtils.l(PlaybackActivity.this, "文件上传成功，" + filePath + "已复制到粘贴板");
-                }
-            });
+            runOnUiThread(() -> ToastUtils.showLongToast(PlaybackActivity.this, "文件上传成功，" + filePath + "已复制到粘贴板"));
             mUploadBtn.setVisibility(View.INVISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -300,12 +294,7 @@ public class PlaybackActivity extends Activity implements
 
     @Override
     public void onUploadVideoFailed(final int statusCode, final String error) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.l(PlaybackActivity.this, "Upload failed, statusCode = " + statusCode + " error = " + error);
-            }
-        });
+        runOnUiThread(() -> ToastUtils.showLongToast(PlaybackActivity.this, "Upload failed, statusCode = " + statusCode + " error = " + error));
     }
 
     private MediaPlayer.OnInfoListener mOnInfoListener = new MediaPlayer.OnInfoListener() {
@@ -374,12 +363,7 @@ public class PlaybackActivity extends Activity implements
                     break;
             }
             if (errorTip != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.s(PlaybackActivity.this, errorTip);
-                    }
-                });
+                runOnUiThread(() -> ToastUtils.showShortToast(PlaybackActivity.this, errorTip));
             }
 
             finish();
@@ -387,31 +371,17 @@ public class PlaybackActivity extends Activity implements
         }
     };
 
-    private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            Log.i(TAG, "Play Completed !");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtils.s(PlaybackActivity.this, "Play Completed !");
-                }
-            });
-            finish();
-        }
+    private MediaPlayer.OnCompletionListener mOnCompletionListener = mp -> {
+        Log.i(TAG, "Play Completed !");
+        runOnUiThread(() -> ToastUtils.showShortToast(PlaybackActivity.this, "Play Completed !"));
+        finish();
     };
 
-    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
-        @Override
-        public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            Log.i(TAG, "onBufferingUpdate: " + percent);
-        }
+    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = (mp, percent) -> {
+        Log.i(TAG, "onBufferingUpdate: " + percent);
     };
 
-    private MediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener() {
-        @Override
-        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-            Log.i(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height);
-        }
+    private MediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = (mp, width, height) -> {
+        Log.i(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height);
     };
 }

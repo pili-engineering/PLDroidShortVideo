@@ -48,6 +48,7 @@ public class Transition1 extends TransitionBase {
         setViewsVisible(View.INVISIBLE);
     }
 
+    @Override
     protected void initPosAndTrans() {
         //you should init positions and transitions in post runnable , because the view has been layout at that moment.
         mSubtitle.post(new Runnable() {
