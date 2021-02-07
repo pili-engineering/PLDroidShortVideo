@@ -90,7 +90,7 @@ PLDroidShortVideo 是七牛推出的一款适用于 Android 平台的短视频 S
 
 请参考开发者中心文档：[PLDroidShortVideo 文档](https://developer.qiniu.com/pili/sdk/3734/short-video-android-sdk)
 
-**注意：若无法 clone 本 repo，可点击[下载](https://sdk-release.qnsdk.com/PLDroidShortVideo-v3.1.1.zip)**
+**注意：若无法 clone 本 repo，可点击[下载](https://sdk-release.qnsdk.com/PLDroidShortVideo-v3.2.1.zip)**
 
 ## 4. 声明
 
