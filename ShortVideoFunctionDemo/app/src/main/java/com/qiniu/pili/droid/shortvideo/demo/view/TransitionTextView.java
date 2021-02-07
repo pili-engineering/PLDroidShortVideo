@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 import com.qiniu.pili.droid.shortvideo.PLTextView;
 
-public class TransitionTextView extends PLTextView{
+public class TransitionTextView extends PLTextView {
     public TransitionTextView(Context context) {
         this(context, null);
     }

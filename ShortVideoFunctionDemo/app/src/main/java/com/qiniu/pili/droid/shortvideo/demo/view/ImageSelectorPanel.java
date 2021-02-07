@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +22,12 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 public class ImageSelectorPanel extends LinearLayout {
     private Context mContext;
     private RecyclerView mImageListView;
     private OnImageSelectedListener mOnImageSelectedListener;
 
-    private static String[] imagePaths = {
-            "1960s", "camomile", "candy", "cold", "dark"
-    };
+    private static String[] imagePaths = {"1960s", "camomile", "candy", "cold", "dark"};
 
     public ImageSelectorPanel(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);

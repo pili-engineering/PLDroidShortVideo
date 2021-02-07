@@ -39,15 +39,15 @@ public class ImageListAdapter extends BaseAdapter {
         mElements.add(section);
     }
 
-    public void addItem(int position,PLComposeItem section) {
-        mElements.add(position,section);
+    public void addItem(int position, PLComposeItem section) {
+        mElements.add(position, section);
     }
 
     public void removeItem(int position) {
         mElements.remove(position);
     }
 
-    public List<PLComposeItem> getItemList(){
+    public List<PLComposeItem> getItemList() {
         return mElements;
     }
 
@@ -83,7 +83,7 @@ public class ImageListAdapter extends BaseAdapter {
         PLComposeItem section = (PLComposeItem) getItem(position);
         String filepath = section.getFilePath();
         String fileName = getFileNameWithSuffix(filepath);
-        if (fileName == null){
+        if (fileName == null) {
             fileName = "文件名称错误";
         }
         if (filepath != null) {
@@ -116,7 +116,7 @@ public class ImageListAdapter extends BaseAdapter {
 
     public static String getFileNameWithSuffix(String pathandname) {
         int start = pathandname.lastIndexOf("/");
-        if (start != -1 ) {
+        if (start != -1) {
             return pathandname.substring(start + 1);
         } else {
             return null;

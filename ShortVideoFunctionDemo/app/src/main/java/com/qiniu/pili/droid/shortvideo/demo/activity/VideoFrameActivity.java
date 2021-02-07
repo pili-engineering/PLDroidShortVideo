@@ -1,14 +1,15 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,10 +20,12 @@ import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.DragItemAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class VideoFrameActivity extends Activity {
@@ -44,8 +47,7 @@ public class VideoFrameActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_video_frame);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -57,12 +59,9 @@ public class VideoFrameActivity extends Activity {
         mVideoPaths = (arrayList == null) ? new ArrayList<String>() : arrayList;
 
         mDragItemAdapter = new DragItemAdapter(mVideoPaths);
-        mDragItemAdapter.setOnItemMovedListener(new DragItemAdapter.OnItemMovedListener() {
-            @Override
-            public void onMoveItem(int fromPosition, int toPosition) {
-                String movedItem = mVideoPaths.remove(fromPosition);
-                mVideoPaths.add(toPosition, movedItem);
-            }
+        mDragItemAdapter.setOnItemMovedListener((fromPosition, toPosition) -> {
+            String movedItem = mVideoPaths.remove(fromPosition);
+            mVideoPaths.add(toPosition, movedItem);
         });
 
         RecyclerViewDragDropManager dragDropManager = new RecyclerViewDragDropManager();
@@ -75,12 +74,7 @@ public class VideoFrameActivity extends Activity {
 
         mShortVideoComposer = new PLShortVideoComposer(this);
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoComposer.cancelComposeVideos();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeVideos());
     }
 
     @Override
@@ -118,7 +112,7 @@ public class VideoFrameActivity extends Activity {
         if (mShortVideoComposer.composeVideos(mVideoPaths, Config.VIDEO_DIVIDE_FILE_PATH, setting, mVideoSaveListener)) {
             mProcessingDialog.show();
         } else {
-            ToastUtils.s(this, "开始拼接失败！");
+            ToastUtils.showShortToast(this, "开始拼接失败！");
         }
     }
 
@@ -135,23 +129,18 @@ public class VideoFrameActivity extends Activity {
     private void showFinishDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("确定要放弃剪切的视频吗？")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        finish();
-                    }
+                .setPositiveButton("确定", (dialog, id) -> {
+                    dialog.dismiss();
+                    finish();
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
+                .setNegativeButton("取消", (dialog, id) -> dialog.dismiss());
         builder.create().show();
     }
 
-    private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
+    private final PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(final String destFile) {
+            MediaStoreUtils.storeVideo(VideoFrameActivity.this, new File(destFile), "video/mp4");
             mProcessingDialog.dismiss();
             PlaybackActivity.start(VideoFrameActivity.this, destFile);
         }
@@ -168,12 +157,7 @@ public class VideoFrameActivity extends Activity {
 
         @Override
         public void onProgressUpdate(final float percentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.setProgress((int) (100 * percentage));
-                }
-            });
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
         }
     };
 }

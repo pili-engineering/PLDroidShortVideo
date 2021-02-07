@@ -29,7 +29,9 @@ public class StrokedTextView extends PLTextView {
         // Ignore invalidate() calls when isDrawing == true
         // (setTextColor(color) calls will trigger them,
         // creating an infinite loop)
-        if (isDrawing) return;
+        if (isDrawing) {
+            return;
+        }
         super.invalidate();
     }
 
@@ -56,8 +58,7 @@ public class StrokedTextView extends PLTextView {
             if (mAltBitmap == null) {
                 mAltBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
                 mAltCanvas = new Canvas(mAltBitmap);
-            } else if (mAltCanvas.getWidth() != canvas.getWidth() ||
-                    mAltCanvas.getHeight() != canvas.getHeight()) {
+            } else if (mAltCanvas.getWidth() != canvas.getWidth() || mAltCanvas.getHeight() != canvas.getHeight()) {
                 mAltBitmap.recycle();
                 mAltBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
                 mAltCanvas.setBitmap(mAltBitmap);

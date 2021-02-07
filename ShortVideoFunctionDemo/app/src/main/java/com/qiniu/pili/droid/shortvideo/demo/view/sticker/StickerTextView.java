@@ -402,9 +402,10 @@ public class StickerTextView extends PLTextView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         // 避免非预期的布局变化
-        if (changed && mTextPosition != null
+        boolean viewLocationChanged = changed && mTextPosition != null
                 && (left != mTextPosition.left || top != mTextPosition.top
-                || right != mTextPosition.right || bottom != mTextPosition.bottom)) {
+                || right != mTextPosition.right || bottom != mTextPosition.bottom);
+        if (viewLocationChanged) {
             layout(mTextPosition.left, mTextPosition.top, mTextPosition.right, mTextPosition.bottom);
         }
     }

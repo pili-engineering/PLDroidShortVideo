@@ -1,14 +1,13 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -32,9 +31,11 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -60,33 +61,23 @@ public class VideoTrimActivity extends Activity {
     private int mVideoFrameCount;
     private int mSlicesTotalLength;
 
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoTrimmer.cancelTrim();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoTrimmer.cancelTrim());
 
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -153,12 +144,7 @@ public class VideoTrimActivity extends Activity {
         Log.i(TAG, "video frame count: " + mVideoFrameCount);
 
         mPreview.setVideoPath(videoPath);
-        mPreview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                play();
-            }
-        });
+        mPreview.setOnCompletionListener(mediaPlayer -> play());
 
         initVideoFrameList();
     }
@@ -324,18 +310,16 @@ public class VideoTrimActivity extends Activity {
         mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mode, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(String path) {
+                MediaStoreUtils.storeVideo(VideoTrimActivity.this, new File(path), "video/mp4");
                 mProcessingDialog.dismiss();
                 VideoEditActivity.start(VideoTrimActivity.this, path);
             }
 
             @Override
             public void onSaveVideoFailed(final int errorCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.dismiss();
-                        ToastUtils.toastErrorCode(VideoTrimActivity.this, errorCode);
-                    }
+                runOnUiThread(() -> {
+                    mProcessingDialog.dismiss();
+                    ToastUtils.toastErrorCode(VideoTrimActivity.this, errorCode);
                 });
             }
 
@@ -346,12 +330,7 @@ public class VideoTrimActivity extends Activity {
 
             @Override
             public void onProgressUpdate(final float percentage) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.setProgress((int) (100 * percentage));
-                    }
-                });
+                runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
             }
         });
     }
@@ -363,8 +342,7 @@ public class VideoTrimActivity extends Activity {
     private String formatTime(long timeMs) {
         return String.format(Locale.CHINA, "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(timeMs),
-                TimeUnit.MILLISECONDS.toSeconds(timeMs) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeMs))
+                TimeUnit.MILLISECONDS.toSeconds(timeMs) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeMs))
         );
     }
 

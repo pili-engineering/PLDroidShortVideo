@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,10 +108,10 @@ public class DraftBoxActivity extends AppCompatActivity {
                 textView.setText(mDrafts.get(pos).getTag());
                 imageView = (ImageView) convertView.findViewById(R.id.draft_thumbnail);
                 PLVideoFrame frame = new PLMediaFile(mDrafts.get(pos).getSectionFilePath(0)).getVideoFrameByTime(100, false);
-                if (frame != null){
+                if (frame != null) {
                     imageView.setImageBitmap(frame.toBitmap());
                 } else {
-                    imageView.setBackground(getDrawable(R.drawable.bg_invalid_draft));
+                    imageView.setBackgroundResource(R.drawable.bg_invalid_draft);
                 }
             }
             if (pos == mDrafts.size()) {

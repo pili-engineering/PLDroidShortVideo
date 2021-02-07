@@ -2,14 +2,14 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,10 +24,12 @@ import com.qiniu.pili.droid.shortvideo.demo.transition.Transition3;
 import com.qiniu.pili.droid.shortvideo.demo.transition.Transition4;
 import com.qiniu.pili.droid.shortvideo.demo.transition.Transition5;
 import com.qiniu.pili.droid.shortvideo.demo.transition.TransitionBase;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.TransitionEditView;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 
 import static com.qiniu.pili.droid.shortvideo.demo.activity.VideoFrameActivity.DATA_EXTRA_PATH;
@@ -65,20 +67,10 @@ public class TransitionMakeActivity extends Activity {
         mTransListView.setAdapter(new TransListAdapter());
 
         //consumed the event
-        mTransEditView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        mTransEditView.setOnTouchListener((v, event) -> true);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mCurTransition.cancelSave();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mCurTransition.cancelSave());
     }
 
     private void initTransitions() {
@@ -106,7 +98,7 @@ public class TransitionMakeActivity extends Activity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ToastUtils.s(TransitionMakeActivity.this, "Can not init Transition : " + "Transition" + index);
+                        ToastUtils.showShortToast(TransitionMakeActivity.this, "Can not init Transition : " + "Transition" + index);
                     }
                 }
             });
@@ -125,16 +117,13 @@ public class TransitionMakeActivity extends Activity {
             @Override
             public void onSaveVideoSuccess(final String destFile) {
                 Log.i(TAG, "save success: " + destFile);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.dismiss();
-
-                        Intent intent = new Intent();
-                        intent.putExtra(DATA_EXTRA_PATH, destFile);
-                        setResult(VideoFrameActivity.TRANSITION_REQUEST_CODE, intent);
-                        finish();
-                    }
+                runOnUiThread(() -> {
+                    mProcessingDialog.dismiss();
+                    MediaStoreUtils.storeVideo(TransitionMakeActivity.this, new File(destFile), "video/mp4");
+                    Intent intent = new Intent();
+                    intent.putExtra(DATA_EXTRA_PATH, destFile);
+                    setResult(VideoFrameActivity.TRANSITION_REQUEST_CODE, intent);
+                    finish();
                 });
             }
 
@@ -148,12 +137,7 @@ public class TransitionMakeActivity extends Activity {
 
             @Override
             public void onProgressUpdate(final float percentage) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingDialog.setProgress((int) (100 * percentage));
-                    }
-                });
+                runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
             }
         });
     }

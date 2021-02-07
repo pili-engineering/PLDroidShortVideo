@@ -10,7 +10,9 @@ public class Util {
 
     public static void deleteQuietly(String filePath) {
         File file = new File(filePath);
-        if (!file.exists()) return;
+        if (!file.exists()) {
+            return;
+        }
         if (file.isFile()) {
             file.delete();
         } else if (file.isDirectory()) {
@@ -26,8 +28,11 @@ public class Util {
         Iterator<String> keys = jso.keys();
         boolean first = true;
         while (keys.hasNext()) {
-            if (first) first = false;
-            else sb.append("&");
+            if (first) {
+                first = false;
+            } else {
+                sb.append("&");
+            }
             String key = keys.next();
             sb.append(String.format("%s=%s",
                     URLEncoder.encode(key, "UTF-8"),

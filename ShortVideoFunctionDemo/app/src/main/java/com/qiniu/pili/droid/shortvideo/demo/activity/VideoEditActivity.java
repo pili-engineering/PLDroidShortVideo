@@ -3,19 +3,18 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +45,7 @@ import com.qiniu.pili.droid.shortvideo.PLWatermarkSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.AudioMixSettingDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
@@ -135,7 +135,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     /**
      * Gif 动图相关
      */
-    private Map<StickerImageView, PLGifWatermarkSetting> mGifViewSettings = new HashMap<>();
+    private final Map<StickerImageView, PLGifWatermarkSetting> mGifViewSettings = new HashMap<>();
     private FrameLayout mStickerViewGroup;
 
     private int mAudioMixingMode = -1;       // audio mixing mode: 0 - single audio mixing; 1 - multiple audio mixing; 单混音和多重混音为互斥模式，最多只可选择其中一项。
@@ -192,12 +192,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private void initPreviewView() {
         mPreviewView = (GLSurfaceView) findViewById(R.id.preview);
-        mPreviewView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveViewTimeAndHideRect();
-            }
-        });
+        mPreviewView.setOnClickListener(v -> saveViewTimeAndHideRect());
     }
 
     private void initTextSelectorPanel() {
@@ -249,32 +244,17 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private void initImageSelectorPanel() {
         mImageSelectorPanel = (ImageSelectorPanel) findViewById(R.id.image_selector_panel);
-        mImageSelectorPanel.setOnImageSelectedListener(new ImageSelectorPanel.OnImageSelectedListener() {
-            @Override
-            public void onImageSelected(Drawable drawable) {
-                addImageView(drawable);
-            }
-        });
+        mImageSelectorPanel.setOnImageSelectedListener(drawable -> addImageView(drawable));
     }
 
     private void initGifSelectorPanel() {
         mGifSelectorPanel = findViewById(R.id.gif_selector_panel);
-        mGifSelectorPanel.setOnGifSelectedListener(new GifSelectorPanel.OnGifSelectedListener() {
-            @Override
-            public void onGifSelected(String gifPath) {
-                addGif(gifPath);
-            }
-        });
+        mGifSelectorPanel.setOnGifSelectedListener(gifPath -> addGif(gifPath));
     }
 
     private void initProcessingDialog() {
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoEditor.cancelSave();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoEditor.cancelSave());
     }
 
     private void initWatermarkSetting() {
@@ -308,12 +288,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 }
                 mShortVideoEditor.seekTo((int) timeMs);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        changeGifVisiable(timeMs);
-                    }
-                });
+                runOnUiThread(() -> changeGifVisiable(timeMs));
             }
         });
 
@@ -494,12 +469,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                     }
                     mShortVideoEditor.updatePreviewWatermark(mIsUseWatermark ? mPreviewWatermarkSetting : null);
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            changeGifVisiable(time);
-                        }
-                    });
+                    runOnUiThread(() -> changeGifVisiable(time));
 
                     return texId;
                 }
@@ -604,13 +574,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mScrollTimerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
-                            int position = mShortVideoEditor.getCurrentPosition();
-                            mFrameListView.scrollToTime(position);
-                        }
+                runOnUiThread(() -> {
+                    if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
+                        int position = mShortVideoEditor.getCurrentPosition();
+                        mFrameListView.scrollToTime(position);
                     }
                 });
             }
@@ -709,20 +676,15 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     public void onClickMix(View v) {
         if (mAudioMixingMode == 1) {
-            ToastUtils.s(this, "已选择多重混音，无法再选择单混音！");
+            ToastUtils.showShortToast(this, "已选择多重混音，无法再选择单混音！");
             return;
         }
-        Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("audio/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("audio/*");
-        }
         mAudioMixingMode = 0;
-        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), REQUEST_CODE_PICK_AUDIO_MIX_FILE);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("audio/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO_MIX_FILE);
     }
 
     /**
@@ -730,21 +692,15 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     public void onClickMultipleAudioMixing(View v) {
         if (mAudioMixingMode == 0) {
-            ToastUtils.s(this, "已选择单混音，无法再选择多重混音！");
+            ToastUtils.showShortToast(this, "已选择单混音，无法再选择多重混音！");
             return;
         }
-
-        Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("audio/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("audio/*");
-        }
         mAudioMixingMode = 1;
-        startActivityForResult(Intent.createChooser(intent, "请选择混音文件："), REQUEST_CODE_MULTI_AUDIO_MIX_FILE);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("audio/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_CODE_MULTI_AUDIO_MIX_FILE);
     }
 
     /**
@@ -791,7 +747,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         if (mIsMixAudio) {
             mAudioMixSettingDialog.show();
         } else {
-            ToastUtils.s(this, "请先选择混音文件！");
+            ToastUtils.showShortToast(this, "请先选择混音文件！");
         }
     }
 
@@ -839,18 +795,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         AlertDialog.Builder builder = new AlertDialog.Builder(VideoEditActivity.this);
         builder.setView(edit);
         builder.setTitle("请输入文字");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ((StickerTextView) textView).setText(edit.getText().toString());
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setPositiveButton("确定", (dialog, which) -> ((StickerTextView) textView).setText(edit.getText().toString()));
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
@@ -869,7 +815,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     private class StickerOperateListener implements OnStickerOperateListener {
 
-        private View mView;
+        private final View mView;
 
         StickerOperateListener(View view) {
             mView = view;
@@ -996,7 +942,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onClickShowMVs(View v) {
         setPanelVisibility(mFiltersList, true);
         try {
-            File dir = new File(Environment.getExternalStorageDirectory() + "/ShortVideo/mvs");
+            File dir = new File(Config.MV_DIR);
             // copy mv assets to sdcard
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -1070,20 +1016,20 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
                 PLMixAudioFile audioFile = new PLMixAudioFile(selectedFilepath);
                 if (mAudioMixingFileCount == 0) {
-                    ToastUtils.s(this, "添加第一个混音文件");
+                    ToastUtils.showShortToast(this, "添加第一个混音文件");
                     long firstMixingDurationMs = (mInputMp4FileDurationMs <= 5000) ? mInputMp4FileDurationMs : 5000;
                     audioFile.setDurationInVideo(firstMixingDurationMs * 1000);
                 } else if (mAudioMixingFileCount == 1) {
-                    ToastUtils.s(this, "添加第二个混音文件");
+                    ToastUtils.showShortToast(this, "添加第二个混音文件");
                     if (mInputMp4FileDurationMs - 5000 < 1000) {
-                        ToastUtils.s(this, "视频时长过短，请选择更长的视频添加混音");
+                        ToastUtils.showShortToast(this, "视频时长过短，请选择更长的视频添加混音");
                         return;
                     }
                     audioFile.setOffsetInVideo(5000 * 1000 * mAudioMixingFileCount);
                     long secondMixingDurationMs = mInputMp4FileDurationMs - 5000;
                     audioFile.setDurationInVideo(secondMixingDurationMs * 1000);
                 } else if (mAudioMixingFileCount >= 2) {
-                    ToastUtils.s(this, "最多可以添加2个混音文件");
+                    ToastUtils.showShortToast(this, "最多可以添加2个混音文件");
                     return;
                 }
                 audioFile.setVolume(0.5f);
@@ -1221,6 +1167,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     @Override
     public void onSaveVideoSuccess(String filePath) {
         Log.i(TAG, "save edit success filePath: " + filePath);
+        MediaStoreUtils.storeVideo(VideoEditActivity.this, new File(filePath), "video/mp4");
         mProcessingDialog.dismiss();
         PlaybackActivity.start(VideoEditActivity.this, filePath);
     }
@@ -1231,12 +1178,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     @Override
     public void onSaveVideoFailed(final int errorCode) {
         Log.e(TAG, "save edit failed errorCode:" + errorCode);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mProcessingDialog.dismiss();
-                ToastUtils.toastErrorCode(VideoEditActivity.this, errorCode);
-            }
+        runOnUiThread(() -> {
+            mProcessingDialog.dismiss();
+            ToastUtils.toastErrorCode(VideoEditActivity.this, errorCode);
         });
     }
 
@@ -1253,12 +1197,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     @Override
     public void onProgressUpdate(final float percentage) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mProcessingDialog.setProgress((int) (100 * percentage));
-            }
-        });
+        runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
     }
 
     private class FilterItemViewHolder extends RecyclerView.ViewHolder {
@@ -1276,7 +1215,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      * 滤镜选择列表
      */
     private class FilterListAdapter extends RecyclerView.Adapter<FilterItemViewHolder> {
-        private PLBuiltinFilter[] mFilters;
+        private final PLBuiltinFilter[] mFilters;
 
         public FilterListAdapter(PLBuiltinFilter[] filters) {
             this.mFilters = filters;
@@ -1298,12 +1237,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                     holder.mName.setText("None");
                     Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("filters/none.png"));
                     holder.mIcon.setImageBitmap(bitmap);
-                    holder.mIcon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mSelectedFilter = null;
-                            mShortVideoEditor.setBuiltinFilter(null);
-                        }
+                    holder.mIcon.setOnClickListener(v -> {
+                        mSelectedFilter = null;
+                        mShortVideoEditor.setBuiltinFilter(null);
                     });
                     return;
                 }
@@ -1313,12 +1249,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 InputStream is = getAssets().open(filter.getAssetFilePath());
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 holder.mIcon.setImageBitmap(bitmap);
-                holder.mIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mSelectedFilter = filter.getName();
-                        mShortVideoEditor.setBuiltinFilter(mSelectedFilter);
-                    }
+                holder.mIcon.setOnClickListener(v -> {
+                    mSelectedFilter = filter.getName();
+                    mShortVideoEditor.setBuiltinFilter(mSelectedFilter);
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -1335,7 +1268,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      * MV 选择列表
      */
     private class MVListAdapter extends RecyclerView.Adapter<FilterItemViewHolder> {
-        private JSONArray mMVArray;
+        private final JSONArray mMVArray;
 
         public MVListAdapter(JSONArray mvArray) {
             this.mMVArray = mvArray;
@@ -1359,13 +1292,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                     holder.mName.setText("None");
                     Bitmap bitmap = BitmapFactory.decodeFile(mvsDir + "none.png");
                     holder.mIcon.setImageBitmap(bitmap);
-                    holder.mIcon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mSelectedMV = null;
-                            mSelectedMask = null;
-                            mShortVideoEditor.setMVEffect(null, null);
-                        }
+                    holder.mIcon.setOnClickListener(v -> {
+                        mSelectedMV = null;
+                        mSelectedMask = null;
+                        mShortVideoEditor.setMVEffect(null, null);
                     });
                     return;
                 }
@@ -1400,7 +1330,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     /**
      * 混音音量改变监听
      */
-    private AudioMixSettingDialog.OnAudioVolumeChangedListener mOnAudioVolumeChangedListener = new AudioMixSettingDialog.OnAudioVolumeChangedListener() {
+    private final AudioMixSettingDialog.OnAudioVolumeChangedListener mOnAudioVolumeChangedListener = new AudioMixSettingDialog.OnAudioVolumeChangedListener() {
         @Override
         public void onAudioVolumeChanged(int fgVolume, int bgVolume) {
             Log.i(TAG, "fg volume: " + fgVolume + " bg volume: " + bgVolume);
@@ -1413,7 +1343,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     /**
      * 混音位置改变监听
      */
-    private AudioMixSettingDialog.OnPositionSelectedListener mOnPositionSelectedListener = new AudioMixSettingDialog.OnPositionSelectedListener() {
+    private final AudioMixSettingDialog.OnPositionSelectedListener mOnPositionSelectedListener = new AudioMixSettingDialog.OnPositionSelectedListener() {
         @Override
         public void onPositionSelected(long position) {
             Log.i(TAG, "selected position: " + position);

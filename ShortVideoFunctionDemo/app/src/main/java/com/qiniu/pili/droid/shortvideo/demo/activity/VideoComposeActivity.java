@@ -1,21 +1,16 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -29,11 +24,13 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
+import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
 import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.VideoListAdapter;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -83,37 +80,19 @@ public class VideoComposeActivity extends AppCompatActivity {
         mEncodingBitrateLevelSpinner.setSelection(2);
 
         mVideoRangeCheck = (CheckBox) findViewById(R.id.video_range_check);
-        mVideoRangeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mIsVideoRange = isChecked;
-            }
-        });
+        mVideoRangeCheck.setOnCheckedChangeListener((buttonView, isChecked) -> mIsVideoRange = isChecked);
 
 
         mShortVideoComposer = new PLShortVideoComposer(this);
 
         mProcessingDialog = new CustomProgressDialog(this);
-        mProcessingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mShortVideoComposer.cancelComposeVideos();
-            }
-        });
+        mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeVideos());
 
-        mVideoListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.add(0, 0, 0, "删除");
-            }
-        });
+        mVideoListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
 
-        mVideoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                mDeletePosition = position;
-                return false;
-            }
+        mVideoListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            mDeletePosition = position;
+            return false;
         });
 
         mRbModeFit = findViewById(R.id.rb_mode_fit);
@@ -150,7 +129,7 @@ public class VideoComposeActivity extends AppCompatActivity {
     public void onClickCompose(View v) {
         List<String> videos = mVideoListAdapter.getVideoList();
         if (videos.size() < 2) {
-            ToastUtils.s(this, "请先添加至少 2 个视频");
+            ToastUtils.showShortToast(this, "请先添加至少 2 个视频");
             return;
         }
 
@@ -181,25 +160,23 @@ public class VideoComposeActivity extends AppCompatActivity {
         if (composeSuccess) {
             mProcessingDialog.show();
         } else {
-            ToastUtils.s(this, "开始拼接失败！");
+            ToastUtils.showShortToast(this, "开始拼接失败！");
         }
     }
 
     private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
+            MediaStoreUtils.storeVideo(VideoComposeActivity.this, new File(filepath), "video/mp4");
             mProcessingDialog.dismiss();
             PlaybackActivity.start(VideoComposeActivity.this, filepath);
         }
 
         @Override
         public void onSaveVideoFailed(final int errorCode) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.dismiss();
-                    ToastUtils.toastErrorCode(VideoComposeActivity.this, errorCode);
-                }
+            runOnUiThread(() -> {
+                mProcessingDialog.dismiss();
+                ToastUtils.toastErrorCode(VideoComposeActivity.this, errorCode);
             });
         }
 
@@ -210,26 +187,16 @@ public class VideoComposeActivity extends AppCompatActivity {
 
         @Override
         public void onProgressUpdate(final float percentage) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProcessingDialog.setProgress((int) (100 * percentage));
-                }
-            });
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
         }
     };
 
     private void chooseVideoFile() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-        }
-        startActivityForResult(Intent.createChooser(intent, "选择要拼接的视频"), 0);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("video/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 0);
     }
 
     @Override

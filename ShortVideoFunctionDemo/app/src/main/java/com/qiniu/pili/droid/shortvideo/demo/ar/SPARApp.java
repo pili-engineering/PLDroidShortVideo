@@ -71,7 +71,9 @@ public class SPARApp {
     }
 
     public String getTargetURL() {
-        if (mTarget == null) return null;
+        if (mTarget == null) {
+            return null;
+        }
         return mTarget.url;
     }
 
@@ -107,7 +109,9 @@ public class SPARApp {
     }
 
     public String getTargetURLLocalPath() {
-        if (!hasTarget()) return null;
+        if (!hasTarget()) {
+            return null;
+        }
         String downloadPath = Downloader.getDownloadPath(mContext, Downloader.TARGETS_PATH);
         String downloadFileName = Downloader.getLocalName(mTarget.url);
         return String.format("%s/%s", downloadPath, downloadFileName);

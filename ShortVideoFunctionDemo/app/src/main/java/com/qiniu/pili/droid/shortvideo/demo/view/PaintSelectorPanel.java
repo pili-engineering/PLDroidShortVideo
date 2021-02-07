@@ -1,9 +1,11 @@
 package com.qiniu.pili.droid.shortvideo.demo.view;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,21 +46,15 @@ public class PaintSelectorPanel extends LinearLayout {
         mUndoText = (TextView) view.findViewById(R.id.paint_undo_text);
         mClearText = (TextView) view.findViewById(R.id.paint_clear_text);
 
-        mUndoText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnPaintSelectorListener != null) {
-                    mOnPaintSelectorListener.onPaintUndoSelected();
-                }
+        mUndoText.setOnClickListener(v -> {
+            if (mOnPaintSelectorListener != null) {
+                mOnPaintSelectorListener.onPaintUndoSelected();
             }
         });
 
-        mClearText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnPaintSelectorListener != null) {
-                    mOnPaintSelectorListener.onPaintClearSelected();
-                }
+        mClearText.setOnClickListener(v -> {
+            if (mOnPaintSelectorListener != null) {
+                mOnPaintSelectorListener.onPaintClearSelected();
             }
         });
 
@@ -95,12 +91,9 @@ public class PaintSelectorPanel extends LinearLayout {
         mColorListView.setAdapter(mAdapter);
 
         mCloseBtn = (ImageButton) view.findViewById(R.id.close_btn);
-        mCloseBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnPaintSelectorListener != null) {
-                    mOnPaintSelectorListener.onViewClosed();
-                }
+        mCloseBtn.setOnClickListener(v -> {
+            if (mOnPaintSelectorListener != null) {
+                mOnPaintSelectorListener.onViewClosed();
             }
         });
     }

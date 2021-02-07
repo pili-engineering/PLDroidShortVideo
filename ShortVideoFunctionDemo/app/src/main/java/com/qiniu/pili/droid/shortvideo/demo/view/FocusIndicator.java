@@ -1,7 +1,9 @@
 package com.qiniu.pili.droid.shortvideo.demo.view;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -27,8 +29,7 @@ public class FocusIndicator extends View {
     public void focus() {
         if (mState == STATE_IDLE) {
             setBackgroundResource(R.drawable.ic_focus_focusing);
-            animate().withLayer().setDuration(SCALING_UP_TIME)
-                    .scaleX(1.5f).scaleY(1.5f);
+            animate().withLayer().setDuration(SCALING_UP_TIME).scaleX(1.5f).scaleY(1.5f);
             mState = STATE_FOCUSING;
         }
     }
@@ -36,8 +37,7 @@ public class FocusIndicator extends View {
     public void focusSuccess() {
         if (mState == STATE_FOCUSING) {
             setBackgroundResource(R.drawable.ic_focus_focused);
-            animate().withLayer().setDuration(SCALING_DOWN_TIME).scaleX(1f)
-                    .scaleY(1f).withEndAction(mEndAction);
+            animate().withLayer().setDuration(SCALING_DOWN_TIME).scaleX(1f).scaleY(1f).withEndAction(mEndAction);
             mState = STATE_FINISHING;
         }
     }
@@ -45,8 +45,7 @@ public class FocusIndicator extends View {
     public void focusFail() {
         if (mState == STATE_FOCUSING) {
             setBackgroundResource(R.drawable.ic_focus_failed);
-            animate().withLayer().setDuration(SCALING_DOWN_TIME).scaleX(1f)
-                    .scaleY(1f).withEndAction(mEndAction);
+            animate().withLayer().setDuration(SCALING_DOWN_TIME).scaleX(1f).scaleY(1f).withEndAction(mEndAction);
             mState = STATE_FINISHING;
         }
     }
