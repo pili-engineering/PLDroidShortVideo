@@ -2,6 +2,9 @@ package com.qiniu.pili.droid.shortvideo.demo.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.FileUtils;
+
+import java.io.File;
 
 public class Config {
     public static final String TOKEN = "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:3hK7jJJQKwmemseSwQ1duO5AXOw=:eyJzY29wZSI6InNhdmUtc2hvcnQtdmlkZW8tZnJvbS1kZW1vIiwiZGVhZGxpbmUiOjM1NTk2OTU4NzYsInVwaG9zdHMiOlsiaHR0cDovL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6Ly91cGxvYWQtejIucWluaXUuY29tIiwiLUggdXAtejIucWluaXUuY29tIGh0dHA6Ly8xNC4xNTIuMzcuNCJdfQ==";
@@ -30,6 +33,10 @@ public class Config {
     public static String GIF_STICKER_DIR;
     public static String MV_DIR;
 
+    public static String SP_NAME = "CONFIG";
+    public static String SP_RESOURCE_PREPARED_MV = "MV_PREPARED";
+    public static String SP_RESOURCE_PREPARED_GIF = "GIF_PREPARED";
+
     public static void init(Context context) {
         VIDEO_STORAGE_DIR = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/ShortVideo/";
         RECORD_FILE_PATH = VIDEO_STORAGE_DIR + "record.mp4";
@@ -52,5 +59,16 @@ public class Config {
 
         GIF_STICKER_DIR = VIDEO_STORAGE_DIR + "gif/";
         MV_DIR = VIDEO_STORAGE_DIR + "mvs/";
+
+        createDirIfNotExists(VIDEO_STORAGE_DIR);
+        createDirIfNotExists(GIF_STICKER_DIR);
+        createDirIfNotExists(MV_DIR);
+    }
+
+    private static void createDirIfNotExists(String dir) {
+        File dirFile = new File(dir);
+        if (!dirFile.exists()) {
+            dirFile.mkdirs();
+        }
     }
 }

@@ -107,17 +107,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginBottom="20dp"
                 android:onClick="onClickMakeGIF"
                 app:text="@string/title_gif" />
-
-            <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/ar_make_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="20dp"
-                android:onClick="onClickAR"
-                app:text="@string/title_ar_effect" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
                 android:id="@+id/draft_button"

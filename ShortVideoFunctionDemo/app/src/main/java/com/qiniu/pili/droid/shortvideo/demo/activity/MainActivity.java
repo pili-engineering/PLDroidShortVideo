@@ -112,13 +112,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickAR(View v) {
-        if (isPermissionOK()) {
-            jumpToActivity(ArRecordActivity.class);
-        }
-    }
-
-
     public void onClickDraftBox(View v) {
         if (isPermissionOK()) {
             jumpToActivity(DraftBoxActivity.class);

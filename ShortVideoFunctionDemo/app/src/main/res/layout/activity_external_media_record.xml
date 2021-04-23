@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:text="准备：此演示Demo从/sdcard/ShortVideo/目录下读取record.mp4文件播放，该文件可使用视频拍摄功能录制生成。"/>
+        android:text="准备：此演示 Demo 从应用外置存储目录下读取 record.mp4 文件播放，该文件可使用视频拍摄功能录制生成。"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:text="功能：此演示Demo通过PLExternalMediaRecorder以外部媒体数据导入编码的方式翻录输入视频文件，并在/sdcard/ShortVideo/中生成ExternalRecord.mp4作为输出。"/>
+        android:text="功能：此演示 Demo 通过 PLExternalMediaRecorder 以外部媒体数据导入编码的方式翻录输入视频文件，并在应用外置存储目录中生成 external_record.mp4 作为输出。"/>
 
     <TextView
         android:layout_width="wrap_content"

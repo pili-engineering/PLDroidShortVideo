@@ -156,7 +156,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
                     } else {
                         ToastUtils.showShortToast(VideoMixRecordActivity.this, "无法开始视频段录制");
                     }
-                } else if (action == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     if (mSectionBegan) {
                         long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginTSMs;
                         long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek().longValue());

@@ -163,7 +163,7 @@ public class VideoTrimActivity extends Activity {
                 float finalX = viewX + movedX;
                 updateHandlerLeftPosition(finalX);
 
-                if (action == MotionEvent.ACTION_UP) {
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     calculateRange();
                 }
 
@@ -180,7 +180,7 @@ public class VideoTrimActivity extends Activity {
                 float finalX = viewX + movedX;
                 updateHandlerRightPosition(finalX);
 
-                if (action == MotionEvent.ACTION_UP) {
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     calculateRange();
                 }
 
