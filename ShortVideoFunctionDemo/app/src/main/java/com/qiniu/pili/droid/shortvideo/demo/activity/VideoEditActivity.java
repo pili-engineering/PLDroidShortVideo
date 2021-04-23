@@ -4,17 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.Environment;
-
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +23,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
 import com.qiniu.pili.droid.shortvideo.PLGifWatermarkSetting;
@@ -314,12 +313,40 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     /**
-     * 拷贝 GIF 资源从 Assets 到SD卡
+     * 拷贝资源从 Assets 到 SD 卡
      */
     private void initResources() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.SP_NAME, MODE_PRIVATE);
+        boolean mvPrepared = sharedPreferences.getBoolean(Config.SP_RESOURCE_PREPARED_MV, false);
+        boolean gifPrepared = sharedPreferences.getBoolean(Config.SP_RESOURCE_PREPARED_GIF, false);
+
         try {
+            // copy mv assets to sdcard
+            if (!mvPrepared) {
+                File dir = new File(Config.MV_DIR);
+                dir.mkdirs();
+                String[] fs = getAssets().list("mvs");
+                for (String file : fs) {
+                    InputStream is = getAssets().open("mvs/" + file);
+                    FileOutputStream fos = new FileOutputStream(new File(dir, file));
+                    byte[] buffer = new byte[1024];
+                    int byteCount;
+                    while ((byteCount = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, byteCount);
+                    }
+                    fos.flush();
+                    is.close();
+                    fos.close();
+                }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Config.SP_RESOURCE_PREPARED_MV, true);
+                editor.apply();
+            }
+
+
+            // copy gif assets to sdcard
             File dir = new File(Config.GIF_STICKER_DIR);
-            if (!dir.exists()) {
+            if (!gifPrepared) {
                 dir.mkdirs();
                 String[] fs = getAssets().list("gif");
                 for (String file : fs) {
@@ -334,6 +361,9 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                     is.close();
                     fos.close();
                 }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Config.SP_RESOURCE_PREPARED_GIF, true);
+                editor.apply();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -942,26 +972,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onClickShowMVs(View v) {
         setPanelVisibility(mFiltersList, true);
         try {
-            File dir = new File(Config.MV_DIR);
-            // copy mv assets to sdcard
-            if (!dir.exists()) {
-                dir.mkdirs();
-                String[] fs = getAssets().list("mvs");
-                for (String file : fs) {
-                    InputStream is = getAssets().open("mvs/" + file);
-                    FileOutputStream fos = new FileOutputStream(new File(dir, file));
-                    byte[] buffer = new byte[1024];
-                    int byteCount;
-                    while ((byteCount = is.read(buffer)) != -1) {
-                        fos.write(buffer, 0, byteCount);
-                    }
-                    fos.flush();
-                    is.close();
-                    fos.close();
-                }
-            }
-
-            FileReader jsonFile = new FileReader(new File(dir, "plsMVs.json"));
+            FileReader jsonFile = new FileReader(new File(Config.MV_DIR, "plsMVs.json"));
             StringBuilder sb = new StringBuilder();
             int read;
             char[] buf = new char[2048];

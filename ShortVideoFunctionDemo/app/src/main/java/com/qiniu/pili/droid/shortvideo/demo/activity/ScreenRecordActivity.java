@@ -1,5 +1,9 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,8 +34,13 @@ import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 
 import java.io.File;
 
+import static android.app.Notification.VISIBILITY_PRIVATE;
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 public class ScreenRecordActivity extends AppCompatActivity implements PLScreenRecordStateListener {
     private static final String TAG = "ScreenRecordActivity";
+
+    private final int NOTIFICATION_ID = 1010100;
 
     private PLScreenRecorder mScreenRecorder;
     private TextView mTipTextView;
@@ -53,16 +62,8 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
             PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
             mScreenRecorder.prepare(screenSetting, microphoneSetting);
         }
+        mScreenRecorder.setNotification(NOTIFICATION_ID, createNotification());
         mScreenRecorder.requestScreenRecord();
-    }
-
-    private boolean startScreenRecord(int requestCode, int resultCode, Intent data) {
-        boolean isReady = mScreenRecorder.onActivityResult(requestCode, resultCode, data);
-        if (isReady) {
-            mScreenRecorder.start();
-        }
-
-        return isReady;
     }
 
     private void stopScreenRecord() {
@@ -152,10 +153,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
             }
 
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            if (startScreenRecord(requestCode, resultCode, data)) {
-                Toast.makeText(this, "正在进行录屏...", Toast.LENGTH_SHORT).show();
-                moveTaskToBack(true);
-            }
+            mScreenRecorder.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -166,8 +164,10 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
 
     @Override
     public void onReady() {
-        String tip = "录屏初始化成功！";
-        updateTip(tip);
+        mScreenRecorder.start();
+        updateTip("录屏初始化成功！");
+        Toast.makeText(this, "正在进行录屏...", Toast.LENGTH_SHORT).show();
+        moveTaskToBack(true);
     }
 
     @Override
@@ -194,6 +194,33 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
             String tip = "已经停止录屏！";
             updateTip(tip);
         });
+    }
+
+    private Notification createNotification() {
+        Notification.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(this.getApplicationContext(), "screenRecorder");
+        } else {
+            builder = new Notification.Builder(this.getApplicationContext());
+        }
+        Intent intent = new Intent(this, ScreenRecordActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_UPDATE_CURRENT);
+        builder.setSmallIcon(R.drawable.qiniu_logo)
+                .setContentTitle("七牛推流")
+                .setContentText("正在录屏ing")
+                .setContentIntent(pendingIntent)
+                .setShowWhen(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setVisibility(VISIBILITY_PRIVATE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel("screenRecorder", "screenRecorder", NotificationManager.IMPORTANCE_HIGH);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+        return builder.build();
     }
 
 }

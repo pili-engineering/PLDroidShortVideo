@@ -61,7 +61,6 @@ public class MakeGIFActivity extends AppCompatActivity {
     private EditText mGIFFrameRateText;
     private EditText mGIFStartTimeText;
     private EditText mGIFEndTimeText;
-    public static final String OUTPUT_GIF_COVER_PATH = "/sdcard/ShortVideo/gif_cover.gif";
 
 
     @Override
@@ -228,12 +227,12 @@ public class MakeGIFActivity extends AppCompatActivity {
 
         mProcessingDialog.show();
         mShortVideoComposer.extractVideoToGIF(mInputFilePath, startTime * 1000, endTime * 1000, totalFrameCount,
-                outputWeight, outputHeight, gifFrameRate, true, OUTPUT_GIF_COVER_PATH, new PLVideoSaveListener() {
+                outputWeight, outputHeight, gifFrameRate, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
                     @Override
                     public void onSaveVideoSuccess(String s) {
                         mProcessingDialog.dismiss();
                         Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
-                        intent.putExtra(ShowGIFActivity.GIF_PATH, OUTPUT_GIF_COVER_PATH);
+                        intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);
                         startActivity(intent);
                     }
 
@@ -275,7 +274,7 @@ public class MakeGIFActivity extends AppCompatActivity {
                 mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
                     @Override
                     public void onSaveVideoSuccess(String filepath) {
-                        MediaStoreUtils.storeImage(MakeGIFActivity.this, new File(filepath), "iamge/gif");
+                        MediaStoreUtils.storeImage(MakeGIFActivity.this, new File(filepath), "image/gif");
                         mProcessingDialog.dismiss();
                         Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
                         intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);

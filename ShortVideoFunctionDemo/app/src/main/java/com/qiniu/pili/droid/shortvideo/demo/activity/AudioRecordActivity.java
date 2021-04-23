@@ -97,7 +97,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
                     } else {
                         ToastUtils.showShortToast(AudioRecordActivity.this, "无法开始视频段录制");
                     }
-                } else if (action == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     mShortAudioRecorder.endSection();
                     updateRecordingBtns(false);
                 }

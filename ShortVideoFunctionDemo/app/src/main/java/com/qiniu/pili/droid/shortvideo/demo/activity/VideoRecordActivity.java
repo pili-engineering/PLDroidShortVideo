@@ -1,6 +1,7 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -88,6 +89,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     private boolean mFlashEnabled;
     private boolean mIsEditVideo = false;
+    private boolean mMusicLoop = true;
 
     private GestureDetector mGestureDetector;
 
@@ -229,7 +231,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                     } else {
                         ToastUtils.showShortToast(VideoRecordActivity.this, "无法开始视频段录制");
                     }
-                } else if (action == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     endSection();
                 }
 
@@ -368,11 +370,20 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
     }
 
     public void onClickAddMixAudio(View v) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("audio/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 0);
+        new AlertDialog.Builder(this)
+                .setItems(new String[]{"循环", "单次"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mMusicLoop = which == 0;
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.setType("audio/*");
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        startActivityForResult(intent, 0);
+                    }
+                })
+                .show();
     }
 
     public void onClickSaveToDraft(View v) {
@@ -395,6 +406,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             Log.i(TAG, "Select file: " + selectedFilepath);
             if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                 mShortVideoRecorder.setMusicFile(selectedFilepath);
+                mShortVideoRecorder.setMusicLoop(mMusicLoop);
             }
         }
     }
@@ -673,5 +685,17 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
             mShortVideoRecorder.endSection();
             mSectionBegan = false;
         }
+    }
+
+    public void onClickWhiteBalance(View view) {
+        String[] wbs = mShortVideoRecorder.getSupportedWhiteBalanceMode().toArray(new String[0]);
+        new AlertDialog.Builder(this)
+                .setItems(wbs, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mShortVideoRecorder.setWhiteBalanceMode(wbs[which]);
+                    }
+                })
+                .show();
     }
 }

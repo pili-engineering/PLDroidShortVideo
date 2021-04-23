@@ -103,7 +103,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
                     } else {
                         ToastUtils.showShortToast(VideoDubActivity.this, "无法开始视频段录制");
                     }
-                } else if (action == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     mShortAudioRecorder.endSection();
                     mShortVideoEditor.pausePlayback();
                     updateRecordingBtns(false);

@@ -35,6 +35,16 @@
             android:layout_marginTop="15dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/white_balance"
+        android:text="白平衡"
+        android:textColor="@android:color/black"
+        android:background="@color/transparent"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickWhiteBalance"/>
+
     <LinearLayout
         android:id="@+id/ll_speed"
         android:layout_width="match_parent"

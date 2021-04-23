@@ -8,14 +8,14 @@ repositories {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.qiniu.pili.droid.shortvideo.demo"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 32
-        versionName "3.2.1"
+        versionCode 33
+        versionName "3.2.2"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -43,9 +43,6 @@ dependencies {
     implementation 'com.qiniu:qiniu-android-sdk:7.6.4'
     // 播放器 sdk ，非必须
     implementation files('libs/pldroid-player-2.1.8.jar')
-    // 如果接入 EasyAR 则需要依赖
-    implementation files('libs/EasyAR.jar')
-    implementation files('libs/EasyAR3D.jar')
     // UI 控件库，非必须
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
@@ -64,6 +61,6 @@ dependencies {
         implementation project(':library')
     } else {
         // 短视频 SDK jar 包，必须依赖
-        implementation files('libs/pldroid-shortvideo-3.2.1.jar')
+        implementation files('libs/pldroid-shortvideo-3.2.2.jar')
     }
 }

@@ -18,3 +18,4 @@
 -keep class com.qiniu.pili.droid.**{*;}
 -keep class com.pili.pldroid.player.**{*;}
 -keep class com.qiniu.qplayer.mediaEngine.MediaPlayer{*;}
+-keep class com.qiniu.droid.media.**{*;}
