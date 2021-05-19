@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'cca3a711-207a-49fe-9e00-6a75903b306e', url: 'git@github.com:Jenny-Zeng/PLDroidShortVideo.git']]])
+            }
+        }
+        stage('build') {
+            steps {
+                sh '''cd /Users/zengzhaoxia/.jenkins/workspace/PipelineTest/ShortVideoFunctionDemo
+./gradlew assembleRelease'''
+            }
+        }
+    }
+}
