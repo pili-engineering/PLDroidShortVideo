@@ -47,7 +47,6 @@ public class ImageComposeActivity extends AppCompatActivity {
     private CustomProgressDialog mProcessingDialog;
     private PLShortVideoComposer mShortVideoComposer;
     private ImageListAdapter mImageListAdapter;
-    private ListView mImageListView;
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
     private TextView mAudioPathText;
@@ -67,13 +66,13 @@ public class ImageComposeActivity extends AppCompatActivity {
 
         setTitle(R.string.title_image_compose);
 
-        mImageListView = (ListView) findViewById(R.id.ImageListView);
+        ListView imageListView = findViewById(R.id.ImageListView);
         mImageListAdapter = new ImageListAdapter(this);
-        mImageListView.setAdapter(mImageListAdapter);
+        imageListView.setAdapter(mImageListAdapter);
 
-        mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
-        mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
-        mAudioPathText = (TextView) findViewById(R.id.AudioFileTextView);
+        mEncodingSizeLevelSpinner = findViewById(R.id.EncodingSizeLevelSpinner);
+        mEncodingBitrateLevelSpinner = findViewById(R.id.EncodingBitrateLevelSpinner);
+        mAudioPathText = findViewById(R.id.AudioFileTextView);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter1);
@@ -88,14 +87,14 @@ public class ImageComposeActivity extends AppCompatActivity {
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeImages());
 
-        mImageListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
+        imageListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
 
-        mImageListView.setOnItemLongClickListener((parent, view, position, id) -> {
+        imageListView.setOnItemLongClickListener((parent, view, position, id) -> {
             mDeletePosition = position;
             return false;
         });
 
-        mImageListView.setOnItemClickListener((parent, view, position, id) -> createEditDialog(position));
+        imageListView.setOnItemClickListener((parent, view, position, id) -> createEditDialog(position));
     }
 
     public void createEditDialog(final int position) {
@@ -105,8 +104,8 @@ public class ImageComposeActivity extends AppCompatActivity {
         }
 
         View view = View.inflate(this, R.layout.dialog_edit_image_compose, null);
-        final EditText editDuration = (EditText) view.findViewById(R.id.EditDuration);
-        final EditText editTransTime = (EditText) view.findViewById(R.id.EditTransitionTime);
+        final EditText editDuration = view.findViewById(R.id.EditDuration);
+        final EditText editTransTime = view.findViewById(R.id.EditTransitionTime);
 
         editDuration.setText(String.valueOf(item.getDurationMs()));
         editTransTime.setText(String.valueOf(item.getTransitionTimeMs()));
@@ -130,7 +129,7 @@ public class ImageComposeActivity extends AppCompatActivity {
                 try {
                     newItem.setDurationMs(duration);
                 } catch (IllegalArgumentException e) {
-                    ToastUtils.showShortToast(ImageComposeActivity.this, "持续时间必须要大于0 ！");
+                    ToastUtils.showShortToast("持续时间必须要大于0 ！");
                     return;
                 }
                 newItem.setTransitionTimeMs(transTime);
@@ -182,10 +181,11 @@ public class ImageComposeActivity extends AppCompatActivity {
     public void onClickCompose(View v) {
         List<PLComposeItem> items = mImageListAdapter.getItemList();
         if (items.size() < 1) {
-            ToastUtils.showShortToast(this, "请先添加至少 1 个图片");
+            ToastUtils.showShortToast("请先添加至少 1 个图片");
             return;
         }
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
@@ -193,7 +193,7 @@ public class ImageComposeActivity extends AppCompatActivity {
         mShortVideoComposer.composeImages(items, mAudioFilePath, true, Config.IMAGE_COMPOSE_FILE_PATH, displayMode, setting, mVideoSaveListener);
     }
 
-    private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
+    private final PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
             MediaStoreUtils.storeVideo(ImageComposeActivity.this, new File(filepath), "video/mp4");
@@ -205,7 +205,7 @@ public class ImageComposeActivity extends AppCompatActivity {
         public void onSaveVideoFailed(final int errorCode) {
             runOnUiThread(() -> {
                 mProcessingDialog.dismiss();
-                ToastUtils.toastErrorCode(ImageComposeActivity.this, errorCode);
+                ToastUtils.toastErrorCode(errorCode);
             });
         }
 
@@ -245,7 +245,7 @@ public class ImageComposeActivity extends AppCompatActivity {
                     item.setDurationMs(DEFULT_DURATION).setTransitionTimeMs(DEFULT_TRANS_TIME);
                     mImageListAdapter.addItem(item);
                     mImageListAdapter.notifyDataSetChanged();
-                    ToastUtils.showShortToast(this, "单击条目可以进行编辑，长按可以删除");
+                    ToastUtils.showShortToast("单击条目可以进行编辑，长按可以删除");
                 }
             } else if (requestCode == REQUEST_AUDIO_CODE) {
                 mAudioFilePath = GetPathFromUri.getPath(this, data.getData());

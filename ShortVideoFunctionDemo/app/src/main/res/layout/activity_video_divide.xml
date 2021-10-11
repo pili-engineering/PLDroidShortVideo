@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_back"
+            android:background="@drawable/btn_back"
             android:onClick="onClickBack" />
 
         <TextView
@@ -28,11 +28,10 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_next"
+            android:background="@drawable/btn_next"
             android:onClick="onClickDone" />
     </LinearLayout>
 
@@ -55,7 +54,7 @@
             android:layout_marginTop="300dp"
             android:background="#0000"
             android:onClick="onClickPlayback"
-            android:src="@mipmap/btn_pause" />
+            android:src="@drawable/btn_pause" />
     </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
 
     <RelativeLayout

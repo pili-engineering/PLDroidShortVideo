@@ -3,11 +3,9 @@
     <color name="colorPrimary">#0090CC</color>
     <color name="colorPrimaryDark">#0090CC</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorTextBG">#cc222222</color>
     <color name="colorSpeedPanel">#99222222</color>
 
     <color name="white">#FFFFFF</color>
-    <color name="red">#FF0000</color>
 
     <color name="text1">#FFFFFF</color>
     <color name="text2">#ffefa8</color>
@@ -33,13 +31,6 @@
     <color name="paint9">#00ff00</color>
     <color name="paint10">#0000ff</color>
 
-    <color name="effectBar1">#ffefa8</color>
-    <color name="effectBar2">#fccaff</color>
-    <color name="effectBar3">#61dcff</color>
-    <color name="effectBar4">#ffc502</color>
-    <color name="effectBar5">#ff8621</color>
-    <color name="effectBar6">#7777ff</color>
-
     <color name="speedTextNormal">#ffdddddd</color>
     <color name="textSelectorBG">#2d2b39</color>
 
@@ -49,32 +40,13 @@
     <color name="frameSelectorBody">#8061dcff</color>
     <color name="videoFrameActivityMiddleBG">#222222</color>
     <color name="videoFrameActivityBottomBG">#1a1a1a</color>
-    <color name="half_transparent_black">#44000000</color>
 
     <!-- color -->
-    <color name="lsq_color_white">#ffffff</color>
-    <color name="lsq_color_black">#000000</color>
-    <color name="lsq_color_red">#ff0000</color>
-    <color name="lsq_color_gray">#707070</color>
     <color name="lsq_color_gray_bg">#F0F0F0</color>
-    <color name="lsq_color_orange">#ff6633</color>
-    <color name="lsq_color_transparent">#00000000</color>
-    <color name="lsq_color_semitransparent">#7f000000</color>
 
     <!-- seekbar -->
-    <color name="lsq_seekbar_drag_color">#f4a11a</color>
-    <color name="lsq_seekbar_view_color">#d9d9d9</color>
-    <color name="lsq_dubbing_unselected_color">#9B9B9B</color>
-    <color name="lsq_dubbing_bg_color">#EFEFEF</color>
-    <color name="lsq_dubbing_record_selected_color">#c17111</color>
-    <color name="lsq_clip_title_color">#3e3e39</color>
-    <color name="lsq_filter_title_color">#f4a11a</color>
-    <color name="lsq_filter_title_default_color">#9fa0a0</color>
 
     <!-- alpha -->
-    <color name="lsq_alpha_black_66">#66000000</color>
-    <color name="lsq_alpha_black_B4">#B4000000</color>
-    <color name="lsq_alpha_black_CO">#C0000000</color>
 
     <color name="transparent">#00000000</color>
 </resources>

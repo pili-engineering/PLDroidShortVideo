@@ -5,7 +5,6 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/add_video_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -13,7 +12,6 @@
         android:text="添加视频" />
 
     <Button
-        android:id="@+id/start_compose_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -47,7 +45,6 @@
             android:text="Fit" />
 
         <RadioButton
-            android:id="@+id/rb_mode_full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"

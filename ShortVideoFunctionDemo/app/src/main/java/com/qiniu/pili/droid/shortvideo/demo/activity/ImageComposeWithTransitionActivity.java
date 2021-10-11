@@ -39,6 +39,7 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
+import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,10 +59,10 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
     private Button mBtnPause;
     private Button mBtnStop;
     private Button mBtnSave;
-    private RecyclerView mRVVideo;
-    private List<PLComposeItem> mImageItemList = new ArrayList<>();
+    private Button mBtnCancel;
+    private final List<PLComposeItem> mImageItemList = new ArrayList<>();
     private RecyclerView.Adapter<RecyclerView.ViewHolder> mAdapter;
-    private Map<String, PLTransitionType> mTransitionMap = new HashMap<>();
+    private final Map<String, PLTransitionType> mTransitionMap = new HashMap<>();
     private PLImageComposer mImageComposer;
 
     @Override
@@ -70,15 +71,16 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_compose_with_transition);
         prepareTransitions();
 
-        mTexturePreview = (TextureView) findViewById(R.id.texture_preview);
-        mProgressBar = (SeekBar) findViewById(R.id.seek_bar);
-        mBtnAddImage = (Button) findViewById(R.id.btn_add_image);
-        mBtnStart = (Button) findViewById(R.id.btn_start);
-        mBtnResume = (Button) findViewById(R.id.btn_resume);
-        mBtnPause = (Button) findViewById(R.id.btn_pause);
-        mBtnStop = (Button) findViewById(R.id.btn_stop);
-        mBtnSave = (Button) findViewById(R.id.btn_save);
-        mRVVideo = (RecyclerView) findViewById(R.id.rv_video);
+        mTexturePreview = findViewById(R.id.texture_preview);
+        mProgressBar = findViewById(R.id.seek_bar);
+        mBtnAddImage = findViewById(R.id.btn_add_image);
+        mBtnStart = findViewById(R.id.btn_start);
+        mBtnResume = findViewById(R.id.btn_resume);
+        mBtnPause = findViewById(R.id.btn_pause);
+        mBtnStop = findViewById(R.id.btn_stop);
+        mBtnSave = findViewById(R.id.btn_save);
+        mBtnCancel = findViewById(R.id.btn_cancel);
+        RecyclerView recyclerView = findViewById(R.id.rv_video);
 
         mAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             @NonNull
@@ -108,11 +110,10 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
                 return mImageItemList.size();
             }
         };
-        mRVVideo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mRVVideo.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(mAdapter);
 
         mImageComposer = new PLImageComposer(this);
-        mImageComposer.setPreviewLoop(true);
         mImageComposer.setPreviewListener(new PLPreviewListener() {
             @Override
             public void onProgress(float progress) {
@@ -210,24 +211,37 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PLVideoEncodeSetting exportConfig = new PLVideoEncodeSetting(ImageComposeWithTransitionActivity.this);
+                if (mImageItemList.size() == 0) {
+                    ToastUtils.showShortToast("请至少添加一项");
+                    return;
+                }
+                stateChange(true);
                 mImageComposer.save(Config.COMPOSE_WITH_TRANSITION_FILE_PATH, exportConfig, new PLVideoSaveListener() {
                     @Override
                     public void onSaveVideoSuccess(final String filepath) {
                         MediaStoreUtils.storeVideo(ImageComposeWithTransitionActivity.this, new File(filepath), "video/mp4");
                         runOnUiThread(() -> {
+                            stateChange(false);
                             Toast.makeText(ImageComposeWithTransitionActivity.this, "合成成功", Toast.LENGTH_SHORT).show();
                             PlaybackActivity.start(ImageComposeWithTransitionActivity.this, filepath);
                         });
                     }
 
                     @Override
-                    public void onSaveVideoFailed(int i) {
-
+                    public void onSaveVideoFailed(int errorCode) {
+                        runOnUiThread(() -> {
+                            stateChange(false);
+                            ToastUtils.showShortToast("错误码：" + errorCode);
+                        });
                     }
 
                     @Override
                     public void onSaveVideoCanceled() {
-                        runOnUiThread(() -> Toast.makeText(ImageComposeWithTransitionActivity.this, "停止合成", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> {
+                            stateChange(false);
+                            Toast.makeText(ImageComposeWithTransitionActivity.this, "停止合成", Toast.LENGTH_SHORT).show();
+
+                        });
                     }
 
                     @Override
@@ -237,6 +251,26 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
                 });
             }
         });
+
+        mBtnCancel.setOnClickListener(v -> mImageComposer.cancelSave());
+    }
+
+    private void stateChange(boolean processing) {
+        if (processing) {
+            mBtnAddImage.setEnabled(false);
+            mBtnStart.setEnabled(false);
+            mBtnResume.setEnabled(false);
+            mBtnPause.setEnabled(false);
+            mBtnStop.setEnabled(false);
+            mBtnSave.setEnabled(false);
+        } else {
+            mBtnAddImage.setEnabled(true);
+            mBtnStart.setEnabled(true);
+            mBtnResume.setEnabled(true);
+            mBtnPause.setEnabled(true);
+            mBtnStop.setEnabled(true);
+            mBtnSave.setEnabled(true);
+        }
     }
 
     @Override
@@ -279,15 +313,12 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setView(view)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        long imageDuration = Long.parseLong(etImageDuration.getText().toString());
-                        long transitionDuration = Long.parseLong(etTransitionDuration.getText().toString());
-                        PLTransitionType transitionType = mTransitionMap.get(currentKey[0]);
-                        addItem(selectedFilepath, imageDuration, transitionDuration, transitionType);
-                        dialog.dismiss();
-                    }
+                .setPositiveButton("确定", (dialog, which) -> {
+                    long imageDuration = Long.parseLong(etImageDuration.getText().toString());
+                    long transitionDuration = Long.parseLong(etTransitionDuration.getText().toString());
+                    PLTransitionType transitionType = mTransitionMap.get(currentKey[0]);
+                    addItem(selectedFilepath, imageDuration, transitionDuration, transitionType);
+                    dialog.dismiss();
                 })
                 .show();
     }
@@ -327,8 +358,8 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
 
         public ItemViewHolder(Context context) {
             super(LayoutInflater.from(context).inflate(R.layout.holder_image_composer, null));
-            imageView = (ImageView) itemView.findViewById(R.id.image_view);
-            textView = (TextView) itemView.findViewById(R.id.text_view);
+            imageView = itemView.findViewById(R.id.image_view);
+            textView = itemView.findViewById(R.id.text_view);
         }
     }
 

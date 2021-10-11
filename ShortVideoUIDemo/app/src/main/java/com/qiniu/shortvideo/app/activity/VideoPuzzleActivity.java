@@ -32,10 +32,12 @@ import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 import com.qiniu.shortvideo.app.R;
 import com.qiniu.shortvideo.app.model.MediaFile;
 import com.qiniu.shortvideo.app.utils.Config;
+import com.qiniu.shortvideo.app.utils.MediaUtils;
 import com.qiniu.shortvideo.app.utils.RecordSettings;
 import com.qiniu.shortvideo.app.utils.ToastUtils;
 import com.qiniu.shortvideo.app.view.CustomProgressDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -290,6 +292,7 @@ public class VideoPuzzleActivity extends AppCompatActivity {
         mShortVideoMixer.mix(items, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(String destFile) {
+                MediaUtils.storeVideo(VideoPuzzleActivity.this, new File(destFile), Config.MIME_TYPE_VIDEO);
                 mProcessingDialog.dismiss();
                 Intent intent = new Intent(VideoPuzzleActivity.this, VideoTrimActivity.class);
                 intent.putExtra(VIDEO_PATH, destFile);

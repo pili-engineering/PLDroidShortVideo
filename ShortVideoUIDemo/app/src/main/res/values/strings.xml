@@ -63,6 +63,7 @@
     <string name="desc_paint_size">画笔大小</string>
 
     <string name="mv_btn_string">MV</string>
+    <string name="mv_title">MV（专业版功能）</string>
     <string name="gif_sticker_string">动态贴纸</string>
     <string name="gif_btn_string">动图</string>
     <string name="text_effect_string">文字特效</string>
@@ -100,4 +101,8 @@
     <string name="lsq_filter_LiveMirrorImage01">镜像</string>
     <string name="lsq_filter_LiveSlosh01">晃动</string>
     <string name="lsq_filter_LiveOldTV01">旧电视</string>
+    
+    <string name="tips_qiniu_partner">请注意：该功能由七牛合作商提供，详情请咨询商务人员。</string>
+    <string name="tips_professional_only">该功能为专业版功能</string>
+    <string name="tips_audio_mix">添加单个音频为基础版功能，添加多个音频属于专业版功能。</string>
 </resources>

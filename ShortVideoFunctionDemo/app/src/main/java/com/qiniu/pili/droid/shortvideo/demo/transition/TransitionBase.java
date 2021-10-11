@@ -12,7 +12,7 @@ import com.qiniu.pili.droid.shortvideo.demo.view.TransitionTextView;
 public class TransitionBase {
     protected static final int DURATION = 2500;
 
-    private ViewGroup mViewGroup;
+    private final ViewGroup mViewGroup;
 
     protected PLTransitionMaker mTransitionMaker;
     protected Context mContext;

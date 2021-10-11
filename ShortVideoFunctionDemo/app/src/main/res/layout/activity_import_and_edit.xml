@@ -13,7 +13,7 @@
 
         <ImageView
             android:onClick="onClickBack"
-            android:src="@mipmap/btn_back"
+            android:src="@drawable/btn_back"
             android:scaleType="centerInside"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
@@ -34,7 +34,6 @@
         android:orientation="vertical">
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/video_trim_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1px"
@@ -42,7 +41,6 @@
             app:text="@string/title_trim" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/video_divide_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -50,7 +48,6 @@
             app:text="@string/title_video_divide" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/video_compose_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -58,7 +55,6 @@
             app:text="@string/title_compose" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/video_transcode_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -66,7 +62,6 @@
             app:text="@string/title_transcode" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/multiple_compose_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -74,7 +69,6 @@
             app:text="@string/title_multiple_compose" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-            android:id="@+id/external_media_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"

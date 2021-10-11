@@ -62,4 +62,15 @@
         app:layout_constraintStart_toStartOf="@+id/puzzle_3video_img"
         app:layout_constraintTop_toBottomOf="@+id/puzzle_3video_img"
         app:srcCompat="@mipmap/puzzle_4video" />
+
+    <TextView
+        android:id="@+id/versional_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/tips_professional_only"
+        android:textColor="@color/tips_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

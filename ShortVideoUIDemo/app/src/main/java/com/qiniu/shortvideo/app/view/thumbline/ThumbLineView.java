@@ -124,7 +124,6 @@ public class ThumbLineView extends FrameLayout {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mIsTouching = true;
-
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
@@ -183,6 +182,10 @@ public class ThumbLineView extends FrameLayout {
             mThumbLineViewAdapter = new ThumbLineViewAdapter(mThumbLineViewSettings);
             mThumbRecyclerView.setAdapter(mThumbLineViewAdapter);
         }
+    }
+
+    public RecyclerView getThumbRecyclerView() {
+        return mThumbRecyclerView;
     }
 
     public float getThumbLineViewWidth() {

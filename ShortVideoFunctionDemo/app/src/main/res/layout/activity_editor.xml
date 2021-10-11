@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_back"
+            android:background="@drawable/btn_back"
             android:onClick="onClickBack" />
 
         <TextView
@@ -28,16 +28,14 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_next"
+            android:background="@drawable/btn_next"
             android:onClick="onSaveEdit" />
     </LinearLayout>
 
     <com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout
-        android:id="@+id/preview_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_layout">
@@ -51,13 +49,13 @@
             android:id="@+id/pause_playback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/preview"
             android:layout_alignEnd="@id/preview"
-            android:layout_marginBottom="8dp"
+            android:layout_alignBottom="@id/preview"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:background="#0000"
             android:onClick="onClickTogglePlayback"
-            android:src="@mipmap/btn_pause" />
+            android:src="@drawable/btn_pause" />
 
         <FrameLayout
             android:id="@+id/sticker_container_view"
@@ -68,8 +66,8 @@
         <com.qiniu.pili.droid.shortvideo.demo.view.FrameListView
             android:id="@+id/frame_list_view"
             android:layout_width="match_parent"
-            android:layout_alignTop="@id/preview"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/preview">
 
         </com.qiniu.pili.droid.shortvideo.demo.view.FrameListView>
 
@@ -78,9 +76,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/preview"
-            android:layout_marginBottom="15dp"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/speed_panel"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -178,151 +176,147 @@
         android:id="@+id/paint_selector_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"></com.qiniu.pili.droid.shortvideo.demo.view.PaintSelectorPanel>
+        android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/editing_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/filters_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickShowFilters"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="滤镜"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/mvs_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickShowMVs"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="MV"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/paint_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickShowPaint"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="涂鸦"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/image_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickShowImages"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="贴图"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/speed_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickShowSpeed"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="变速"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/rotate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickRotate"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="旋转"
                     android:textColor="#fff"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/multiple_audio_mixing_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickMultipleAudioMixing"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="多重混音"
                     android:textColor="#fff"
-                    android:textSize="15sp"  />
+                    android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/gif_watermark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/border_text_view"
                     android:clickable="true"
                     android:onClick="onClickToggleGifWatermark"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="GIF 动图"
                     android:textColor="#fff"
                     android:textSize="15sp" />
+
             </LinearLayout>
+
         </HorizontalScrollView>
 
         <com.qiniu.pili.droid.shortvideo.demo.view.ImageSelectorPanel
@@ -358,31 +352,28 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/mix_audio_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickMix"
-                android:src="@mipmap/btn_mix_audio" />
+                android:src="@drawable/btn_mix_audio" />
 
             <ImageButton
-                android:id="@+id/mix_audio_setting_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickAudioMixSetting"
-                android:src="@mipmap/btn_set_volume" />
+                android:src="@drawable/btn_set_volume" />
 
             <ImageButton
-                android:id="@+id/reset_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickReset"
-                android:src="@mipmap/btn_reset" />
+                android:src="@drawable/btn_reset" />
 
             <ImageButton
                 android:id="@+id/mute_button"
@@ -390,34 +381,35 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
-                android:onClick="onClickMute" />
+                android:onClick="onClickMute"
+                android:src="@drawable/btn_unmute" />
 
             <ImageButton
-                android:id="@+id/toggle_watermark_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickToggleWatermark"
-                android:src="@mipmap/btn_watermark" />
+                android:src="@drawable/btn_watermark" />
 
             <ImageButton
-                android:id="@+id/text_select_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickTextSelect"
-                android:src="@mipmap/btn_add_text" />
+                android:src="@drawable/btn_add_text" />
 
             <ImageButton
-                android:id="@+id/audio_dub_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#000"
                 android:onClick="onClickDubAudio"
-                android:src="@mipmap/btn_dub" />
+                android:src="@drawable/btn_dub" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>

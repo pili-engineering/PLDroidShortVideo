@@ -16,53 +16,53 @@
             android:layout_height="35dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:background="@mipmap/btn_back"
+            android:background="@drawable/btn_back"
             android:onClick="onBackClicked" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1">
 
             <RelativeLayout
                 android:id="@+id/transition_container0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"></RelativeLayout>
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/transition_container1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></RelativeLayout>
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/transition_container2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></RelativeLayout>
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/transition_container3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></RelativeLayout>
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/transition_container4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></RelativeLayout>
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/transition_container5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></RelativeLayout>
+                android:visibility="invisible" />
         </FrameLayout>
 
         <LinearLayout
@@ -105,19 +105,24 @@
                         android:onClick="onSaveClicked"
                         android:text="@string/transition_maker_confirm"
                         android:textColor="@color/colorAccent" />
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_transition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
+
     </LinearLayout>
 
     <com.qiniu.pili.droid.shortvideo.demo.view.TransitionEditView
         android:id="@+id/transition_edit_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"></com.qiniu.pili.droid.shortvideo.demo.view.TransitionEditView>
+        android:visibility="gone" />
+
 </FrameLayout>

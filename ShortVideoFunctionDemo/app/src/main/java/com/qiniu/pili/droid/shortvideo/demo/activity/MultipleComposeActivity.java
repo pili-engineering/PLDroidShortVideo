@@ -35,7 +35,7 @@ import java.util.List;
 
 public class MultipleComposeActivity extends AppCompatActivity {
 
-    private static final String TAG = MultipleComposeActivity.class.getSimpleName();
+    private static final String TAG = "MultipleComposeActivity";
     public static final int REQUEST_AUDIO_CODE = 101;
     public static final int REQUEST_VIDEO_CODE = 102;
     public static final int REQUEST_IMAGE_CODE = 103;
@@ -64,12 +64,12 @@ public class MultipleComposeActivity extends AppCompatActivity {
 
         setTitle(R.string.title_multiple_compose);
 
-        mVideoListView = (ListView) findViewById(R.id.VideoListView);
+        mVideoListView = findViewById(R.id.VideoListView);
         mItemListAdapter = new ComposeItemListAdapter(this);
         mVideoListView.setAdapter(mItemListAdapter);
 
-        mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
-        mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
+        mEncodingSizeLevelSpinner = findViewById(R.id.EncodingSizeLevelSpinner);
+        mEncodingBitrateLevelSpinner = findViewById(R.id.EncodingBitrateLevelSpinner);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter1);
@@ -132,12 +132,13 @@ public class MultipleComposeActivity extends AppCompatActivity {
         setting.setEncodingFps(25);
         if (mShortVideoComposer.composeItems(itemList, Config.COMPOSE_FILE_PATH, setting, mMixFilePath, 1, 1, mVideoSaveListener)) {
             mProcessingDialog.show();
+            mProcessingDialog.setProgress(0);
         } else {
-            ToastUtils.showShortToast(this, "开始拼接失败！");
+            ToastUtils.showShortToast("开始拼接失败！");
         }
     }
 
-    private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
+    private final PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
             MediaStoreUtils.storeVideo(MultipleComposeActivity.this, new File(filepath), "video/mp4");
@@ -149,7 +150,7 @@ public class MultipleComposeActivity extends AppCompatActivity {
         public void onSaveVideoFailed(final int errorCode) {
             runOnUiThread(() -> {
                 mProcessingDialog.dismiss();
-                ToastUtils.toastErrorCode(MultipleComposeActivity.this, errorCode);
+                ToastUtils.toastErrorCode(errorCode);
             });
         }
 
@@ -191,6 +192,8 @@ public class MultipleComposeActivity extends AppCompatActivity {
                     mItemListAdapter.notifyDataSetChanged();
                     break;
                 }
+                default:
+                    break;
             }
         }
     }

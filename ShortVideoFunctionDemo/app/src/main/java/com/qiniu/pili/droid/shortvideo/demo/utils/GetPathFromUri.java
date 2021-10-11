@@ -26,12 +26,12 @@ public class GetPathFromUri {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    return Environment.getExternalStorageState() + "/" + split[1];
                 }
 
                 // TODO handle non-primary volumes
                 if ("5D68-9217".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    return Environment.getExternalStorageState() + "/" + split[1];
                 }
             }
             // DownloadsProvider
@@ -94,8 +94,8 @@ public class GetPathFromUri {
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
-                final int column_index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(column_index);
+                final int columnIndex = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(columnIndex);
             }
         } finally {
             if (cursor != null) {

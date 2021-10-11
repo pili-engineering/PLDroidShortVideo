@@ -19,7 +19,6 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/iv_config"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="right"
@@ -40,7 +39,6 @@
             android:orientation="vertical">
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/video_record_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1px"
@@ -48,7 +46,6 @@
                 app:text="@string/title_record" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/audio_record_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1px"
@@ -56,7 +53,6 @@
                 app:text="@string/title_audio_record" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/screen_record_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -72,7 +68,6 @@
                 app:text="@string/title_import_and_edit" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/mix_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -80,7 +75,6 @@
                 app:text="制作视频合拍" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/video_mix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -88,7 +82,6 @@
                 app:text="制作视频拼图" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/image_compose_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -103,7 +96,6 @@
                 app:text="图片拼接（预览+转场）" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/gif_make_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -112,7 +104,6 @@
                 app:text="@string/title_gif" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
-                android:id="@+id/draft_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"

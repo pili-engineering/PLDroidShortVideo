@@ -16,7 +16,7 @@
             android:layout_height="48dp"
             android:onClick="onClickBack"
             android:scaleType="centerInside"
-            android:src="@mipmap/btn_back" />
+            android:src="@drawable/btn_back" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -27,16 +27,14 @@
         android:layout_margin="15dp">
 
         <ImageView
-            android:id="@+id/screen_rotate_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:clickable="true"
             android:onClick="onScreenRotation"
-            android:src="@mipmap/btn_screen_rotation" />
+            android:src="@drawable/btn_screen_rotation" />
 
         <ImageView
-            android:id="@+id/capture_frame_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
@@ -76,12 +74,11 @@
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/adjust_brightness_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:onClick="onClickBrightness"
-            android:src="@mipmap/btn_brightness" />
+            android:src="@drawable/btn_brightness" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.VerticalSeekBar
             android:id="@+id/adjust_brightness"
@@ -167,7 +164,6 @@
 
 
     <LinearLayout
-        android:id="@+id/btns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -177,19 +173,17 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/bottom_control_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/audio_mix_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:onClick="onClickAddMixAudio"
-                android:src="@mipmap/btn_mix_audio" />
+                android:src="@drawable/btn_mix_audio" />
 
             <ImageView
                 android:id="@+id/concat"

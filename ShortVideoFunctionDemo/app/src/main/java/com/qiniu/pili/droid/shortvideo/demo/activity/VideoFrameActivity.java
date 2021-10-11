@@ -3,16 +3,15 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
@@ -35,8 +34,6 @@ public class VideoFrameActivity extends Activity {
     public static final String DATA_EXTRA_PATH = "path";
     public static final String DATA_EXTRA_JUMP = "jump";
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
     private PLShortVideoComposer mShortVideoComposer;
     private CustomProgressDialog mProcessingDialog;
     private DragItemAdapter mDragItemAdapter;
@@ -50,13 +47,13 @@ public class VideoFrameActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_video_frame);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        ((SimpleItemAnimator) mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         ArrayList<String> arrayList = getIntent().getStringArrayListExtra(DATA_EXTRA_PATHS);
-        mVideoPaths = (arrayList == null) ? new ArrayList<String>() : arrayList;
+        mVideoPaths = (arrayList == null) ? new ArrayList<>() : arrayList;
 
         mDragItemAdapter = new DragItemAdapter(mVideoPaths);
         mDragItemAdapter.setOnItemMovedListener((fromPosition, toPosition) -> {
@@ -69,8 +66,8 @@ public class VideoFrameActivity extends Activity {
         dragDropManager.setInitiateOnLongPress(true);
 
         RecyclerView.Adapter adapter = dragDropManager.createWrappedAdapter(mDragItemAdapter);
-        mRecyclerView.setAdapter(adapter);
-        dragDropManager.attachRecyclerView(mRecyclerView);
+        recyclerView.setAdapter(adapter);
+        dragDropManager.attachRecyclerView(recyclerView);
 
         mShortVideoComposer = new PLShortVideoComposer(this);
         mProcessingDialog = new CustomProgressDialog(this);
@@ -111,8 +108,9 @@ public class VideoFrameActivity extends Activity {
 
         if (mShortVideoComposer.composeVideos(mVideoPaths, Config.VIDEO_DIVIDE_FILE_PATH, setting, mVideoSaveListener)) {
             mProcessingDialog.show();
+            mProcessingDialog.setProgress(0);
         } else {
-            ToastUtils.showShortToast(this, "开始拼接失败！");
+            ToastUtils.showShortToast("开始拼接失败！");
         }
     }
 

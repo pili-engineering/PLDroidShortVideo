@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -21,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
 
 import com.qiniu.pili.droid.shortvideo.PLShortVideoUploader;
 import com.qiniu.pili.droid.shortvideo.PLUploadProgressListener;
@@ -84,27 +83,20 @@ public class PlaybackActivity extends Activity implements
         mVideoUploadManager.setUploadProgressListener(this);
         mVideoUploadManager.setUploadResultListener(this);
 
-        mUploadBtn = (Button) findViewById(R.id.upload_btn);
+        mUploadBtn = findViewById(R.id.upload_btn);
         mUploadBtn.setText(R.string.upload);
         mUploadBtn.setOnClickListener(new UploadOnClickListener());
-        mProgressBarDeterminate = (ProgressBar) findViewById(R.id.progressBar);
-        mProgressBarDeterminate.setMax(100);
+        mProgressBarDeterminate = findViewById(R.id.progressBar);
         mVideoPath = getIntent().getStringExtra(MP4_PATH);
         mPreviousOrientation = getIntent().getIntExtra(PREVIOUS_ORIENTATION, 1);
 
         mMediaPlayer = new MediaPlayer();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.setOnInfoListener(mOnInfoListener);
-            mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
-            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
-            mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
-            mMediaPlayer.setOnErrorListener(mOnErrorListener);
-        } else {
-            Log.e(TAG, "creating MediaPlayer instance failed, exit.");
-            return;
-        }
+        mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
+        mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
+        mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
+        mMediaPlayer.setOnErrorListener(mOnErrorListener);
 
-        mSurfaceView = (SurfaceView) findViewById(R.id.video);
+        mSurfaceView = findViewById(R.id.video);
         mSurfaceView.setOnClickListener(v -> {
             if (!mMediaController.isShowing()) {
                 mMediaController.show(0);
@@ -185,6 +177,18 @@ public class PlaybackActivity extends Activity implements
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         super.finish();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mMediaPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMediaPlayer.pause();
     }
 
     @Override
@@ -269,7 +273,7 @@ public class PlaybackActivity extends Activity implements
     @Override
     public void onUploadProgress(String fileName, double percent) {
         mProgressBarDeterminate.setProgress((int) (percent * 100));
-        if (1.0 == percent) {
+        if (1.0 <= percent) {
             mProgressBarDeterminate.setVisibility(View.INVISIBLE);
         }
     }
@@ -285,7 +289,7 @@ public class PlaybackActivity extends Activity implements
         try {
             final String filePath = "http://" + Config.DOMAIN + "/" + response.getString("key");
             copyToClipboard(filePath);
-            runOnUiThread(() -> ToastUtils.showLongToast(PlaybackActivity.this, "文件上传成功，" + filePath + "已复制到粘贴板"));
+            ToastUtils.showLongToast("文件上传成功，" + filePath + "已复制到粘贴板");
             mUploadBtn.setVisibility(View.INVISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -294,59 +298,23 @@ public class PlaybackActivity extends Activity implements
 
     @Override
     public void onUploadVideoFailed(final int statusCode, final String error) {
-        runOnUiThread(() -> ToastUtils.showLongToast(PlaybackActivity.this, "Upload failed, statusCode = " + statusCode + " error = " + error));
+        if (statusCode == -5) {
+            // demo 示例，未提供有效 token，请您自行替换正确的上传 token，如已替换，请检查其正确性
+            ToastUtils.showLongToast("demo 示例，未提供有效 token");
+        } else {
+            ToastUtils.showLongToast("Upload failed, statusCode = " + statusCode + " error = " + error);
+        }
+        mUploadBtn.setText(R.string.upload);
+        mProgressBarDeterminate.setProgress(0);
     }
 
-    private MediaPlayer.OnInfoListener mOnInfoListener = new MediaPlayer.OnInfoListener() {
-        @Override
-        public boolean onInfo(MediaPlayer mp, int what, int extra) {
-            Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
-            switch (what) {
-                case MediaPlayer.MEDIA_INFO_UNKNOWN:
-                    break;
-                case MediaPlayer.MEDIA_INFO_VIDEO_TRACK_LAGGING:
-                    break;
-                case MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
-                    Log.i(TAG, "video rendering start, ts = " + extra);
-                    break;
-                case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-                    Log.i(TAG, "onInfo: MediaPlayer.MEDIA_INFO_BUFFERING_START");
-                    break;
-                case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                    Log.i(TAG, "onInfo: MEDIA_INFO_BUFFERING_END");
-                    break;
-                case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-                    Log.i(TAG, "onInfo: MEDIA_INFO_BAD_INTERLEAVING");
-                    break;
-                case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-                    Log.i(TAG, "onInfo: MEDIA_INFO_NOT_SEEKABLE");
-                    break;
-                case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-                    Log.i(TAG, "onInfo: MediaPlayer.MEDIA_INFO_METADATA_UPDATE");
-                    break;
-                case MediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE:
-                    Log.i(TAG, "onInfo: MediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE");
-                    break;
-                case MediaPlayer.MEDIA_INFO_SUBTITLE_TIMED_OUT:
-                    Log.i(TAG, "onInfo: MediaPlayer.MEDIA_INFO_SUBTITLE_TIMED_OUT ");
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        }
-    };
-
-    private MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener() {
+    private final MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
             Log.e(TAG, "Error happened, errorCode = " + extra);
             final String errorTip;
             switch (extra) {
                 case MediaPlayer.MEDIA_ERROR_IO:
-                    /**
-                     * SDK will do reconnecting automatically
-                     */
                     Log.e(TAG, "IO Error!");
                     return false;
                 case MediaPlayer.MEDIA_ERROR_MALFORMED:
@@ -362,26 +330,24 @@ public class PlaybackActivity extends Activity implements
                     errorTip = "unknown error !";
                     break;
             }
-            if (errorTip != null) {
-                runOnUiThread(() -> ToastUtils.showShortToast(PlaybackActivity.this, errorTip));
-            }
+            ToastUtils.showShortToast(errorTip);
 
             finish();
             return true;
         }
     };
 
-    private MediaPlayer.OnCompletionListener mOnCompletionListener = mp -> {
+    private final MediaPlayer.OnCompletionListener mOnCompletionListener = mp -> {
         Log.i(TAG, "Play Completed !");
-        runOnUiThread(() -> ToastUtils.showShortToast(PlaybackActivity.this, "Play Completed !"));
+        ToastUtils.showShortToast("Play Completed !");
         finish();
     };
 
-    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = (mp, percent) -> {
+    private final MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = (mp, percent) -> {
         Log.i(TAG, "onBufferingUpdate: " + percent);
     };
 
-    private MediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = (mp, width, height) -> {
+    private final MediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = (mp, width, height) -> {
         Log.i(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height);
     };
 }

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.qiniu.pili.droid.shortvideo.PLBuiltinFilter;
 import com.qiniu.shortvideo.app.R;
 import com.qiniu.shortvideo.app.adapter.FilterItemAdapter;
+import com.qiniu.shortvideo.app.utils.MediaUtils;
 import com.qiniu.shortvideo.app.utils.Utils;
 import com.qiniu.shortvideo.app.utils.ViewOperator;
 import com.qiniu.shortvideo.app.view.CustomProgressDialog;
@@ -46,6 +47,7 @@ import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoMixSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
@@ -537,6 +539,7 @@ public class VideoMixRecordActivity extends AppCompatActivity implements
 
     @Override
     public void onSaveVideoSuccess(final String filePath) {
+        MediaUtils.storeVideo(this, new File(filePath), Config.MIME_TYPE_VIDEO);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

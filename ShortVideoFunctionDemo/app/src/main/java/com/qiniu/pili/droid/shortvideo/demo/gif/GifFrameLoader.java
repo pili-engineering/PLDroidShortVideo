@@ -10,11 +10,11 @@ import android.os.SystemClock;
  * GIF 动图加载器
  */
 public class GifFrameLoader {
-    private GifDecoder mGifDecoder;
-    private Handler mHandler;
+    private final GifDecoder mGifDecoder;
+    private final Handler mHandler;
     private Bitmap mCurrentFrame;
     private Bitmap mNextFrame;
-    private Bitmap mFirstFrame;
+    private final Bitmap mFirstFrame;
     private Bitmap mPendingFrame;
 
     private boolean mIsRunning;

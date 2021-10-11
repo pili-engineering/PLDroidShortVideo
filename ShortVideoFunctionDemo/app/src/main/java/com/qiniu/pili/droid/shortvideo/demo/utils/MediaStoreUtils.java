@@ -17,7 +17,7 @@ public class MediaStoreUtils {
 
     public static Uri storeVideo(Context context, File srcFile, String mime) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            File dstFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), srcFile.getName());
+            File dstFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), srcFile.getName());
             boolean succeed = FileUtils.copyFile(srcFile, dstFile);
             if (succeed) {
                 ContentValues values = new ContentValues();
@@ -54,7 +54,7 @@ public class MediaStoreUtils {
 
     public static Uri storeAudio(Context context, File srcFile, String mime) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            File dstFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), srcFile.getName());
+            File dstFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), srcFile.getName());
             boolean succeed = FileUtils.copyFile(srcFile, dstFile);
             if (succeed) {
                 ContentValues values = new ContentValues();
@@ -91,7 +91,7 @@ public class MediaStoreUtils {
 
     public static Uri storeImage(Context context, File srcFile, String mime) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            File dstFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), srcFile.getName());
+            File dstFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), srcFile.getName());
             boolean succeed = FileUtils.copyFile(srcFile, dstFile);
             if (succeed) {
                 ContentValues values = new ContentValues();
@@ -129,8 +129,7 @@ public class MediaStoreUtils {
     private static String getDisplayName(File file) {
         String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
         String fileType = file.getName().substring(file.getName().lastIndexOf("."));
-        String displayName = fileName + "_" + System.currentTimeMillis() + fileType;
-        return displayName;
+        return fileName + "_" + System.currentTimeMillis() + fileType;
     }
 
 }

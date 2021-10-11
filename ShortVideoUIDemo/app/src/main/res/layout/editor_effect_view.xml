@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:background="@drawable/bottom_sheet_dialog_background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_dialog_background"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,17 +13,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@string/special_effect_title"
-            android:textColor="@color/colorWhite"
-            android:layout_centerInParent="true" />
+            android:textColor="@color/colorWhite" />
 
         <ImageButton
             android:id="@+id/confirm_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_confirm"
+            android:layout_alignParentEnd="true"
             android:background="@null"
-            android:layout_alignParentRight="true" />
+            android:src="@drawable/ic_confirm" />
     </RelativeLayout>
 
     <View
@@ -49,8 +49,8 @@
             android:layout_width="76dp"
             android:layout_height="32dp"
             android:layout_marginEnd="64dp"
-            android:clickable="false"
             android:alpha="0.3"
+            android:clickable="false"
             android:src="@mipmap/qn_revocation" />
 
     </LinearLayout>
@@ -60,7 +60,15 @@
         android:id="@+id/lsq_editor_effect_scene_list"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginTop="@dimen/layout_margin_20dp"
-        android:layout_marginLeft="@dimen/layout_margin_10dp">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginStart="@dimen/layout_margin_10dp"
+        android:layout_marginTop="@dimen/layout_margin_20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/tips_qiniu_partner"
+        android:textColor="@color/tips_color"
+        android:textSize="12sp" />
 </LinearLayout>

@@ -42,12 +42,10 @@ public class VideoComposeActivity extends AppCompatActivity {
     private PLShortVideoComposer mShortVideoComposer;
 
     private VideoListAdapter mVideoListAdapter;
-    private ListView mVideoListView;
 
     private RadioButton mRbModeFit;
     private Spinner mEncodingSizeLevelSpinner;
     private Spinner mEncodingBitrateLevelSpinner;
-    private CheckBox mVideoRangeCheck;
     private boolean mIsVideoRange;
 
     private int mDeletePosition = 0;
@@ -64,12 +62,12 @@ public class VideoComposeActivity extends AppCompatActivity {
 
         setTitle(R.string.title_compose);
 
-        mVideoListView = (ListView) findViewById(R.id.VideoListView);
+        ListView videoListView = findViewById(R.id.VideoListView);
         mVideoListAdapter = new VideoListAdapter(this);
-        mVideoListView.setAdapter(mVideoListAdapter);
+        videoListView.setAdapter(mVideoListAdapter);
 
-        mEncodingSizeLevelSpinner = (Spinner) findViewById(R.id.EncodingSizeLevelSpinner);
-        mEncodingBitrateLevelSpinner = (Spinner) findViewById(R.id.EncodingBitrateLevelSpinner);
+        mEncodingSizeLevelSpinner = findViewById(R.id.EncodingSizeLevelSpinner);
+        mEncodingBitrateLevelSpinner = findViewById(R.id.EncodingBitrateLevelSpinner);
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
         mEncodingSizeLevelSpinner.setAdapter(adapter1);
@@ -79,8 +77,8 @@ public class VideoComposeActivity extends AppCompatActivity {
         mEncodingBitrateLevelSpinner.setAdapter(adapter2);
         mEncodingBitrateLevelSpinner.setSelection(2);
 
-        mVideoRangeCheck = (CheckBox) findViewById(R.id.video_range_check);
-        mVideoRangeCheck.setOnCheckedChangeListener((buttonView, isChecked) -> mIsVideoRange = isChecked);
+        CheckBox videoRangeCheck = findViewById(R.id.video_range_check);
+        videoRangeCheck.setOnCheckedChangeListener((buttonView, isChecked) -> mIsVideoRange = isChecked);
 
 
         mShortVideoComposer = new PLShortVideoComposer(this);
@@ -88,9 +86,9 @@ public class VideoComposeActivity extends AppCompatActivity {
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mShortVideoComposer.cancelComposeVideos());
 
-        mVideoListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
+        videoListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> menu.add(0, 0, 0, "删除"));
 
-        mVideoListView.setOnItemLongClickListener((parent, view, position, id) -> {
+        videoListView.setOnItemLongClickListener((parent, view, position, id) -> {
             mDeletePosition = position;
             return false;
         });
@@ -129,7 +127,7 @@ public class VideoComposeActivity extends AppCompatActivity {
     public void onClickCompose(View v) {
         List<String> videos = mVideoListAdapter.getVideoList();
         if (videos.size() < 2) {
-            ToastUtils.showShortToast(this, "请先添加至少 2 个视频");
+            ToastUtils.showShortToast("请先添加至少 2 个视频");
             return;
         }
 
@@ -159,12 +157,13 @@ public class VideoComposeActivity extends AppCompatActivity {
 
         if (composeSuccess) {
             mProcessingDialog.show();
+            mProcessingDialog.setProgress(0);
         } else {
-            ToastUtils.showShortToast(this, "开始拼接失败！");
+            ToastUtils.showShortToast("开始拼接失败！");
         }
     }
 
-    private PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
+    private final PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
         @Override
         public void onSaveVideoSuccess(String filepath) {
             MediaStoreUtils.storeVideo(VideoComposeActivity.this, new File(filepath), "video/mp4");
@@ -176,7 +175,7 @@ public class VideoComposeActivity extends AppCompatActivity {
         public void onSaveVideoFailed(final int errorCode) {
             runOnUiThread(() -> {
                 mProcessingDialog.dismiss();
-                ToastUtils.toastErrorCode(VideoComposeActivity.this, errorCode);
+                ToastUtils.toastErrorCode(errorCode);
             });
         }
 

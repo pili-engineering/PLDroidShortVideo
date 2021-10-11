@@ -28,7 +28,7 @@ public class DragItemAdapter extends RecyclerView.Adapter<DragItemAdapter.FrameI
         void onMoveItem(int fromPosition, int toPosition);
     }
 
-    private List<FrameItem> mItemList;
+    private final List<FrameItem> mItemList;
     private OnItemMovedListener mOnItemMovedListener;
 
     public DragItemAdapter(ArrayList<String> paths) {
@@ -83,7 +83,7 @@ public class DragItemAdapter extends RecyclerView.Adapter<DragItemAdapter.FrameI
 
         public FrameItemViewHolder(View v) {
             super(v);
-            mImageView = (ImageView) v.findViewById(R.id.ImageThumbnail);
+            mImageView = v.findViewById(R.id.ImageThumbnail);
         }
     }
 

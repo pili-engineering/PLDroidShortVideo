@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_back"
+            android:background="@drawable/btn_back"
             android:onClick="onBack" />
 
         <TextView
@@ -27,24 +27,18 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_next"
+            android:background="@drawable/btn_next"
             android:onClick="onDone" />
     </LinearLayout>
 
-    <com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout
+    <VideoView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <VideoView
-            android:id="@+id/preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
-    </com.qiniu.pili.droid.shortvideo.demo.view.SquareRelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,7 +48,6 @@
         android:textColor="@android:color/white" />
 
     <RadioGroup
-        android:id="@+id/mode_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
@@ -75,11 +68,11 @@
             android:textColor="@color/white" />
 
         <RadioButton
-            android:id="@+id/mode_accurate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="精准"
             android:textColor="@color/white" />
+
     </RadioGroup>
 
     <RelativeLayout
@@ -92,8 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal" />
 
@@ -131,5 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:textColor="@android:color/white" />
+
     </LinearLayout>
+
 </LinearLayout>

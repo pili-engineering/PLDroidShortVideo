@@ -32,12 +32,11 @@
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/adjust_brightness_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:onClick="onClickBrightness"
-            android:src="@mipmap/btn_brightness" />
+            android:src="@drawable/btn_brightness" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.VerticalSeekBar
             android:id="@+id/adjust_brightness"
@@ -50,7 +49,6 @@
 
 
     <LinearLayout
-        android:id="@+id/audio_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/parentGroup"
@@ -116,7 +114,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/bottom_control_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/parentGroup"
@@ -130,7 +127,6 @@
             android:layout_height="8dp" />
 
         <LinearLayout
-            android:id="@+id/btns"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
@@ -141,16 +137,16 @@
 
             <ImageView
                 android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:background="@drawable/btn_delete"
                 android:clickable="true"
                 android:onClick="onClickDelete" />
 
             <ImageView
                 android:id="@+id/record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:clickable="true"
@@ -158,8 +154,8 @@
 
             <ImageView
                 android:id="@+id/concat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:background="@drawable/btn_concat"
                 android:clickable="true"
                 android:onClick="onClickConcat" />

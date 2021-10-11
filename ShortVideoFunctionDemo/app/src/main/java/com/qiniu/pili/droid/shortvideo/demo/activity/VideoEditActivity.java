@@ -137,7 +137,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private final Map<StickerImageView, PLGifWatermarkSetting> mGifViewSettings = new HashMap<>();
     private FrameLayout mStickerViewGroup;
 
-    private int mAudioMixingMode = -1;       // audio mixing mode: 0 - single audio mixing; 1 - multiple audio mixing; 单混音和多重混音为互斥模式，最多只可选择其中一项。
+    // audio mixing mode:
+    // 0 - single audio mixing;
+    // 1 - multiple audio mixing;
+    // 单混音和多重混音为互斥模式，最多只可选择其中一项。
+    private int mAudioMixingMode = -1;
     private boolean mMainAudioFileAdded;
     private int mAudioMixingFileCount = 0;
     private long mInputMp4FileDurationMs = 0;
@@ -161,12 +165,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         setContentView(R.layout.activity_editor);
 
-        mSpeedTextView = (TextView) findViewById(R.id.normal_speed_text);
-        mMuteButton = (ImageButton) findViewById(R.id.mute_button);
-        mMuteButton.setImageResource(R.mipmap.btn_unmute);
-        mPausePalybackButton = (ImageButton) findViewById(R.id.pause_playback);
-        mSpeedPanel = (LinearLayout) findViewById(R.id.speed_panel);
-        mFrameListView = (FrameListView) findViewById(R.id.frame_list_view);
+        mSpeedTextView = findViewById(R.id.normal_speed_text);
+        mMuteButton = findViewById(R.id.mute_button);
+        mPausePalybackButton = findViewById(R.id.pause_playback);
+        mSpeedPanel = findViewById(R.id.speed_panel);
+        mFrameListView = findViewById(R.id.frame_list_view);
         mStickerViewGroup = findViewById(R.id.sticker_container_view);
 
         initPreviewView();
@@ -181,16 +184,11 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         initAudioMixSettingDialog();
         initResources();
 
-        mStickerViewGroup.post(new Runnable() {
-            @Override
-            public void run() {
-                initGifViewGroup();
-            }
-        });
+        mStickerViewGroup.post(this::initGifViewGroup);
     }
 
     private void initPreviewView() {
-        mPreviewView = (GLSurfaceView) findViewById(R.id.preview);
+        mPreviewView = findViewById(R.id.preview);
         mPreviewView.setOnClickListener(v -> saveViewTimeAndHideRect());
     }
 
@@ -210,7 +208,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     private void initPaintSelectorPanel() {
-        mPaintSelectorPanel = (PaintSelectorPanel) findViewById(R.id.paint_selector_panel);
+        mPaintSelectorPanel = findViewById(R.id.paint_selector_panel);
         mPaintSelectorPanel.setOnPaintSelectorListener(new PaintSelectorPanel.OnPaintSelectorListener() {
             @Override
             public void onViewClosed() {
@@ -242,13 +240,13 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     }
 
     private void initImageSelectorPanel() {
-        mImageSelectorPanel = (ImageSelectorPanel) findViewById(R.id.image_selector_panel);
-        mImageSelectorPanel.setOnImageSelectedListener(drawable -> addImageView(drawable));
+        mImageSelectorPanel = findViewById(R.id.image_selector_panel);
+        mImageSelectorPanel.setOnImageSelectedListener(this::addImageView);
     }
 
     private void initGifSelectorPanel() {
         mGifSelectorPanel = findViewById(R.id.gif_selector_panel);
-        mGifSelectorPanel.setOnGifSelectedListener(gifPath -> addGif(gifPath));
+        mGifSelectorPanel.setOnGifSelectedListener(this::addGif);
     }
 
     private void initProcessingDialog() {
@@ -258,7 +256,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
     private void initWatermarkSetting() {
         mWatermarkSetting = createWatermarkSetting();
-        //动态水印设置
+        // 动态水印设置
         mPreviewWatermarkSetting = createWatermarkSetting();
         mSaveWatermarkSetting = createWatermarkSetting();
     }
@@ -279,23 +277,20 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         mMixDuration = mShortVideoEditor.getDurationMs();
 
         mFrameListView.setVideoPath(mMp4path);
-        mFrameListView.setOnVideoFrameScrollListener(new FrameListView.OnVideoFrameScrollListener() {
-            @Override
-            public void onVideoFrameScrollChanged(final long timeMs) {
-                if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
-                    pausePlayback();
-                }
-                mShortVideoEditor.seekTo((int) timeMs);
-
-                runOnUiThread(() -> changeGifVisiable(timeMs));
+        mFrameListView.setOnVideoFrameScrollListener(timeMs -> {
+            if (mShortVideoEditorStatus == PLShortVideoEditorStatus.Playing) {
+                pausePlayback();
             }
+            mShortVideoEditor.seekTo((int) timeMs);
+
+            runOnUiThread(() -> changeGifVisiable(timeMs));
         });
 
         initTimerTask();
     }
 
     private void initFiltersList() {
-        mFiltersList = (RecyclerView) findViewById(R.id.recycler_view);
+        mFiltersList = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mFiltersList.setLayoutManager(layoutManager);
         mFiltersList.setAdapter(new FilterListAdapter(mShortVideoEditor.getBuiltinFilterList()));
@@ -460,7 +455,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         PLGifWatermarkSetting gifWatermarkSetting = new PLGifWatermarkSetting();
         gifWatermarkSetting.setFilePath(stickerImageView.getGifPath());
         gifWatermarkSetting.setDisplayPeriod(stickerImageView.getStartTime(), stickerImageView.getEndTime() - stickerImageView.getStartTime());
-        gifWatermarkSetting.setPosition((float) stickerImageView.getViewX() / mPreviewView.getWidth(), (float) stickerImageView.getViewY() / mPreviewView.getHeight());
+        gifWatermarkSetting.setPosition(stickerImageView.getViewX() / mPreviewView.getWidth(), stickerImageView.getViewY() / mPreviewView.getHeight());
         gifWatermarkSetting.setRotation((int) stickerImageView.getImageDegree());
         gifWatermarkSetting.setAlpha(255);
         gifWatermarkSetting.setSize(stickerImageView.getImageWidth() * stickerImageView.getImageScale() / mPreviewView.getWidth(), stickerImageView.getImageHeight() * stickerImageView.getImageScale() / mPreviewView.getHeight());
@@ -509,7 +504,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mShortVideoEditor.resumePlayback();
             mShortVideoEditorStatus = PLShortVideoEditorStatus.Playing;
         }
-        mPausePalybackButton.setImageResource(R.mipmap.btn_pause);
+        mPausePalybackButton.setImageResource(R.drawable.btn_pause);
     }
 
     /**
@@ -518,7 +513,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void stopPlayback() {
         mShortVideoEditor.stopPlayback();
         mShortVideoEditorStatus = PLShortVideoEditorStatus.Idle;
-        mPausePalybackButton.setImageResource(R.mipmap.btn_play);
+        mPausePalybackButton.setImageResource(R.drawable.btn_play);
     }
 
     /**
@@ -527,7 +522,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void pausePlayback() {
         mShortVideoEditor.pausePlayback();
         mShortVideoEditorStatus = PLShortVideoEditorStatus.Paused;
-        mPausePalybackButton.setImageResource(R.mipmap.btn_play);
+        mPausePalybackButton.setImageResource(R.drawable.btn_play);
     }
 
     /**
@@ -584,18 +579,16 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      * 根据当前的播放时间控制 GIF 的显示
      */
     private void changeGifVisiable(final long timeMS) {
-        if (mGifViewSettings != null) {
-            for (final StickerImageView gifViews : mGifViewSettings.keySet()) {
-                if (gifViews.getStartTime() == 0 && gifViews.getEndTime() == 0) {
-                    //刚刚添加，未对时间进行赋值
-                    gifViews.setVisibility(View.VISIBLE);
-                    continue;
-                }
-                if (timeMS >= gifViews.getStartTime() && timeMS <= gifViews.getEndTime()) {
-                    gifViews.setVisibility(View.VISIBLE);
-                } else {
-                    gifViews.setVisibility(View.GONE);
-                }
+        for (final StickerImageView gifViews : mGifViewSettings.keySet()) {
+            if (gifViews.getStartTime() == 0 && gifViews.getEndTime() == 0) {
+                //刚刚添加，未对时间进行赋值
+                gifViews.setVisibility(View.VISIBLE);
+                continue;
+            }
+            if (timeMS >= gifViews.getStartTime() && timeMS <= gifViews.getEndTime()) {
+                gifViews.setVisibility(View.VISIBLE);
+            } else {
+                gifViews.setVisibility(View.GONE);
             }
         }
     }
@@ -625,6 +618,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         watermarkSetting.setResourceId(R.drawable.qiniu_logo);
         watermarkSetting.setPosition(0.01f, 0.01f);
         watermarkSetting.setAlpha(128);
+        watermarkSetting.setSize(0.1f, 0.1f);
         return watermarkSetting;
     }
 
@@ -706,7 +700,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     public void onClickMix(View v) {
         if (mAudioMixingMode == 1) {
-            ToastUtils.showShortToast(this, "已选择多重混音，无法再选择单混音！");
+            ToastUtils.showShortToast("已选择多重混音，无法再选择单混音！");
             return;
         }
         mAudioMixingMode = 0;
@@ -722,7 +716,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     public void onClickMultipleAudioMixing(View v) {
         if (mAudioMixingMode == 0) {
-            ToastUtils.showShortToast(this, "已选择单混音，无法再选择多重混音！");
+            ToastUtils.showShortToast("已选择单混音，无法再选择多重混音！");
             return;
         }
         mAudioMixingMode = 1;
@@ -739,7 +733,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     public void onClickMute(View v) {
         mIsMuted = !mIsMuted;
         mShortVideoEditor.muteOriginAudio(mIsMuted);
-        mMuteButton.setImageResource(mIsMuted ? R.mipmap.btn_mute : R.mipmap.btn_unmute);
+        mMuteButton.setImageResource(mIsMuted ? R.drawable.btn_mute : R.drawable.btn_unmute);
         if (mIsMuted) {
             mFgVolumeBeforeMute = mAudioMixSettingDialog.getSrcVolumeProgress();
         }
@@ -777,7 +771,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         if (mIsMixAudio) {
             mAudioMixSettingDialog.show();
         } else {
-            ToastUtils.showShortToast(this, "请先选择混音文件！");
+            ToastUtils.showShortToast("请先选择混音文件！");
         }
     }
 
@@ -1027,20 +1021,20 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
                 PLMixAudioFile audioFile = new PLMixAudioFile(selectedFilepath);
                 if (mAudioMixingFileCount == 0) {
-                    ToastUtils.showShortToast(this, "添加第一个混音文件");
+                    ToastUtils.showShortToast("添加第一个混音文件");
                     long firstMixingDurationMs = (mInputMp4FileDurationMs <= 5000) ? mInputMp4FileDurationMs : 5000;
                     audioFile.setDurationInVideo(firstMixingDurationMs * 1000);
                 } else if (mAudioMixingFileCount == 1) {
-                    ToastUtils.showShortToast(this, "添加第二个混音文件");
+                    ToastUtils.showShortToast("添加第二个混音文件");
                     if (mInputMp4FileDurationMs - 5000 < 1000) {
-                        ToastUtils.showShortToast(this, "视频时长过短，请选择更长的视频添加混音");
+                        ToastUtils.showShortToast("视频时长过短，请选择更长的视频添加混音");
                         return;
                     }
                     audioFile.setOffsetInVideo(5000 * 1000 * mAudioMixingFileCount);
                     long secondMixingDurationMs = mInputMp4FileDurationMs - 5000;
                     audioFile.setDurationInVideo(secondMixingDurationMs * 1000);
                 } else if (mAudioMixingFileCount >= 2) {
-                    ToastUtils.showShortToast(this, "最多可以添加2个混音文件");
+                    ToastUtils.showShortToast("最多可以添加2个混音文件");
                     return;
                 }
                 audioFile.setVolume(0.5f);
@@ -1118,6 +1112,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         saveViewTimeAndHideRect();
         startPlayback();
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
         if (mIsRangeSpeed) {
             setSpeedTimeRanges();
         }
@@ -1164,7 +1159,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             StickerImageView stickerImageView = (StickerImageView) mCurView;
             PLGifWatermarkSetting gifWatermarkSetting = mGifViewSettings.get(stickerImageView);
             gifWatermarkSetting.setDisplayPeriod(stickerImageView.getStartTime(), stickerImageView.getEndTime() - stickerImageView.getStartTime());
-            gifWatermarkSetting.setPosition((float) stickerImageView.getViewX() / mStickerViewGroup.getWidth(), (float) stickerImageView.getViewY() / mStickerViewGroup.getHeight());
+            gifWatermarkSetting.setPosition(stickerImageView.getViewX() / mStickerViewGroup.getWidth(), stickerImageView.getViewY() / mStickerViewGroup.getHeight());
             gifWatermarkSetting.setRotation((int) stickerImageView.getImageDegree());
             gifWatermarkSetting.setAlpha(255);
             gifWatermarkSetting.setSize(stickerImageView.getImageWidth() * stickerImageView.getImageScale() / mStickerViewGroup.getWidth(), stickerImageView.getImageHeight() * stickerImageView.getImageScale() / mStickerViewGroup.getHeight());
@@ -1191,7 +1186,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         Log.e(TAG, "save edit failed errorCode:" + errorCode);
         runOnUiThread(() -> {
             mProcessingDialog.dismiss();
-            ToastUtils.toastErrorCode(VideoEditActivity.this, errorCode);
+            ToastUtils.toastErrorCode(errorCode);
         });
     }
 
@@ -1211,14 +1206,14 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
     }
 
-    private class FilterItemViewHolder extends RecyclerView.ViewHolder {
+    private static class FilterItemViewHolder extends RecyclerView.ViewHolder {
         public ImageView mIcon;
         public TextView mName;
 
         public FilterItemViewHolder(View itemView) {
             super(itemView);
-            mIcon = (ImageView) itemView.findViewById(R.id.icon);
-            mName = (TextView) itemView.findViewById(R.id.name);
+            mIcon = itemView.findViewById(R.id.icon);
+            mName = itemView.findViewById(R.id.name);
         }
     }
 
@@ -1315,16 +1310,13 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
                 holder.mName.setText(mv.getString("name"));
                 Bitmap bitmap = BitmapFactory.decodeFile(mvsDir + mv.getString("coverDir") + ".png");
                 holder.mIcon.setImageBitmap(bitmap);
-                holder.mIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            mSelectedMV = mvsDir + mv.getString("colorDir") + ".mp4";
-                            mSelectedMask = mvsDir + mv.getString("alphaDir") + ".mp4";
-                            mShortVideoEditor.setMVEffect(mSelectedMV, mSelectedMask);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                holder.mIcon.setOnClickListener(v -> {
+                    try {
+                        mSelectedMV = mvsDir + mv.getString("colorDir") + ".mp4";
+                        mSelectedMask = mvsDir + mv.getString("alphaDir") + ".mp4";
+                        mShortVideoEditor.setMVEffect(mSelectedMV, mSelectedMask);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 });
             } catch (JSONException e) {
@@ -1347,7 +1339,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             Log.i(TAG, "fg volume: " + fgVolume + " bg volume: " + bgVolume);
             mShortVideoEditor.setAudioMixVolume(fgVolume / 100f, bgVolume / 100f);
             mIsMuted = fgVolume == 0;
-            mMuteButton.setImageResource(mIsMuted ? R.mipmap.btn_mute : R.mipmap.btn_unmute);
+            mMuteButton.setImageResource(mIsMuted ? R.drawable.btn_mute : R.drawable.btn_unmute);
         }
     };
 

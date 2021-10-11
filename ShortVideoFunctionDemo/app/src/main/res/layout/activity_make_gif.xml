@@ -19,7 +19,6 @@
         android:verticalSpacing="5dp" />
 
     <Button
-        android:id="@+id/gif_generate_button"
         android:layout_weight="0"
         android:layout_margin="10dp"
         android:text="生成 GIF"
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/extract_gif_cover"
         android:layout_weight="0"
         android:layout_margin="10dp"
         android:text="封面动图"

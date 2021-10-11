@@ -11,7 +11,6 @@
     <string name="title_compose">视频拼接</string>
     <string name="title_image_compose">制作图片电影</string>
     <string name="title_multiple_compose">图片视频混排</string>
-    <string name="title_player">视频播放</string>
     <string name="title_screen_record">屏幕录制</string>
     <string name="title_import_and_edit">素材导入编辑</string>
     <string name="title_transcode">视频转码</string>
@@ -24,16 +23,13 @@
     <string name="title_audio_file_name">音频文件：</string>
     <string name="title_add_image">添加图片</string>
     <string name="title_add_music">添加音乐</string>
-    <string name="title_ar_effect">制作AR视频</string>
     <string name="title_from_draft_box">草稿箱</string>
-    <string name="title_all_drafts">草稿列表</string>
     <string name="title_video_divide">视频分割</string>
     <string name="title_transition_make">过场字幕</string>
     <string name="title_mix_record">合拍</string>
 
     <string name="dlg_save_draft_title">输入草稿标题</string>
     <string name="dlg_save_draft_yes">保存</string>
-    <string name="toast_draft_title_exist">已存在相同标题的草稿</string>
     <string name="toast_draft_save_success">草稿保存成功</string>
     <string name="toast_draft_save_fail">草稿保存失败</string>
     <string name="toast_draft_recover_success">草稿恢复成功</string>
@@ -42,7 +38,6 @@
 
     <string name="desc_duration">持续时间</string>
     <string name="desc_transition_time">转场时间</string>
-    <string name="desc_second">秒</string>
     <string name="desc_ms">ms</string>
     <string name="desc_paint_color">画笔颜色</string>
     <string name="desc_paint_size">画笔大小</string>
@@ -53,8 +48,6 @@
     <string name="desc_compose_display_full">全屏</string>
     <string name="desc_compose_display_fit">自适应</string>
 
-    <string name="ar_record">开始录制</string>
-    <string name="ar_stop">停止录制</string>
     <string name="speed_super_slow">极慢"</string>
     <string name="speed_slow">慢"</string>
     <string name="speed_normal">正常"</string>
@@ -74,34 +67,7 @@
     <item name="selector_view" type="id"></item>
     <item name="rect_view" type="id"></item>
     <!-- TuSdk -->
-    <string name="lsq_filter_group_zhuanye">直播厂商合作</string>
-    <string name="lsq_filter_nature">自然</string>
-    <string name="lsq_filter_pink">粉嫩</string>
-    <string name="lsq_filter_jelly">果冻</string>
-    <string name="lsq_filter_ruddy">红润</string>
-    <string name="lsq_filter_sugar">糖水色</string>
-    <string name="lsq_filter_honey">蜜粉</string>
-    <string name="lsq_filter_clear">白皙</string>
-    <string name="lsq_filter_timber">小森林</string>
-    <string name="lsq_filter_whitening">美白</string>
-    <string name="lsq_filter_porcelain">青花瓷</string>
-    <string name="lsq_filter_Skinwhitening_1">美白</string>
-    <string name="lsq_filter_group_ZhiBo0">直播公用</string>
-    <string name="lsq_filter_VideoFair07">自然</string>
-    <string name="lsq_filter_VideoWhiteSkin07">美白</string>
-    <string name="lsq_filter_Brilliantly07">明亮</string>
-    <string name="lsq_filter_Forest09">小森林</string>
-    <string name="lsq_filter_SkinPink07">粉嫩</string>
 
     <!--  滤镜参数 -->
-    <string name="lsq_filter_set_smoothing">润滑</string>
-    <string name="lsq_filter_set_whitening">白皙</string>
-    <string name="lsq_filter_set_mixied">效果</string>
-    <string name="lsq_filter_set_eyeSize">大眼</string>
-    <string name="lsq_filter_set_chinSize">瘦脸</string>
-    <string name="lsq_filter_set_vignette">暗角</string>
 
-    <string name="lsq_dermabrasion">磨皮</string>
-    <string name="lsq_big_eyes">大眼</string>
-    <string name="lsq_thin_face">瘦脸</string>
 </resources>

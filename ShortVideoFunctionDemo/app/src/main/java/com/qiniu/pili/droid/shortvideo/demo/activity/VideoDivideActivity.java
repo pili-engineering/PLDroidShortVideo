@@ -6,11 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -24,6 +19,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTrimmer;
@@ -62,11 +62,8 @@ public class VideoDivideActivity extends Activity {
     private FrameSelectorView mCurSelectorView;
 
     private long mDurationMs;
-    private int mVideoFrameCount;
     private long mShowFrameIntervalMs;
     private String mSrcVideoPath;
-
-    private FrameListAdapter mFrameListAdapter;
 
     private int mFrameWidth;
     private int mFrameHeight;
@@ -165,15 +162,15 @@ public class VideoDivideActivity extends Activity {
     private void initView() {
         setContentView(R.layout.activity_video_divide);
 
-        mPreview = (VideoView) findViewById(R.id.preview);
-        mPlaybackButton = (ImageButton) findViewById(R.id.pause_playback);
-        mFrameListParent = (ViewGroup) findViewById(R.id.recycler_parent);
-        mFrameList = (RecyclerView) findViewById(R.id.recycler_frame_list);
-        mScrollViewParent = (FrameLayout) findViewById(R.id.scroll_view_parent);
-        mScrollView = (ObservableHorizontalScrollView) findViewById(R.id.scroll_view);
+        mPreview = findViewById(R.id.preview);
+        mPlaybackButton = findViewById(R.id.pause_playback);
+        mFrameListParent = findViewById(R.id.recycler_parent);
+        mFrameList = findViewById(R.id.recycler_frame_list);
+        mScrollViewParent = findViewById(R.id.scroll_view_parent);
+        mScrollView = findViewById(R.id.scroll_view);
 
-        ImageView middleLineImage = (ImageView) findViewById(R.id.middle_line_image);
-        ViewGroup topGroup = (ViewGroup) findViewById(R.id.top_group);
+        ImageView middleLineImage = findViewById(R.id.middle_line_image);
+        ViewGroup topGroup = findViewById(R.id.top_group);
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mFrameWidth = mFrameHeight = wm.getDefaultDisplay().getWidth() / 6;
@@ -189,8 +186,8 @@ public class VideoDivideActivity extends Activity {
         // if the duration time > 10s, the interval time is 3s, else is 1s
         mShowFrameIntervalMs = (mDurationMs >= 1000 * 10) ? 3000 : 1000;
         Log.i(TAG, "video duration: " + mDurationMs);
-        mVideoFrameCount = mMediaFile.getVideoFrameCount(false);
-        Log.i(TAG, "video frame count: " + mVideoFrameCount);
+        int videoFrameCount = mMediaFile.getVideoFrameCount(false);
+        Log.i(TAG, "video frame count: " + videoFrameCount);
     }
 
     private void initVideoPlayer() {
@@ -217,8 +214,8 @@ public class VideoDivideActivity extends Activity {
     }
 
     private void initFrameList() {
-        mFrameListAdapter = new FrameListAdapter();
-        mFrameList.setAdapter(mFrameListAdapter);
+        FrameListAdapter frameListAdapter = new FrameListAdapter();
+        mFrameList.setAdapter(frameListAdapter);
         mFrameList.setItemViewCacheSize(getShowFrameCount());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mFrameList.setLayoutManager(layoutManager);
@@ -231,9 +228,9 @@ public class VideoDivideActivity extends Activity {
 
     private void trimOnce() {
         if (mCurTrimNum < mSectionList.size()) {
-            mProcessingDialog.setProgress(0);
             mProcessingDialog.setMessage("正在处理第 " + (mCurTrimNum + 1) + "/" + mSectionList.size() + " 段视频 ...");
             mProcessingDialog.show();
+            mProcessingDialog.setProgress(0);
 
             SectionItem item = mSectionList.get(mCurTrimNum);
             if (mShortVideoTrimmer != null) {
@@ -298,7 +295,7 @@ public class VideoDivideActivity extends Activity {
             width = rightBorder - leftBorder;
         } else if (!outOfLeft && outOfRight) {
             width = width - (rightBorder - getHalfGroupWidth() - (getTotalScrollLength() - mScrollView.getScrollX()));
-        } else if (outOfLeft && outOfRight) {
+        } else if (outOfLeft) {
             leftBorder = getHalfGroupWidth() - mScrollView.getScrollX();
             width = getTotalScrollLength();
         }
@@ -309,7 +306,7 @@ public class VideoDivideActivity extends Activity {
         }
 
         final View rectView = new View(this);
-        rectView.setBackground(getResources().getDrawable(R.drawable.frame_selector_rect));
+        rectView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.frame_selector_rect, null));
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, mFrameListParent.getHeight());
         rectView.setOnTouchListener(new RectViewTouchListener());
 
@@ -362,12 +359,12 @@ public class VideoDivideActivity extends Activity {
 
     private void startPlayback() {
         mPreview.start();
-        mPlaybackButton.setImageResource(R.mipmap.btn_pause);
+        mPlaybackButton.setImageResource(R.drawable.btn_pause);
     }
 
     private void pausePlayback() {
         mPreview.pause();
-        mPlaybackButton.setImageResource(R.mipmap.btn_play);
+        mPlaybackButton.setImageResource(R.drawable.btn_play);
     }
 
     private boolean isInRangeOfView(View view, MotionEvent ev) {
@@ -375,13 +372,8 @@ public class VideoDivideActivity extends Activity {
         view.getLocationOnScreen(location);
         int x = location[0];
         int y = location[1];
-        if (ev.getX() < x ||
-                ev.getX() > (x + view.getWidth()) ||
-                ev.getY() < y ||
-                ev.getY() > (y + view.getHeight())) {
-            return false;
-        }
-        return true;
+        return !(ev.getX() < x) && !(ev.getX() > (x + view.getWidth()))
+                && !(ev.getY() < y) && !(ev.getY() > (y + view.getHeight()));
     }
 
     private void play() {
@@ -421,7 +413,7 @@ public class VideoDivideActivity extends Activity {
                 SectionItem item = (SectionItem) mRectView.getTag();
                 mSectionList.remove(item);
                 mFrameListParent.removeView(mRectView);
-                return false;
+                return true;
             }
         };
         private final GestureDetector mGestureDetector = new GestureDetector(VideoDivideActivity.this, mSimpleOnGestureListener);
@@ -445,7 +437,7 @@ public class VideoDivideActivity extends Activity {
                     mCurSelectorView = null;
                 }
             }
-            return false;
+            return true;
         }
     }
 
@@ -464,12 +456,12 @@ public class VideoDivideActivity extends Activity {
         }
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.thumbnail);
+            mImageView = itemView.findViewById(R.id.thumbnail);
         }
     }
 
@@ -481,8 +473,7 @@ public class VideoDivideActivity extends Activity {
             LayoutInflater inflater = LayoutInflater.from(context);
 
             View contactView = inflater.inflate(R.layout.item_devide_frame, parent, false);
-            ItemViewHolder viewHolder = new ItemViewHolder(contactView);
-            return viewHolder;
+            return new ItemViewHolder(contactView);
         }
 
         @Override
@@ -513,11 +504,11 @@ public class VideoDivideActivity extends Activity {
     }
 
     private static class ImageViewTask extends AsyncTask<Void, Void, PLVideoFrame> {
-        private WeakReference<ImageView> mImageViewWeakReference;
-        private long mFrameTime;
-        private int mFrameWidth;
-        private int mFrameHeight;
-        private PLMediaFile mMediaFile;
+        private final WeakReference<ImageView> mImageViewWeakReference;
+        private final long mFrameTime;
+        private final int mFrameWidth;
+        private final int mFrameHeight;
+        private final PLMediaFile mMediaFile;
 
         ImageViewTask(ImageView imageView, long frameTime, int frameWidth, int frameHeight, PLMediaFile mediaFile) {
             mImageViewWeakReference = new WeakReference<>(imageView);
@@ -549,7 +540,7 @@ public class VideoDivideActivity extends Activity {
         }
     }
 
-    private class SectionItem {
+    private static class SectionItem {
         long mStartTime;
         long mEndTime;
         String mVideoPath;

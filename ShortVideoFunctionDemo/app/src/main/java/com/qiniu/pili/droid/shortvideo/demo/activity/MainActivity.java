@@ -29,21 +29,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ItemView itemVersionInfo = (ItemView) findViewById(R.id.item_version_info);
+        ItemView itemVersionInfo = findViewById(R.id.item_version_info);
         itemVersionInfo.setValue("" + getVersionDescription());
 
-        ItemView itemCompileInfo = (ItemView) findViewById(R.id.item_compile_info);
+        ItemView itemCompileInfo = findViewById(R.id.item_compile_info);
         itemCompileInfo.setValue("" + getBuildTimeDescription());
 
         PLShortVideoEnv.checkAuthentication(getApplicationContext(), new PLAuthenticationResultCallback() {
             @Override
             public void onAuthorizationResult(int result) {
                 if (result == PLAuthenticationResultCallback.UnCheck) {
-                    ToastUtils.showShortToast(MainActivity.this, "UnCheck");
+                    ToastUtils.showShortToast("UnCheck");
                 } else if (result == PLAuthenticationResultCallback.UnAuthorized) {
-                    ToastUtils.showShortToast(MainActivity.this, "UnAuthorized");
+                    ToastUtils.showShortToast("UnAuthorized");
                 } else {
-                    ToastUtils.showShortToast(MainActivity.this, "Authorized");
+                    ToastUtils.showShortToast("Authorized");
                 }
             }
         });
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         PermissionChecker checker = new PermissionChecker(this);
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
         if (!isPermissionOK) {
-            ToastUtils.showShortToast(this, "Some permissions is not approved !!!");
+            ToastUtils.showShortToast("Some permissions is not approved !!!");
         }
         return isPermissionOK;
     }

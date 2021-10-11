@@ -23,6 +23,7 @@ import com.qiniu.shortvideo.app.utils.RecordSettings;
 import com.qiniu.shortvideo.app.utils.ToastUtils;
 import com.qiniu.shortvideo.app.view.CustomProgressDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -207,6 +208,7 @@ public class MediaSelectActivity extends AppCompatActivity implements MediaFileA
         @Override
         public void onSaveVideoSuccess(String filepath) {
             mProcessingDialog.dismiss();
+            MediaUtils.storeVideo(MediaSelectActivity.this, new File(filepath), Config.MIME_TYPE_VIDEO);
             Intent intent = new Intent(MediaSelectActivity.this, VideoTrimActivity.class);
             intent.putExtra(VIDEO_PATH, filepath);
             startActivity(intent);

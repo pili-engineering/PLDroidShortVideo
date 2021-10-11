@@ -5,7 +5,6 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/add_video_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -13,7 +12,6 @@
         android:text="添加视频" />
 
     <Button
-        android:id="@+id/add_video_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -21,7 +19,6 @@
         android:text="添加图片" />
 
     <Button
-        android:id="@+id/add_music_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -29,7 +26,6 @@
         android:text="添加背景音乐" />
 
     <Button
-        android:id="@+id/start_compose_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView
-    android:id="@+id/draft_list"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-</ListView>
+    <TextView
+        android:id="@+id/tv_null_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="这里空空如也~"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/draft_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+</LinearLayout>

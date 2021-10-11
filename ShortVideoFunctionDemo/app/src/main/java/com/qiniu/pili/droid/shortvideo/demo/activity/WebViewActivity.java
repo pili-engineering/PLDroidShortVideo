@@ -15,18 +15,16 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 
 public class WebViewActivity extends AppCompatActivity {
 
-    private String web;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         Intent in = getIntent();
-        web = in.getStringExtra("web");
+        String web = in.getStringExtra("web");
         if (TextUtils.isEmpty(web)) {
             Toast.makeText(this, "地址为空", Toast.LENGTH_SHORT).show();
         } else {
-            WebView webView = (WebView) findViewById(R.id.web);
+            WebView webView = findViewById(R.id.web);
             webView.setWebViewClient(new WebViewClient());
 
             WebSettings webSettings = webView.getSettings();

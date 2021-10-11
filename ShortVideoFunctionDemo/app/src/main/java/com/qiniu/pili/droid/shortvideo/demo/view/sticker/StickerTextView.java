@@ -124,7 +124,7 @@ public class StickerTextView extends PLTextView {
      * 外边框
      */
     //外边框的 path
-    private Path mPath = new Path();
+    private final Path mPath = new Path();
     //外边框的画笔
     private Paint mPaint;
     //外边框与图片之间的间距, 单位是 dip
@@ -149,8 +149,8 @@ public class StickerTextView extends PLTextView {
     /**
      * 触摸落点位置
      */
-    private PointF mPreMovePointF = new PointF();
-    private PointF mCurMovePointF = new PointF();
+    private final PointF mPreMovePointF = new PointF();
+    private final PointF mCurMovePointF = new PointF();
 
     /**
      * 文字在旋转时 x 和 y 方向的偏移量
@@ -173,7 +173,7 @@ public class StickerTextView extends PLTextView {
     /**
      * 文字相关
      */
-    private Paint mTextPaint = new Paint();
+    private final Paint mTextPaint = new Paint();
     private float mTextWidth;
     private float mTextHeight;
     //文字的 X 、 Y 坐标

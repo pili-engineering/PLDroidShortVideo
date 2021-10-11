@@ -34,6 +34,7 @@ import com.qiniu.shortvideo.app.adapter.FilterItemAdapter;
 import com.qiniu.shortvideo.app.faceunity.BeautyControlView;
 import com.qiniu.shortvideo.app.model.AudioFile;
 import com.qiniu.shortvideo.app.utils.Config;
+import com.qiniu.shortvideo.app.utils.MediaUtils;
 import com.qiniu.shortvideo.app.utils.RecordSettings;
 import com.qiniu.shortvideo.app.utils.Utils;
 import com.qiniu.shortvideo.app.utils.ViewOperator;
@@ -53,6 +54,7 @@ import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoFilterListener;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -770,6 +772,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
 
     @Override
     public void onSaveVideoSuccess(String s) {
+        MediaUtils.storeVideo(this, new File(s), Config.MIME_TYPE_VIDEO);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
