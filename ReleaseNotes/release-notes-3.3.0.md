@@ -1,4 +1,4 @@
-# PLDroidShortVideo Release Notes for 3.2.2
+# PLDroidShortVideo Release Notes for 3.3.0
 
 ### 简介
 
