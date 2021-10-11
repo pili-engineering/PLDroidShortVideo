@@ -19,18 +19,18 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 
 public class GifSelectorPanel extends LinearLayout {
-    private Context mContext;
-    private RecyclerView mGifListView;
+    private final Context mContext;
+    private final RecyclerView mGifListView;
     private OnGifSelectedListener mOnGifSelectedListener;
 
-    private static String[] gifNames = {"test", "watermark"};
+    private static final String[] GIF_NAMES = {"test", "watermark"};
 
     public GifSelectorPanel(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
 
         View view = LayoutInflater.from(context).inflate(R.layout.panel_image_selector, this);
-        mGifListView = (RecyclerView) view.findViewById(R.id.recycler_paint_image);
+        mGifListView = view.findViewById(R.id.recycler_paint_image);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mGifListView.setLayoutManager(layoutManager);
         mGifListView.setAdapter(new GifListAdapter());
@@ -69,8 +69,8 @@ public class GifSelectorPanel extends LinearLayout {
         @Override
         public void onBindViewHolder(final ItemViewHolder holder, final int position) {
 
-            final String imagePath = Config.GIF_STICKER_DIR + gifNames[position] + ".gif";
-            holder.mName.setText(gifNames[position]);
+            final String imagePath = Config.GIF_STICKER_DIR + GIF_NAMES[position] + ".gif";
+            holder.mName.setText(GIF_NAMES[position]);
             Glide.with(mContext).load(imagePath).into(holder.mIcon);
             holder.mIcon.setOnClickListener(new OnClickListener() {
                 @Override
@@ -84,7 +84,7 @@ public class GifSelectorPanel extends LinearLayout {
 
         @Override
         public int getItemCount() {
-            return gifNames.length;
+            return GIF_NAMES.length;
         }
     }
 }

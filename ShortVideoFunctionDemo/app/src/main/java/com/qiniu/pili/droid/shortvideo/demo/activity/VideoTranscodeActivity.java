@@ -74,24 +74,24 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         setTitle(R.string.title_transcode);
 
-        mMixAudioFileText = (TextView) findViewById(R.id.tv_mix_audio_file);
-        mVideoFilePathText = (TextView) findViewById(R.id.SrcVideoPathText);
-        mVideoSizeText = (TextView) findViewById(R.id.SrcVideoSizeText);
-        mVideoRotationText = (TextView) findViewById(R.id.SrcVideoRotationText);
-        mVideoSizeRotatedText = (TextView) findViewById(R.id.SrcVideoSizeRotatedText);
-        mVideoBitrateText = (TextView) findViewById(R.id.SrcVideoBitrateText);
+        mMixAudioFileText = findViewById(R.id.tv_mix_audio_file);
+        mVideoFilePathText = findViewById(R.id.tv_src_video_path);
+        mVideoSizeText = findViewById(R.id.tv_src_video_size);
+        mVideoRotationText = findViewById(R.id.tv_src_video_rotation);
+        mVideoSizeRotatedText = findViewById(R.id.tv_src_video_size_rotation);
+        mVideoBitrateText = findViewById(R.id.tv_src_video_bitrate);
 
-        mTranscodingWidthEditText = (EditText) findViewById(R.id.TranscodingWidth);
-        mTranscodingHeightEditText = (EditText) findViewById(R.id.TranscodingHeight);
-        mTranscodingMaxFPSEditText = (EditText) findViewById(R.id.TranscodingMaxFPS);
+        mTranscodingWidthEditText = findViewById(R.id.et_width);
+        mTranscodingHeightEditText = findViewById(R.id.et_height);
+        mTranscodingMaxFPSEditText = findViewById(R.id.et_max_fps);
 
-        mTranscodingClipXText = (EditText) findViewById(R.id.TranscodingClipX);
-        mTranscodingClipYText = (EditText) findViewById(R.id.TranscodingClipY);
-        mTranscodingClipWidthText = (EditText) findViewById(R.id.TranscodingClipWidth);
-        mTranscodingClipHeightText = (EditText) findViewById(R.id.TranscodingClipHeight);
+        mTranscodingClipXText = findViewById(R.id.et_clip_x);
+        mTranscodingClipYText = findViewById(R.id.et_clip_y);
+        mTranscodingClipWidthText = findViewById(R.id.et_clip_width);
+        mTranscodingClipHeightText = findViewById(R.id.et_clip_height);
 
-        mTranscodingBitrateText = (EditText) findViewById(R.id.TranscodingBitrate);
-        mTranscodingRotationSpinner = (Spinner) findViewById(R.id.TranscodingRotationSpinner);
+        mTranscodingBitrateText = findViewById(R.id.et_bitrate);
+        mTranscodingRotationSpinner = findViewById(R.id.spinner_rotation);
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ROTATION_LEVEL_TIPS_ARRAY);
         mTranscodingRotationSpinner.setAdapter(adapter);
@@ -204,7 +204,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
     private void doTranscode(boolean isReverse) {
         if (mShortVideoTranscoder == null) {
-            ToastUtils.showShortToast(this, "请先选择转码文件！");
+            ToastUtils.showShortToast("请先选择转码文件！");
             return;
         }
 
@@ -244,7 +244,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
                         Log.i(TAG, "save failed: " + errorCode);
                         runOnUiThread(() -> {
                             mProcessingDialog.dismiss();
-                            ToastUtils.toastErrorCode(VideoTranscodeActivity.this, errorCode);
+                            ToastUtils.toastErrorCode(errorCode);
                         });
                     }
 
@@ -261,8 +261,9 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         if (startResult) {
             mProcessingDialog.show();
+            mProcessingDialog.setProgress(0);
         } else {
-            ToastUtils.showShortToast(this, "开始转码失败！");
+            ToastUtils.showShortToast("开始转码失败！");
         }
     }
 

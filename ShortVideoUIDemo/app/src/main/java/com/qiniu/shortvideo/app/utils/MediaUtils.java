@@ -1,10 +1,13 @@
 package com.qiniu.shortvideo.app.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.shortvideo.app.model.AudioFile;
 import com.qiniu.shortvideo.app.model.MediaFile;
 
@@ -224,6 +227,23 @@ public class MediaUtils {
         return audioFiles;
     }
 
+    public static Uri storeVideo(Context context, File srcFile, String mime) {
+        File dstFile = new File(Config.VIDEO_PUBLIC_STORAGE_DIR, srcFile.getName());
+        boolean succeed = FileUtils.copyFile(srcFile, dstFile);
+        if (succeed) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Video.Media.DATA, dstFile.getAbsolutePath());
+            values.put(MediaStore.Video.Media.MIME_TYPE, mime);
+            Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            intent.setData(uri);
+            context.sendBroadcast(intent);
+            return Uri.fromFile(dstFile);
+        } else {
+            return null;
+        }
+    }
+
     private static boolean isFileExists(String strFile) {
         try {
             File f = new File(strFile);
@@ -245,6 +265,9 @@ public class MediaUtils {
         int videoId = cursor.getInt(colId);
         long duration = cursor.getLong(colDuration);
         String displayName = cursor.getString(colDisplayName);
+        if (duration == 0) {
+            duration = new PLMediaFile(filePath).getDurationMs();
+        }
         long addTime = cursor.getLong(colAddTime);
         String thumbnailPath = null;
         Cursor thumbCursor = context.getContentResolver().query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,

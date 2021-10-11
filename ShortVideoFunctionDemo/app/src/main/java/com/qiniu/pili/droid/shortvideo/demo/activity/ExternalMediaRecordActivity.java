@@ -48,10 +48,6 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
     // VideoView
     private PLVideoTextureView mVideoTextureView;
 
-    private MediaExtractor mSrcMediaExtractor;
-    private MediaFormat mSrcVideoFormat;
-    private MediaFormat mSrcAudioFormat;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,16 +74,17 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
         mExternalMediaRecorder.setRecordStateListener(this);
         mExternalMediaRecorder.prepare(videoEncodeSetting, audioEncodeSetting, recordSetting);
 
-        mPlayButton = (Button) findViewById(R.id.play);
-        mStopButton = (Button) findViewById(R.id.stop);
+        mPlayButton = findViewById(R.id.play);
+        mStopButton = findViewById(R.id.stop);
         mPlayButton.setOnClickListener(this);
         mStopButton.setOnClickListener(this);
 
-        mVideoTextureView = (PLVideoTextureView) findViewById(R.id.video);
+        mVideoTextureView = findViewById(R.id.video);
         mVideoTextureView.setVideoPath(RECORD_FILE_PATH);
 
         AVOptions options = new AVOptions();
         options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_AUTO);
         mVideoTextureView.setAVOptions(options);
         mVideoTextureView.setOnVideoFrameListener((data, size, width, height, format, ts) -> {
             if (format == 0) {
@@ -136,6 +133,8 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
                     }
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -153,53 +152,54 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
     }
 
     private boolean getSourceVideoParameters() {
-        mSrcMediaExtractor = new MediaExtractor();
+        MediaExtractor srcMediaExtractor = new MediaExtractor();
         try {
-            mSrcMediaExtractor.setDataSource(RECORD_FILE_PATH);
+            srcMediaExtractor.setDataSource(RECORD_FILE_PATH);
         } catch (IOException e) {
             Log.e(TAG, "file video setDataSource failed: " + e.getMessage());
             return false;
         }
 
-        final int srcVideoTrackIndex = findTrack(mSrcMediaExtractor, "video/");
+        final int srcVideoTrackIndex = findTrack(srcMediaExtractor, "video/");
         if (srcVideoTrackIndex < 0) {
             Log.e(TAG, "cannot find video in file!");
             return false;
         }
-        final int srcAudioTrackIndex = findTrack(mSrcMediaExtractor, "audio/");
+        final int srcAudioTrackIndex = findTrack(srcMediaExtractor, "audio/");
         if (srcAudioTrackIndex < 0) {
             Log.e(TAG, "cannot find audio in file!");
             return false;
         }
 
-        mSrcVideoFormat = mSrcMediaExtractor.getTrackFormat(srcVideoTrackIndex);
-        if (mSrcVideoFormat == null) {
+        MediaFormat srcVideoFormat = srcMediaExtractor.getTrackFormat(srcVideoTrackIndex);
+        if (srcVideoFormat == null) {
             Log.e(TAG, "cannot find video format!");
             return false;
         }
-        if (mSrcVideoFormat.containsKey(MediaFormat.KEY_WIDTH)) {
-            mVideoFrameWidth = mSrcVideoFormat.getInteger(MediaFormat.KEY_WIDTH);
+        if (srcVideoFormat.containsKey(MediaFormat.KEY_WIDTH)) {
+            mVideoFrameWidth = srcVideoFormat.getInteger(MediaFormat.KEY_WIDTH);
         }
-        if (mSrcVideoFormat.containsKey(MediaFormat.KEY_HEIGHT)) {
-            mVideoFrameHeight = mSrcVideoFormat.getInteger(MediaFormat.KEY_HEIGHT);
+        if (srcVideoFormat.containsKey(MediaFormat.KEY_HEIGHT)) {
+            mVideoFrameHeight = srcVideoFormat.getInteger(MediaFormat.KEY_HEIGHT);
         }
-        if (mSrcVideoFormat.containsKey(MediaFormat.KEY_FRAME_RATE)) {
-            mFrameRate = mSrcVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
+        if (srcVideoFormat.containsKey(MediaFormat.KEY_FRAME_RATE)) {
+            mFrameRate = srcVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
         }
 
-        mSrcAudioFormat = mSrcMediaExtractor.getTrackFormat(srcAudioTrackIndex);
-        if (mSrcAudioFormat == null) {
+        MediaFormat srcAudioFormat = srcMediaExtractor.getTrackFormat(srcAudioTrackIndex);
+        if (srcAudioFormat == null) {
             Log.e(TAG, "cannot find audio format!");
             return false;
         }
-        if (mSrcAudioFormat.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
-            mSampleRate = mSrcAudioFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+        if (srcAudioFormat.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+            mSampleRate = srcAudioFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
         }
-        if (mSrcAudioFormat.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) {
-            mChannels = mSrcAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+        if (srcAudioFormat.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) {
+            mChannels = srcAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         }
         Log.i(TAG, "Video width:" + mVideoFrameWidth + ", height:" + mVideoFrameHeight + ", framerate:" + mFrameRate + "; Audio samplerate: " + mSampleRate + ", channels:" + mChannels);
 
+        srcMediaExtractor.release();
         return true;
     }
 

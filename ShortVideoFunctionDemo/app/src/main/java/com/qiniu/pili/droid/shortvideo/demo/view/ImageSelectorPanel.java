@@ -23,18 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ImageSelectorPanel extends LinearLayout {
-    private Context mContext;
-    private RecyclerView mImageListView;
+    private final Context mContext;
+    private final RecyclerView mImageListView;
     private OnImageSelectedListener mOnImageSelectedListener;
 
-    private static String[] imagePaths = {"1960s", "camomile", "candy", "cold", "dark"};
+    private static final String[] IMAGE_PATHS = {"1960s", "camomile", "candy", "cold", "dark"};
 
     public ImageSelectorPanel(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
 
         View view = LayoutInflater.from(context).inflate(R.layout.panel_image_selector, this);
-        mImageListView = (RecyclerView) view.findViewById(R.id.recycler_paint_image);
+        mImageListView = view.findViewById(R.id.recycler_paint_image);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mImageListView.setLayoutManager(layoutManager);
         mImageListView.setAdapter(new ImageListAdapter());
@@ -54,8 +54,8 @@ public class ImageSelectorPanel extends LinearLayout {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mIcon = (ImageView) itemView.findViewById(R.id.icon);
-            mName = (TextView) itemView.findViewById(R.id.name);
+            mIcon = itemView.findViewById(R.id.icon);
+            mName = itemView.findViewById(R.id.name);
         }
     }
 
@@ -73,7 +73,7 @@ public class ImageSelectorPanel extends LinearLayout {
         @Override
         public void onBindViewHolder(final ImageSelectorPanel.ItemViewHolder holder, int position) {
             try {
-                final String imagePath = "filters/" + imagePaths[position] + "/thumb.png";
+                final String imagePath = "filters/" + IMAGE_PATHS[position] + "/thumb.png";
                 InputStream is = mContext.getAssets().open(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 holder.mName.setVisibility(GONE);
@@ -93,7 +93,7 @@ public class ImageSelectorPanel extends LinearLayout {
 
         @Override
         public int getItemCount() {
-            return imagePaths.length;
+            return IMAGE_PATHS.length;
         }
     }
 }

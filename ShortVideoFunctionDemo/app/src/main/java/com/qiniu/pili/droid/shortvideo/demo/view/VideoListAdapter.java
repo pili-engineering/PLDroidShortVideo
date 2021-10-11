@@ -20,8 +20,8 @@ import java.util.List;
 
 public class VideoListAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<String> mVideoList = new ArrayList<>();
+    private final Context mContext;
+    private final List<String> mVideoList = new ArrayList<>();
 
     private class ViewHolder {
         ImageView mVideoThumbnail;
@@ -67,10 +67,10 @@ public class VideoListAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_video, null, false);
             ViewHolder holder = new ViewHolder();
-            holder.mVideoThumbnail = (ImageView) convertView.findViewById(R.id.VideoThumbnail);
-            holder.mVideoName = (TextView) convertView.findViewById(R.id.VideoName);
-            holder.mVideoParams = (TextView) convertView.findViewById(R.id.VideoParams);
-            holder.mAudioParams = (TextView) convertView.findViewById(R.id.AudioParams);
+            holder.mVideoThumbnail = convertView.findViewById(R.id.VideoThumbnail);
+            holder.mVideoName = convertView.findViewById(R.id.VideoName);
+            holder.mVideoParams = convertView.findViewById(R.id.VideoParams);
+            holder.mAudioParams = convertView.findViewById(R.id.AudioParams);
             convertView.setTag(holder);
         }
 

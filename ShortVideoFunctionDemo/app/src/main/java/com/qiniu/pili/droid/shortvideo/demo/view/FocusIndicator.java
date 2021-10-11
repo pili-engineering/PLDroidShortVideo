@@ -15,8 +15,8 @@ public class FocusIndicator extends View {
     private static final int STATE_FOCUSING = 1;
     private static final int STATE_FINISHING = 2;
 
-    private Runnable mDisappear = new Disappear();
-    private Runnable mEndAction = new EndAction();
+    private final Runnable mDisappear = new Disappear();
+    private final Runnable mEndAction = new EndAction();
 
     private static final int SCALING_UP_TIME = 1000;
     private static final int SCALING_DOWN_TIME = 200;
@@ -69,7 +69,7 @@ public class FocusIndicator extends View {
     private class Disappear implements Runnable {
         @Override
         public void run() {
-            setBackgroundDrawable(null);
+            setBackground(null);
             mState = STATE_IDLE;
         }
     }

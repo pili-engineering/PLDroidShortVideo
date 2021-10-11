@@ -19,18 +19,18 @@ import android.widget.TextView;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 
 public class PaintSelectorPanel extends LinearLayout {
-    private Context mContext;
-    private RecyclerView mColorListView;
+    private final Context mContext;
+    private final RecyclerView mColorListView;
     private OnPaintSelectorListener mOnPaintSelectorListener;
     private ImageView mCurColorView;
-    private ImageButton mCloseBtn;
-    private TextView mUndoText;
-    private TextView mClearText;
-    private SeekBar mSizeSeekBar;
-    private ImageView mSizeImage;
-    private PaintColorListAdapter mAdapter;
+    private final ImageButton mCloseBtn;
+    private final TextView mUndoText;
+    private final TextView mClearText;
+    private final SeekBar mSizeSeekBar;
+    private final ImageView mSizeImage;
+    private final PaintColorListAdapter mAdapter;
 
-    private static int PAINT_MAX_SIZE = 100;
+    private static final int PAINT_MAX_SIZE = 100;
 
     public static int[] colors = {R.color.paint1, R.color.paint2, R.color.paint3, R.color.paint4,
             R.color.paint5, R.color.paint6, R.color.paint7, R.color.paint8,
@@ -41,10 +41,10 @@ public class PaintSelectorPanel extends LinearLayout {
         mContext = context;
 
         View view = LayoutInflater.from(context).inflate(R.layout.panel_paint_selector, this);
-        mSizeImage = (ImageView) view.findViewById(R.id.paint_size_image);
-        mSizeSeekBar = (SeekBar) view.findViewById(R.id.paint_size_seek);
-        mUndoText = (TextView) view.findViewById(R.id.paint_undo_text);
-        mClearText = (TextView) view.findViewById(R.id.paint_clear_text);
+        mSizeImage = view.findViewById(R.id.paint_size_image);
+        mSizeSeekBar = view.findViewById(R.id.paint_size_seek);
+        mUndoText = view.findViewById(R.id.paint_undo_text);
+        mClearText = view.findViewById(R.id.paint_clear_text);
 
         mUndoText.setOnClickListener(v -> {
             if (mOnPaintSelectorListener != null) {
@@ -84,13 +84,13 @@ public class PaintSelectorPanel extends LinearLayout {
             }
         });
 
-        mColorListView = (RecyclerView) view.findViewById(R.id.recycler_paint_color);
+        mColorListView = view.findViewById(R.id.recycler_paint_color);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mColorListView.setLayoutManager(layoutManager);
         mAdapter = new PaintColorListAdapter(colors);
         mColorListView.setAdapter(mAdapter);
 
-        mCloseBtn = (ImageButton) view.findViewById(R.id.close_btn);
+        mCloseBtn = view.findViewById(R.id.close_btn);
         mCloseBtn.setOnClickListener(v -> {
             if (mOnPaintSelectorListener != null) {
                 mOnPaintSelectorListener.onViewClosed();
@@ -125,12 +125,12 @@ public class PaintSelectorPanel extends LinearLayout {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.paint_color_view);
+            mImageView = itemView.findViewById(R.id.paint_color_view);
         }
     }
 
     private class PaintColorListAdapter extends RecyclerView.Adapter<PaintSelectorPanel.ItemViewHolder> {
-        private int[] mColors;
+        private final int[] mColors;
         private int mPosition = 0;
 
         public PaintColorListAdapter(int[] colors) {

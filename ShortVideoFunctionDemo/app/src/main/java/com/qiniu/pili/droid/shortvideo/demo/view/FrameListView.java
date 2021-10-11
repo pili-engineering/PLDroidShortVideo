@@ -47,7 +47,7 @@ public class FrameListView extends FrameLayout {
     private FrameLayout mScrollViewParent;
     private ViewGroup mFrameListParent;
 
-    private HashMap<SectionItem, View> mSectionsMap = new HashMap<>();
+    private final HashMap<SectionItem, View> mSectionsMap = new HashMap<>();
 
     private FrameListAdapter mFrameListAdapter;
     private OnVideoFrameScrollListener mOnVideoFrameScrollListener;
@@ -60,10 +60,10 @@ public class FrameListView extends FrameLayout {
         super(context, attrs);
         mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.frame_list_view, this);
-        mFrameList = (RecyclerView) view.findViewById(R.id.recycler_frame_list);
-        mScrollView = (ObservableHorizontalScrollView) view.findViewById(R.id.scroll_view);
-        mScrollViewParent = (FrameLayout) findViewById(R.id.scroll_view_parent);
-        mFrameListParent = (ViewGroup) findViewById(R.id.recycler_parent);
+        mFrameList = view.findViewById(R.id.recycler_frame_list);
+        mScrollView = view.findViewById(R.id.scroll_view);
+        mScrollViewParent = findViewById(R.id.scroll_view_parent);
+        mFrameListParent = findViewById(R.id.recycler_parent);
     }
 
     private void initFrameList() {
@@ -238,7 +238,7 @@ public class FrameListView extends FrameLayout {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.thumbnail);
+            mImageView = itemView.findViewById(R.id.thumbnail);
         }
     }
 
@@ -281,11 +281,11 @@ public class FrameListView extends FrameLayout {
     }
 
     private static class ImageViewTask extends AsyncTask<Void, Void, PLVideoFrame> {
-        private WeakReference<ImageView> mImageViewWeakReference;
-        private long mFrameTime;
-        private int mFrameWidth;
-        private int mFrameHeight;
-        private PLMediaFile mMediaFile;
+        private final WeakReference<ImageView> mImageViewWeakReference;
+        private final long mFrameTime;
+        private final int mFrameWidth;
+        private final int mFrameHeight;
+        private final PLMediaFile mMediaFile;
 
         ImageViewTask(ImageView imageView, long frameTime, int frameWidth, int frameHeight, PLMediaFile mediaFile) {
             mImageViewWeakReference = new WeakReference<>(imageView);

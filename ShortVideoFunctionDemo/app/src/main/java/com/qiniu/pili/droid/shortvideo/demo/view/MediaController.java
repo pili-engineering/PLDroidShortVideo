@@ -144,16 +144,16 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private void initControllerView(View v) {
         // By default these are hidden.
-        mPrevButton = (ImageButton) v.findViewById(PRV_BUTTON_ID);
+        mPrevButton = v.findViewById(PRV_BUTTON_ID);
         if (mPrevButton != null) {
             mPrevButton.setVisibility(View.GONE);
         }
-        mNextButton = (ImageButton) v.findViewById(NEXT_BUTTON_ID);
+        mNextButton = v.findViewById(NEXT_BUTTON_ID);
         if (mNextButton != null) {
             mNextButton.setVisibility(View.GONE);
         }
 
-        mFfwdButton = (ImageButton) v.findViewById(FFWD_BUTTON_ID);
+        mFfwdButton = v.findViewById(FFWD_BUTTON_ID);
         if (mFfwdButton != null) {
             mFfwdButton.setOnClickListener(mFfwdListener);
             if (!mFromXml) {
@@ -161,20 +161,20 @@ public class MediaController extends FrameLayout implements IMediaController {
             }
         }
 
-        mRewButton = (ImageButton) v.findViewById(REW_BUTTON_ID);
+        mRewButton = v.findViewById(REW_BUTTON_ID);
         if (mRewButton != null) {
             mRewButton.setOnClickListener(mRewListener);
             if (!mFromXml) {
                 mRewButton.setVisibility(mUseFastForward ? View.VISIBLE : View.GONE);
             }
         }
-        mPauseButton = (ImageButton) v.findViewById(PAUSE_BUTTON_ID);
+        mPauseButton = v.findViewById(PAUSE_BUTTON_ID);
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
             mPauseButton.setOnClickListener(mPauseListener);
         }
 
-        mProgress = (ProgressBar) v.findViewById(MEDIACONTROLLER_PROGRESS_ID);
+        mProgress = v.findViewById(MEDIACONTROLLER_PROGRESS_ID);
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
                 SeekBar seeker = (SeekBar) mProgress;
@@ -185,8 +185,8 @@ public class MediaController extends FrameLayout implements IMediaController {
             mProgress.setEnabled(!mDisableProgress);
         }
 
-        mEndTime = (TextView) v.findViewById(END_TIME_ID);
-        mCurrentTime = (TextView) v.findViewById(CURRENT_TIME_ID);
+        mEndTime = v.findViewById(END_TIME_ID);
+        mCurrentTime = v.findViewById(CURRENT_TIME_ID);
     }
 
     /**
@@ -226,7 +226,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     }
 
     public interface OnShownListener {
-        public void onShown();
+        void onShown();
     }
 
     private OnShownListener mShownListener;
@@ -236,7 +236,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     }
 
     public interface OnHiddenListener {
-        public void onHidden();
+        void onHidden();
     }
 
     private OnHiddenListener mHiddenListener;
@@ -245,7 +245,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         mHiddenListener = l;
     }
 
-    @SuppressLint("HandlerLeak") private Handler mHandler = new Handler() {
+    @SuppressLint("HandlerLeak") private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             long pos;
@@ -346,7 +346,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         return super.dispatchKeyEvent(event);
     }
 
-    private View.OnClickListener mPauseListener = new View.OnClickListener() {
+    private final View.OnClickListener mPauseListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
@@ -378,7 +378,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         updatePausePlay();
     }
 
-    private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
+    private final SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onStartTrackingTouch(SeekBar bar) {
@@ -396,7 +396,7 @@ public class MediaController extends FrameLayout implements IMediaController {
                 return;
             }
 
-            final long newposition = (long) (mDuration * progress) / 1000;
+            final long newposition = (mDuration * progress) / 1000;
             String time = generateTime(newposition);
             if (mInstantSeeking) {
                 mHandler.removeCallbacks(mLastSeekBarRunnable);
@@ -427,7 +427,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
     };
 
-    private View.OnClickListener mRewListener = new View.OnClickListener() {
+    private final View.OnClickListener mRewListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
@@ -437,7 +437,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
     };
 
-    private View.OnClickListener mFfwdListener = new View.OnClickListener() {
+    private final View.OnClickListener mFfwdListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {

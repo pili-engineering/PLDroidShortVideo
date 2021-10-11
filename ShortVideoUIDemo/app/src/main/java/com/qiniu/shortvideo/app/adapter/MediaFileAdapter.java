@@ -56,8 +56,9 @@ public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.Medi
         int itemWidth = calculateItemSize();
         mRequestOptions = new RequestOptions()
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .override(itemWidth, itemWidth);
+        Glide.get(context).clearMemory();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -105,7 +106,7 @@ public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.Medi
             mediaItemViewHolder.mDurationText.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
             mediaItemViewHolder.mDurationText.getPaint().setAntiAlias(true);//抗锯齿
             mediaItemViewHolder.mDurationText.setText(
-                    secToTime((int) (mediaFile.getDuration() / 1000) < 1 ? 1 : (int) (mediaFile.getDuration() / 1000)));
+                    secToTime(Math.max((int) (mediaFile.getDuration() / 1000), 1)));
         }
         if (mType == TYPE_MEDIA_CHOSEN) {
             mediaItemViewHolder.mDeleteBtn.setVisibility(View.VISIBLE);

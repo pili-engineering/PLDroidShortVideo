@@ -5,19 +5,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.qiniu.pili.droid.shortvideo.demo.R;
-
-import java.io.IOException;
-
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
 
 public class ShowGIFActivity extends AppCompatActivity {
 
     public static final String GIF_PATH = "GifPathToPlay";
-
-    GifImageView mGifImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +31,8 @@ public class ShowGIFActivity extends AppCompatActivity {
             return;
         }
 
-        mGifImageView = (GifImageView) findViewById(R.id.gif_image_view);
-        try {
-            GifDrawable drawable = new GifDrawable(gifFilePath);
-            drawable.start();
-            drawable.setLoopCount(10);
-            mGifImageView.setBackground(drawable);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ImageView imageView = findViewById(R.id.iv_gif);
+        Glide.with(this).load(gifFilePath).into(imageView);
     }
 
     @Override

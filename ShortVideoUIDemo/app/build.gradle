@@ -24,9 +24,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation files('libs/pldroid-shortvideo-3.1.0.jar')
-    implementation files('libs/pldroid-player-2.1.7.jar')
-    implementation files('libs/universal-image-loader-1.9.4.jar')
     implementation project(':faceunity')
     implementation project(':TuSDKFilterEngineModule')
     implementation 'com.android.support:appcompat-v7:28.0.0'

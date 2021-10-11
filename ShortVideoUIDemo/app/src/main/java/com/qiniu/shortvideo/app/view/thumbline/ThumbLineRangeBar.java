@@ -1,6 +1,7 @@
 package com.qiniu.shortvideo.app.view.thumbline;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -185,6 +186,13 @@ public class ThumbLineRangeBar {
                 if (mOnSelectedDurationChangeListener != null) {
                     mOnSelectedDurationChangeListener.onRangeBarClicked(ThumbLineRangeBar.this);
                 }
+            }
+        });
+
+        mSelectedMiddleView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mThumbLineView.getThumbRecyclerView().onTouchEvent(event);
             }
         });
 

@@ -20,8 +20,8 @@ import java.util.List;
 import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 
 public class ImageListAdapter extends BaseAdapter {
-    private Context mContext;
-    private List<PLComposeItem> mElements = new LinkedList<>();
+    private final Context mContext;
+    private final List<PLComposeItem> mElements = new LinkedList<>();
 
     private class ViewHolder {
         ImageView mImageThumbnail;
@@ -72,11 +72,11 @@ public class ImageListAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_image, null, false);
             ViewHolder holder = new ViewHolder();
-            holder.mImageThumbnail = (ImageView) convertView.findViewById(R.id.ImageThumbnail);
-            holder.mImageName = (TextView) convertView.findViewById(R.id.ImageName);
-            holder.mImageParams = (TextView) convertView.findViewById(R.id.ImageParams);
-            holder.mImageDuration = (TextView) convertView.findViewById(R.id.ImageDuration);
-            holder.mImageTransTime = (TextView) convertView.findViewById(R.id.ImageTransTime);
+            holder.mImageThumbnail = convertView.findViewById(R.id.ImageThumbnail);
+            holder.mImageName = convertView.findViewById(R.id.ImageName);
+            holder.mImageParams = convertView.findViewById(R.id.ImageParams);
+            holder.mImageDuration = convertView.findViewById(R.id.ImageDuration);
+            holder.mImageTransTime = convertView.findViewById(R.id.ImageTransTime);
             convertView.setTag(holder);
         }
 

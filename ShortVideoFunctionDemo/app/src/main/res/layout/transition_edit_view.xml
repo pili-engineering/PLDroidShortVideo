@@ -12,7 +12,7 @@
         android:layout_height="35dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:background="@mipmap/btn_back"
+        android:background="@drawable/btn_back"
         android:onClick="onBackClicked" />
 
     <EditText

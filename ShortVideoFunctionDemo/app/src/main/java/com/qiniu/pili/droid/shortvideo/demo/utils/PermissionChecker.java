@@ -14,7 +14,7 @@ import java.util.List;
 public class PermissionChecker {
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
 
-    private Activity mActivity;
+    private final Activity mActivity;
 
     public PermissionChecker(Activity activity) {
         mActivity = activity;

@@ -5,7 +5,6 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/vertical_mix_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -13,7 +12,6 @@
         android:text="左右分屏" />
 
     <Button
-        android:id="@+id/sample_above_camera_mix_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -21,7 +19,6 @@
         android:text="素材在上（画中画）" />
 
     <Button
-        android:id="@+id/camera_above_sample_mix_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

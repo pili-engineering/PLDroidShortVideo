@@ -137,29 +137,26 @@ public class MakeGIFActivity extends AppCompatActivity {
         mBitmapCache = new LruCache<>(calculateCacheCount());
         mOngoingTasks = new Hashtable<>();
 
-        mGIFZoomFactorText = (EditText) findViewById(R.id.zoom_factor);
-        mGIFTotalFrameCountText = (EditText) findViewById(R.id.total_frame_count);
-        mGIFFrameRateText = (EditText) findViewById(R.id.gif_framerate);
+        mGIFZoomFactorText = findViewById(R.id.zoom_factor);
+        mGIFTotalFrameCountText = findViewById(R.id.total_frame_count);
+        mGIFFrameRateText = findViewById(R.id.gif_framerate);
 
-        mGIFStartTimeText = (EditText) findViewById(R.id.start_time);
-        mGIFEndTimeText = (EditText) findViewById(R.id.end_time);
+        mGIFStartTimeText = findViewById(R.id.start_time);
+        mGIFEndTimeText = findViewById(R.id.end_time);
 
-        mGridView = (GridView) findViewById(R.id.key_frame_grid);
+        mGridView = findViewById(R.id.key_frame_grid);
         final FrameAdapter adapter = new FrameAdapter(this);
         mGridView.setAdapter(adapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int color;
-                if (!mSelectedFrameIndex.contains(i)) {
-                    mSelectedFrameIndex.add(i);
-                    color = R.color.colorAccent;
-                } else {
-                    mSelectedFrameIndex.remove((Integer) i);
-                    color = R.color.white;
-                }
-                view.setBackgroundColor(getResources().getColor(color));
+        mGridView.setOnItemClickListener((adapterView, view, i, l) -> {
+            int color;
+            if (!mSelectedFrameIndex.contains(i)) {
+                mSelectedFrameIndex.add(i);
+                color = R.color.colorAccent;
+            } else {
+                mSelectedFrameIndex.remove((Integer) i);
+                color = R.color.white;
             }
+            view.setBackgroundColor(getResources().getColor(color));
         });
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -197,7 +194,7 @@ public class MakeGIFActivity extends AppCompatActivity {
         if (zoomFactor < 0) {
             zoomFactor = 1;
         } else if ((zoomFactor > 2) || (zoomFactor < 0.5)) {
-            ToastUtils.showShortToast(this, "缩放倍数异常，建议范围[0.5, 2]");
+            ToastUtils.showShortToast("缩放倍数异常，建议范围[0.5, 2]");
             return;
         } else {
             outputWeight *= zoomFactor;
@@ -207,12 +204,12 @@ public class MakeGIFActivity extends AppCompatActivity {
         if (totalFrameCount < 0) {
             totalFrameCount = 20;
         } else if (totalFrameCount > 50) {
-            ToastUtils.showShortToast(this, "GIF帧数过大，系统运行缓慢，请减小帧数设置");
+            ToastUtils.showShortToast("GIF帧数过大，系统运行缓慢，请减小帧数设置");
             return;
         }
         int gifFrameRate = Integer.parseInt(mGIFFrameRateText.getText().toString());
         if ((gifFrameRate < 0) || (gifFrameRate > 120)) {
-            ToastUtils.showShortToast(this, "GIF输出帧率异常，请选择1~120之间的整数");
+            ToastUtils.showShortToast("GIF输出帧率异常，请选择1~120之间的整数");
             return;
         }
         int startTime = Integer.parseInt(mGIFStartTimeText.getText().toString());
@@ -221,11 +218,12 @@ public class MakeGIFActivity extends AppCompatActivity {
         }
         int endTime = Integer.parseInt(mGIFEndTimeText.getText().toString());
         if ((endTime < 0) || (endTime < startTime)) {
-            ToastUtils.showShortToast(this, "时间参数异常，请重新设置");
+            ToastUtils.showShortToast("时间参数异常，请重新设置");
             return;
         }
 
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
         mShortVideoComposer.extractVideoToGIF(mInputFilePath, startTime * 1000, endTime * 1000, totalFrameCount,
                 outputWeight, outputHeight, gifFrameRate, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
                     @Override
@@ -239,13 +237,13 @@ public class MakeGIFActivity extends AppCompatActivity {
                     @Override
                     public void onSaveVideoFailed(int i) {
                         mProcessingDialog.dismiss();
-                        ToastUtils.showShortToast(MakeGIFActivity.this, "Failed");
+                        ToastUtils.showShortToast("Failed");
                     }
 
                     @Override
                     public void onSaveVideoCanceled() {
                         mProcessingDialog.dismiss();
-                        ToastUtils.showShortToast(MakeGIFActivity.this, "Canceled");
+                        ToastUtils.showShortToast("Canceled");
                     }
 
                     @Override
@@ -257,53 +255,51 @@ public class MakeGIFActivity extends AppCompatActivity {
 
     public void onClickMakeGIF(View v) {
         if (mSelectedFrameIndex.size() <= 0) {
-            ToastUtils.showShortToast(this, "请先选择帧");
+            ToastUtils.showShortToast("请先选择帧");
             mProcessingDialog.dismiss();
             return;
         }
         mProcessingDialog.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<Bitmap> bitmaps = new ArrayList<>();
-                for (int i = 0; i < mSelectedFrameIndex.size(); i++) {
-                    bitmaps.add(mMediaFile.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
-                }
-                mProcessingDialog.setCancelable(true);
-                mProcessingDialog.setOnCancelListener(dialogInterface -> mShortVideoComposer.cancelComposeToGIF());
-                mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
-                    @Override
-                    public void onSaveVideoSuccess(String filepath) {
-                        MediaStoreUtils.storeImage(MakeGIFActivity.this, new File(filepath), "image/gif");
-                        mProcessingDialog.dismiss();
-                        Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
-                        intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onSaveVideoFailed(int i) {
-                        mProcessingDialog.dismiss();
-                        ToastUtils.showShortToast(MakeGIFActivity.this, "Failed");
-                    }
-
-                    @Override
-                    public void onSaveVideoCanceled() {
-                        ToastUtils.showShortToast(MakeGIFActivity.this, "Canceled");
-
-                    }
-
-                    @Override
-                    public void onProgressUpdate(float v) {
-
-                    }
-                });
+        mProcessingDialog.setProgress(0);
+        new Thread(() -> {
+            ArrayList<Bitmap> bitmaps = new ArrayList<>();
+            for (int i = 0; i < mSelectedFrameIndex.size(); i++) {
+                bitmaps.add(mMediaFile.getVideoFrameByIndex(mSelectedFrameIndex.get(i), true).toBitmap());
             }
+            mProcessingDialog.setCancelable(true);
+            mProcessingDialog.setOnCancelListener(dialogInterface -> mShortVideoComposer.cancelComposeToGIF());
+            mShortVideoComposer.composeToGIF(bitmaps, 500, true, GIF_SAVE_PATH, new PLVideoSaveListener() {
+                @Override
+                public void onSaveVideoSuccess(String filepath) {
+                    MediaStoreUtils.storeImage(MakeGIFActivity.this, new File(filepath), "image/gif");
+                    mProcessingDialog.dismiss();
+                    Intent intent = new Intent(MakeGIFActivity.this, ShowGIFActivity.class);
+                    intent.putExtra(ShowGIFActivity.GIF_PATH, GIF_SAVE_PATH);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onSaveVideoFailed(int i) {
+                    mProcessingDialog.dismiss();
+                    ToastUtils.showShortToast("Failed");
+                }
+
+                @Override
+                public void onSaveVideoCanceled() {
+                    ToastUtils.showShortToast("Canceled");
+
+                }
+
+                @Override
+                public void onProgressUpdate(float v1) {
+
+                }
+            });
         }).start();
     }
 
     private class FrameAdapter extends BaseAdapter {
-        private Context mContext;
+        private final Context mContext;
 
         public FrameAdapter(Context context) {
             mContext = context;
@@ -356,8 +352,8 @@ public class MakeGIFActivity extends AppCompatActivity {
     }
 
     private class LoadFrameTask extends AsyncTask<Void, Void, Bitmap> {
-        private int mIndex;
-        private ImageView mImageView;
+        private final int mIndex;
+        private final ImageView mImageView;
 
         public LoadFrameTask(int index, ImageView imageView) {
             mIndex = index;

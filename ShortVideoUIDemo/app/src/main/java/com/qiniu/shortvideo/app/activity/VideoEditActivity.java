@@ -35,6 +35,7 @@ import com.qiniu.shortvideo.app.tusdk.SceneRecyclerAdapter;
 import com.qiniu.shortvideo.app.tusdk.SpecialEffectBottomView;
 import com.qiniu.shortvideo.app.tusdk.TuSDKManager;
 import com.qiniu.shortvideo.app.utils.LoadFrameTask;
+import com.qiniu.shortvideo.app.utils.MediaUtils;
 import com.qiniu.shortvideo.app.utils.ToastUtils;
 import com.qiniu.shortvideo.app.utils.Utils;
 import com.qiniu.shortvideo.app.utils.ViewOperator;
@@ -135,7 +136,6 @@ public class VideoEditActivity extends AppCompatActivity implements
 
     private String mMp4path;
     private long mMixDuration = 5000; // ms
-    private boolean isSaving = false;
     private boolean mIsPlaying = true;
     private volatile boolean mCancelSave;
     private long mVideoDurationMs;
@@ -301,9 +301,9 @@ public class VideoEditActivity extends AppCompatActivity implements
         if (mLoadFramesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLoadFramesTask.cancel(true);
         }
-        isSaving = true;
         mProcessingDialog.show();
-        mShortVideoEditor.save(mVideoSaveFilterListener);
+        boolean useMediaEffects = !mTuSDKManager.getAllMediaEffects().isEmpty();
+        mShortVideoEditor.save(useMediaEffects ? mVideoSaveFilterListener : null);
     }
 
     public void onClickVolumeSetting(View v) {
@@ -715,7 +715,7 @@ public class VideoEditActivity extends AppCompatActivity implements
                         mShortVideoEditor.setMVEffect(mvFilePath, maskFilePath);
                     }
                 });
-                mMvBottomView.init(mvItemAdapter);
+                mMvBottomView.init(getString(R.string.mv_title), mvItemAdapter);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1024,6 +1024,7 @@ public class VideoEditActivity extends AppCompatActivity implements
     @Override
     public void onSaveVideoSuccess(String filePath) {
         Log.i(TAG, "save edit success filePath: " + filePath);
+        MediaUtils.storeVideo(this, new File(filePath), Config.MIME_TYPE_VIDEO);
         mProcessingDialog.dismiss();
         PlaybackActivity.start(VideoEditActivity.this, filePath);
     }
@@ -1132,7 +1133,7 @@ public class VideoEditActivity extends AppCompatActivity implements
             }
 
             synchronized (VideoEditActivity.this) {
-                if (mTuSDKManager.getPreviewFilterEngine() != null && !isSaving && mShortVideoEditorStatus == PLShortVideoEditorStatus.PLAYING) {
+                if (mTuSDKManager.getPreviewFilterEngine() != null && mShortVideoEditorStatus == PLShortVideoEditorStatus.PLAYING) {
                     return mTuSDKManager.getPreviewFilterEngine().processFrame(texId, texWidth, texHeight,  mShortVideoEditor.getCurrentPosition() * 1000000L);
                 }
             }
@@ -1162,7 +1163,6 @@ public class VideoEditActivity extends AppCompatActivity implements
         @Override
         public void onSurfaceDestroy() {
             mTuSDKManager.destroySaveFilterEngine();
-            isSaving = false;
         }
 
         @Override

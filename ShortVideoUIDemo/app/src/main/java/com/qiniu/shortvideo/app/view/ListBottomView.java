@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.qiniu.shortvideo.app.R;
 
@@ -32,7 +33,16 @@ public class ListBottomView extends BaseBottomView {
     }
 
     public void init(RecyclerView.Adapter adapter) {
+        init(null, adapter);
+    }
+
+    public void init(String title, RecyclerView.Adapter adapter) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_list_bottom_view, this);
+        if (title != null) {
+            TextView titleView = view.findViewById(R.id.title);
+            titleView.setText(title);
+            titleView.setVisibility(VISIBLE);
+        }
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.setAdapter(adapter);

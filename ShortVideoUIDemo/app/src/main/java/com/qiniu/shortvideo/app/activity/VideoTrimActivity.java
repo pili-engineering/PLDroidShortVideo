@@ -20,19 +20,20 @@ import com.pili.pldroid.player.PLOnInfoListener;
 import com.pili.pldroid.player.PLOnPreparedListener;
 import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
-import com.pili.pldroid.player.widget.PLVideoView;
-import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
-import com.qiniu.shortvideo.app.R;
-import com.qiniu.shortvideo.app.utils.LoadFrameTask;
-import com.qiniu.shortvideo.app.view.CustomProgressDialog;
-import com.qiniu.shortvideo.app.view.VideoFrameListView;
-import com.qiniu.shortvideo.app.utils.Config;
-import com.qiniu.shortvideo.app.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
+import com.qiniu.pili.droid.shortvideo.PLShortVideoTranscoder;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTrimmer;
 import com.qiniu.pili.droid.shortvideo.PLVideoSaveListener;
+import com.qiniu.shortvideo.app.R;
+import com.qiniu.shortvideo.app.utils.Config;
+import com.qiniu.shortvideo.app.utils.LoadFrameTask;
+import com.qiniu.shortvideo.app.utils.MediaUtils;
+import com.qiniu.shortvideo.app.utils.ToastUtils;
+import com.qiniu.shortvideo.app.view.CustomProgressDialog;
+import com.qiniu.shortvideo.app.view.VideoFrameListView;
 import com.qiniu.shortvideo.app.view.crop.CropVideoView;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -134,6 +135,9 @@ public class VideoTrimActivity extends AppCompatActivity implements
         mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, PLShortVideoTrimmer.TRIM_MODE.FAST, new PLVideoSaveListener() {
             @Override
             public void onSaveVideoSuccess(final String path) {
+                if (path.equals(Config.TRIM_FILE_PATH)) {
+                    MediaUtils.storeVideo(VideoTrimActivity.this, new File(path), Config.MIME_TYPE_VIDEO);
+                }
                 mIsTrimmingVideo = false;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -191,6 +195,7 @@ public class VideoTrimActivity extends AppCompatActivity implements
                                 @Override
                                 public void onSaveVideoSuccess(final String path) {
                                     mIsTranscodingVideo = false;
+                                    MediaUtils.storeVideo(VideoTrimActivity.this, new File(path), Config.MIME_TYPE_VIDEO);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -286,7 +291,6 @@ public class VideoTrimActivity extends AppCompatActivity implements
         });
 
         mShortVideoTrimmer = new PLShortVideoTrimmer(this, videoPath, Config.TRIM_FILE_PATH);
-        mShortVideoTranscoder = new PLShortVideoTranscoder(VideoTrimActivity.this, videoPath, Config.TRANSCODE_FILE_PATH);
 
         mMediaFile = new PLMediaFile(videoPath);
 
@@ -308,7 +312,7 @@ public class VideoTrimActivity extends AppCompatActivity implements
         mPreview.setAVOptions(options);
 
         mPreview.setLooping(true);
-        mPreview.setDisplayOrientation(PLVideoView.ASPECT_RATIO_ORIGIN);
+        mPreview.setDisplayAspectRatio(PLVideoTextureView.ASPECT_RATIO_FIT_PARENT);
         mPreview.setVideoPath(videoPath);
 
         mPreviewLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -388,7 +392,7 @@ public class VideoTrimActivity extends AppCompatActivity implements
         float previewLayoutRatio = (float) mPreviewLayoutWidth / mPreviewLayoutHeight;
         int videoWidth = isNormalOrientation() ? mMediaFile.getVideoWidth() : mMediaFile.getVideoHeight();
         int videoHeight = isNormalOrientation() ? mMediaFile.getVideoHeight() : mMediaFile.getVideoWidth();
-        float videoRatio = videoWidth / videoHeight;
+        float videoRatio = videoWidth * 1.0f / videoHeight;
         if (previewLayoutRatio < videoRatio) {
             mRealVideoWidth = mPreviewLayoutWidth;
             mRealVideoHeight = mRealVideoWidth * videoHeight / videoWidth;

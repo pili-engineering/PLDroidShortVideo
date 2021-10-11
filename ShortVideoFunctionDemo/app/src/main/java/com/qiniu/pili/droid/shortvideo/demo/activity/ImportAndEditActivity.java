@@ -61,7 +61,7 @@ public class ImportAndEditActivity extends AppCompatActivity {
         PermissionChecker checker = new PermissionChecker(this);
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
         if (!isPermissionOK) {
-            ToastUtils.showShortToast(this, "Some permissions is not approved !!!");
+            ToastUtils.showShortToast("Some permissions is not approved !!!");
         }
         return isPermissionOK;
     }

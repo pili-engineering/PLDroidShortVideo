@@ -1,18 +1,18 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-
-import androidx.annotation.Nullable;
-
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +23,8 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import androidx.annotation.Nullable;
 
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoTrimmer;
@@ -130,8 +132,8 @@ public class VideoTrimActivity extends Activity {
 
     private void init(String videoPath) {
         setContentView(R.layout.activity_trim);
-        TextView duration = (TextView) findViewById(R.id.duration);
-        mPreview = (VideoView) findViewById(R.id.preview);
+        TextView duration = findViewById(R.id.duration);
+        mPreview = findViewById(R.id.preview);
 
         mShortVideoTrimmer = new PLShortVideoTrimmer(this, videoPath, Config.TRIM_FILE_PATH);
         mMediaFile = new PLMediaFile(videoPath);
@@ -143,14 +145,43 @@ public class VideoTrimActivity extends Activity {
         mVideoFrameCount = mMediaFile.getVideoFrameCount(false);
         Log.i(TAG, "video frame count: " + mVideoFrameCount);
 
+        adjustSurfaceSize();
         mPreview.setVideoPath(videoPath);
         mPreview.setOnCompletionListener(mediaPlayer -> play());
 
         initVideoFrameList();
     }
 
+    private void adjustSurfaceSize() {
+        WindowManager windowManager = (WindowManager) VideoTrimActivity.this.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(outMetrics);
+
+        int screenWidth = outMetrics.widthPixels;
+        int videoWidth = mMediaFile.getVideoWidth();
+        int videoHeight = mMediaFile.getVideoHeight();
+        float videoAspectRatio = (float) videoWidth / videoHeight;
+        int displayWidth = 0, displayHeight = 0;
+        if (videoAspectRatio < 1) {
+            // 竖屏视频
+            displayWidth = (int) (screenWidth * videoAspectRatio);
+            displayHeight = screenWidth;
+        } else if (videoAspectRatio > 1) {
+            // 横屏视频
+            displayWidth = screenWidth;
+            displayHeight = (int) (screenWidth / videoAspectRatio);
+        } else {
+            displayWidth = screenWidth;
+            displayHeight = screenWidth;
+        }
+        ViewGroup.LayoutParams layoutParams = mPreview.getLayoutParams();
+        layoutParams.height = displayHeight;
+        layoutParams.width = displayWidth;
+        mPreview.setLayoutParams(layoutParams);
+    }
+
     private void initVideoFrameList() {
-        mFrameListView = (LinearLayout) findViewById(R.id.video_frame_list);
+        mFrameListView = findViewById(R.id.video_frame_list);
         mHandlerLeft = findViewById(R.id.handler_left);
         mHandlerRight = findViewById(R.id.handler_right);
 
@@ -166,7 +197,6 @@ public class VideoTrimActivity extends Activity {
                 if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     calculateRange();
                 }
-
                 return true;
             }
         });
@@ -183,7 +213,6 @@ public class VideoTrimActivity extends Activity {
                 if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     calculateRange();
                 }
-
                 return true;
             }
         });
@@ -203,7 +232,7 @@ public class VideoTrimActivity extends Activity {
                     protected Void doInBackground(Void... v) {
                         for (int i = 0; i < SLICE_COUNT; ++i) {
                             PLVideoFrame frame = mMediaFile.getVideoFrameByTime((long) ((1.0f * i / SLICE_COUNT) * mDurationMs), true, sliceEdge, sliceEdge);
-                            publishProgress(frame);
+                            runOnUiThread(() -> onProgressUpdate(frame));
                         }
                         return null;
                     }
@@ -216,7 +245,7 @@ public class VideoTrimActivity extends Activity {
                             View root = LayoutInflater.from(VideoTrimActivity.this).inflate(R.layout.frame_item, null);
 
                             int rotation = frame.getRotation();
-                            ImageView thumbnail = (ImageView) root.findViewById(R.id.thumbnail);
+                            ImageView thumbnail = root.findViewById(R.id.thumbnail);
                             thumbnail.setImageBitmap(frame.toBitmap());
                             thumbnail.setRotation(rotation);
                             FrameLayout.LayoutParams thumbnailLP = (FrameLayout.LayoutParams) thumbnail.getLayoutParams();
@@ -305,6 +334,7 @@ public class VideoTrimActivity extends Activity {
     public void onDone(View v) {
         Log.i(TAG, "trim to file path: " + Config.TRIM_FILE_PATH + " range: " + mSelectedBeginMs + " - " + mSelectedEndMs);
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
 
         PLShortVideoTrimmer.TRIM_MODE mode = ((RadioButton) findViewById(R.id.mode_fast)).isChecked() ? PLShortVideoTrimmer.TRIM_MODE.FAST : PLShortVideoTrimmer.TRIM_MODE.ACCURATE;
         mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mode, new PLVideoSaveListener() {
@@ -319,7 +349,7 @@ public class VideoTrimActivity extends Activity {
             public void onSaveVideoFailed(final int errorCode) {
                 runOnUiThread(() -> {
                     mProcessingDialog.dismiss();
-                    ToastUtils.toastErrorCode(VideoTrimActivity.this, errorCode);
+                    ToastUtils.toastErrorCode(errorCode);
                 });
             }
 
@@ -347,7 +377,7 @@ public class VideoTrimActivity extends Activity {
     }
 
     private void updateRangeText() {
-        TextView range = (TextView) findViewById(R.id.range);
+        TextView range = findViewById(R.id.range);
         range.setText("剪裁范围: " + formatTime(mSelectedBeginMs) + " - " + formatTime(mSelectedEndMs));
     }
 }

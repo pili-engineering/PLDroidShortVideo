@@ -13,9 +13,9 @@ import android.widget.RelativeLayout;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 
 public class FrameSelectorView extends RelativeLayout {
-    private ImageView mHandlerLeft;
-    private ImageView mHandlerRight;
-    private View mHandlerBody;
+    private final ImageView mHandlerLeft;
+    private final ImageView mHandlerRight;
+    private final View mHandlerBody;
     private FrameLayout.LayoutParams mGroupLayoutParam;
 
     private float mOriginX;
@@ -33,8 +33,8 @@ public class FrameSelectorView extends RelativeLayout {
         super(context, attrs);
         View view = LayoutInflater.from(context).inflate(R.layout.frame_selector_view, this);
 
-        mHandlerLeft = (ImageView) view.findViewById(R.id.handler_left);
-        mHandlerRight = (ImageView) view.findViewById(R.id.handler_right);
+        mHandlerLeft = view.findViewById(R.id.handler_left);
+        mHandlerRight = view.findViewById(R.id.handler_right);
         mHandlerBody = view.findViewById(R.id.handler_body);
 
         mHandlerLeft.setOnTouchListener(new HandlerLeftTouchListener());

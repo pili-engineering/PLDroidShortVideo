@@ -15,8 +15,8 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 
 public class ItemView extends FrameLayout {
 
-    private TextView tvName;
-    private TextView tvValue;
+    private final TextView tvName;
+    private final TextView tvValue;
 
     public ItemView(Context context) {
         this(context, null);
@@ -29,8 +29,8 @@ public class ItemView extends FrameLayout {
     public ItemView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater.from(context).inflate(R.layout.v_item, this);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvValue = (TextView) findViewById(R.id.tv_value);
+        tvName = findViewById(R.id.tv_name);
+        tvValue = findViewById(R.id.tv_value);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView);
         String text = typedArray.getString(R.styleable.ItemView_text);

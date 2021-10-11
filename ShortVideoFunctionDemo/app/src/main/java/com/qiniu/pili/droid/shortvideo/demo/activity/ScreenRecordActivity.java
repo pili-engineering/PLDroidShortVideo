@@ -7,20 +7,16 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.qiniu.pili.droid.shortvideo.PLErrorCode;
 import com.qiniu.pili.droid.shortvideo.PLMicrophoneSetting;
 import com.qiniu.pili.droid.shortvideo.PLScreenRecordStateListener;
@@ -28,8 +24,8 @@ import com.qiniu.pili.droid.shortvideo.PLScreenRecorder;
 import com.qiniu.pili.droid.shortvideo.PLScreenRecorderSetting;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
-import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
 import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
+import com.qiniu.pili.droid.shortvideo.demo.utils.PermissionChecker;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 
 import java.io.File;
@@ -56,7 +52,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
             PLScreenRecorderSetting screenSetting = new PLScreenRecorderSetting();
             screenSetting.setRecordFile(Config.SCREEN_RECORD_FILE_PATH)
                             .setInputAudioEnabled(false)
-                            .setSize(width, height)
+                            .setSize(width / 2, height / 2)
                             .setDpi(dpi)
                             .setFps(60);
             PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
@@ -84,50 +80,35 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
 
         setTitle(R.string.title_screen_record);
 
-        mTipTextView = (TextView) findViewById(R.id.tip);
-        FloatingActionButton fab_rec = (FloatingActionButton) findViewById(R.id.fab_rec);
-        fab_rec.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PermissionChecker checker = new PermissionChecker(ScreenRecordActivity.this);
-                boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
-                if (!isPermissionOK) {
-                    ToastUtils.showShortToast(view.getContext(), "相关权限申请失败 !!!");
-                    return;
-                }
+        mTipTextView = findViewById(R.id.tip);
+        FloatingActionButton recordBtn = findViewById(R.id.fab_rec);
+        recordBtn.setOnClickListener(view -> {
+            PermissionChecker checker = new PermissionChecker(ScreenRecordActivity.this);
+            boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
+            if (!isPermissionOK) {
+                ToastUtils.showShortToast("相关权限申请失败 !!!");
+                return;
+            }
 
-                if (mScreenRecorder != null && mScreenRecorder.isRecording()) {
-                    stopScreenRecord();
-                } else {
-                    requestScreenRecord();
-                    Snackbar.make(view, "正在申请录屏权限……", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                }
+            if (mScreenRecorder != null && mScreenRecorder.isRecording()) {
+                stopScreenRecord();
+            } else {
+                requestScreenRecord();
+                Snackbar.make(view, "正在申请录屏权限……", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
-        FloatingActionButton fab_play = (FloatingActionButton) findViewById(R.id.fab_play);
-        fab_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mScreenRecorder != null && mScreenRecorder.isRecording()) {
-                    Snackbar.make(view, "正在录屏，不能播放！", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                    return;
-                }
-
-                PlaybackActivity.start(ScreenRecordActivity.this, Config.SCREEN_RECORD_FILE_PATH);
+        FloatingActionButton playBtn = findViewById(R.id.fab_play);
+        playBtn.setOnClickListener(view -> {
+            if (mScreenRecorder != null && mScreenRecorder.isRecording()) {
+                Snackbar.make(view, "正在录屏，不能播放！", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null)
+                        .show();
+                return;
             }
-        });
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-            default:
-                break;
-        }
-        return true;
+            PlaybackActivity.start(ScreenRecordActivity.this, Config.SCREEN_RECORD_FILE_PATH);
+        });
     }
 
     @Override
@@ -166,7 +147,6 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
     public void onReady() {
         mScreenRecorder.start();
         updateTip("录屏初始化成功！");
-        Toast.makeText(this, "正在进行录屏...", Toast.LENGTH_SHORT).show();
         moveTaskToBack(true);
     }
 
@@ -174,26 +154,22 @@ public class ScreenRecordActivity extends AppCompatActivity implements PLScreenR
     public void onError(int code) {
         Log.e(TAG, "onError: code = " + code);
         if (code == PLErrorCode.ERROR_UNSUPPORTED_ANDROID_VERSION) {
-            final String tip = "录屏只支持 Android 5.0 以上系统";
-            runOnUiThread(() -> updateTip(tip));
+            runOnUiThread(() -> updateTip("录屏只支持 Android 5.0 以上系统"));
         }
     }
 
     @Override
     public void onRecordStarted() {
         runOnUiThread(() -> {
-            String tip = "正在录屏……";
-            updateTip(tip);
+            updateTip("正在录屏……");
+            Toast.makeText(this, "正在进行录屏...", Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
     public void onRecordStopped() {
         MediaStoreUtils.storeVideo(ScreenRecordActivity.this, new File(Config.SCREEN_RECORD_FILE_PATH), "video/mp4");
-        runOnUiThread(() -> {
-            String tip = "已经停止录屏！";
-            updateTip(tip);
-        });
+        runOnUiThread(() -> updateTip("已经停止录屏！"));
     }
 
     private Notification createNotification() {

@@ -48,4 +48,6 @@
     <color name="lsq_scence_effect_color_LiveSlosh01">#b3ffefff</color>
     <color name="lsq_scence_effect_color_LiveOldTV01">#b36efeee</color>
     <color name="lsq_scence_effect_color_title">#999999</color>
+
+    <color name="tips_color">#b316cefc</color>
 </resources>

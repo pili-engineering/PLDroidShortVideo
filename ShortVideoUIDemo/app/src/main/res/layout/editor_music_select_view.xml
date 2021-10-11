@@ -50,12 +50,20 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/thumbnail_height" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:gravity="center"
+        android:text="@string/tips_audio_mix"
+        android:textColor="@color/tips_color"
+        android:textSize="12sp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/selected_music_rv"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="@dimen/layout_margin_10dp"
-        android:layout_marginLeft="@dimen/layout_margin_10dp"
-        android:layout_marginRight="@dimen/layout_margin_10dp"
-        android:layout_marginBottom="@dimen/layout_margin_10dp" />
+        android:paddingTop="@dimen/layout_margin_10dp"
+        android:paddingStart="@dimen/layout_margin_10dp"
+        android:paddingEnd="@dimen/layout_margin_10dp" />
 </LinearLayout>

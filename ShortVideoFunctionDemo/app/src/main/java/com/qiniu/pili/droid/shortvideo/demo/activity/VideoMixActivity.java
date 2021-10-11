@@ -5,20 +5,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.pili.pldroid.player.AVOptions;
+import com.pili.pldroid.player.PLOnCompletionListener;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
@@ -38,19 +39,16 @@ import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_INVALID_ARG;
 
 public class VideoMixActivity extends Activity {
     private static final String TAG = "VideoMixActivity";
 
-    private static final int TIMER_TICK_INTERVAL = 50;
+    private static final int UPDATE_PROGRESS = 10000;
     private static final int PLAY_MODE_TOGETHER = 1;
     private static final int PLAY_MODE_ONE_BY_ONE = 2;
 
-    private PLShortVideoMixer mShortVideoMixer;
     private int mVideoNum;
     private SeekBar mSeekBar1;
     private SeekBar mSeekBar2;
@@ -59,15 +57,12 @@ public class VideoMixActivity extends Activity {
     private Button mBtnPlayTogether;
     private Button mBtnPlayOneByOne;
     private TextView mTipTextView;
+
+    private PLShortVideoMixer mShortVideoMixer;
     private PLVideoMixItem mVideoMixItem1;
     private PLVideoMixItem mVideoMixItem2;
-    private LinearLayout mPreviewParent;
     private PLMediaFile mMediaFile1;
     private PLMediaFile mMediaFile2;
-
-    private Timer mTimer;
-    private TimerTask mTimerTask;
-    private volatile long mCurTime;
 
     private long mPlayTogetherDuration;
     private long mPlayOneByOneDuration;
@@ -77,46 +72,49 @@ public class VideoMixActivity extends Activity {
     private ImageView mCover1;
     private ImageView mCover2;
 
-    private volatile int mPlayMode = PLAY_MODE_TOGETHER;
-    private volatile boolean mTimerPause;
-    private volatile boolean mIsPlayer2Paused;
-    private boolean mIsPlayer1Completed;
-    private boolean mIsPlayer2Completed;
+    private volatile int mCurrentPlayMode = PLAY_MODE_TOGETHER;
+    private boolean mPlayer1Completed;
+    private boolean mPlayer2Completed;
+    private boolean mPlayer1Playing;
+    private boolean mPlayer2Playing;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_video_mix);
+        initViews();
+        chooseVideo();
+    }
+
+    private void initViews() {
+        mSeekBar1 = findViewById(R.id.seekBar1);
+        mSeekBar1.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+        mSeekBar2 = findViewById(R.id.seekBar2);
+        mSeekBar2.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+
+        mTipTextView = findViewById(R.id.tipTextView);
+        mTipTextView.setOnClickListener((v) -> chooseVideo());
+        mCover1 = findViewById(R.id.cover1);
+        mCover2 = findViewById(R.id.cover2);
+
+        mPlayer1 = findViewById(R.id.player1);
+        mPlayer1.setBufferingIndicator(new View(this));
+        mPlayer1.setCoverView(mCover1);
+        mPlayer1.setOnCompletionListener(mPlayer1CompletionListener);
+        mPlayer2 = findViewById(R.id.player2);
+        mPlayer2.setBufferingIndicator(new View(this));
+        mPlayer2.setCoverView(mCover2);
+        mPlayer2.setOnCompletionListener(mPlayer2CompletionListener);
+
+        mProgressBar = findViewById(R.id.progressBar);
+        mBtnPlayTogether = findViewById(R.id.btnPlayTogether);
+        mBtnPlayTogether.setSelected(true);
+        mBtnPlayTogether.setOnClickListener((v) -> playTogether());
+        mBtnPlayOneByOne = findViewById(R.id.btnPlayOneByOne);
+        mBtnPlayOneByOne.setOnClickListener((v) -> playOneByOne());
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mShortVideoMixer.cancel());
-
-        mPreviewParent = (LinearLayout) findViewById(R.id.previewParent);
-        mSeekBar1 = (SeekBar) findViewById(R.id.seekBar1);
-        mSeekBar2 = (SeekBar) findViewById(R.id.seekBar2);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mBtnPlayTogether = (Button) findViewById(R.id.btnPlayTogether);
-        mBtnPlayOneByOne = (Button) findViewById(R.id.btnPlayOneByOne);
-        mTipTextView = (TextView) findViewById(R.id.tipTextView);
-
-        mPlayer1 = (PLVideoTextureView) findViewById(R.id.player1);
-        mPlayer2 = (PLVideoTextureView) findViewById(R.id.player2);
-        mCover1 = (ImageView) findViewById(R.id.cover1);
-        mCover2 = (ImageView) findViewById(R.id.cover2);
-        mPlayer1.setBufferingIndicator(new View(this));
-        mPlayer2.setBufferingIndicator(new View(this));
-        mPlayer1.setCoverView(mCover1);
-        mPlayer2.setCoverView(mCover2);
-
-        mPlayer1.setOnCompletionListener(() -> mIsPlayer1Completed = true);
-        mPlayer2.setOnCompletionListener(() -> mIsPlayer2Completed = true);
-
-        mSeekBar1.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-        mSeekBar2.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-
-        chooseVideo();
     }
 
     @Override
@@ -137,61 +135,50 @@ public class VideoMixActivity extends Activity {
         finish();
     }
 
-    public void onPlayTogether(View view) {
+    public void playTogether() {
         if (!isVideoReady()) {
             return;
         }
         if (mBtnPlayTogether.isSelected()) {
             return;
         }
+
+        mBtnPlayTogether.setSelected(true);
+        mBtnPlayOneByOne.setSelected(false);
         mProgressBar.setMax((int) mPlayTogetherDuration);
 
-        mBtnPlayOneByOne.setSelected(mBtnPlayTogether.isSelected());
-        mBtnPlayTogether.setSelected(!mBtnPlayTogether.isSelected());
+        mVideoMixItem2.setStartTimeMs(0);
+        mCurrentPlayMode = PLAY_MODE_TOGETHER;
 
-        if (mBtnPlayTogether.isSelected()) {
-            mVideoMixItem2.setStartTimeMs(0);
+        mPlayer1.seekTo(0);
+        mPlayer1.start();
 
-            mPlayMode = PLAY_MODE_TOGETHER;
-            mCurTime = 0;
-
-            mPlayer1.seekTo(0);
-            startPlayer1();
-
-            //避免重复 seekTo
-            if (!mIsPlayer2Paused) {
-                mPlayer2.seekTo(0);
-            }
-            startPlayer2();
-        }
+        mPlayer2.seekTo(0);
+        mPlayer2.start();
+        mCover2.setVisibility(View.GONE);
     }
 
-    public void onPlayOneByOne(View view) {
+    public void playOneByOne() {
         if (!isVideoReady()) {
             return;
         }
         if (mBtnPlayOneByOne.isSelected()) {
             return;
         }
+
+        mBtnPlayTogether.setSelected(false);
+        mBtnPlayOneByOne.setSelected(true);
         mProgressBar.setMax((int) mPlayOneByOneDuration);
 
-        mBtnPlayTogether.setSelected(mBtnPlayOneByOne.isSelected());
-        mBtnPlayOneByOne.setSelected(!mBtnPlayOneByOne.isSelected());
+        mVideoMixItem2.setStartTimeMs((int) mMediaFile1.getDurationMs());
+        mCurrentPlayMode = PLAY_MODE_ONE_BY_ONE;
 
-        if (mBtnPlayOneByOne.isSelected()) {
-            mVideoMixItem2.setStartTimeMs((int) mMediaFile1.getDurationMs());
+        mPlayer1.seekTo(0);
+        mPlayer1.start();
 
-            mPlayMode = PLAY_MODE_ONE_BY_ONE;
-            mCurTime = 0;
-
-            mPlayer1.seekTo(0);
-            startPlayer1();
-
-            mPlayer2.pause();
-            mIsPlayer2Paused = true;
-            mPlayer2.seekTo(0);
-            mCover2.setVisibility(View.VISIBLE);
-        }
+        mPlayer2.pause();
+        mPlayer2.seekTo(0);
+        mCover2.setVisibility(View.VISIBLE);
     }
 
     private Bitmap getFirstFrame(String path) {
@@ -206,7 +193,7 @@ public class VideoMixActivity extends Activity {
 
     private void addVideo(String path) {
         if (mVideoNum == 0) {
-            mVideoNum = 1;
+            mVideoNum++;
             mVideoMixItem1 = new PLVideoMixItem();
             mVideoMixItem1.setVideoPath(path);
             mVideoMixItem1.setVideoRect(new Rect(0, 0, 480, 240));
@@ -232,9 +219,7 @@ public class VideoMixActivity extends Activity {
 
             mMediaFile2 = new PLMediaFile(path);
 
-            mTipTextView.setVisibility(View.INVISIBLE);
-            mPreviewParent.setClickable(false);
-            mBtnPlayTogether.setSelected(true);
+            mTipTextView.setVisibility(View.GONE);
 
             Bitmap bitmap = getFirstFrame(path);
             if (bitmap != null) {
@@ -249,17 +234,15 @@ public class VideoMixActivity extends Activity {
             mPlayTogetherDuration = Math.max(mMediaFile1.getDurationMs(), mMediaFile2.getDurationMs());
             mProgressBar.setMax((int) mPlayTogetherDuration);
 
-            initTimerTask();
+            // initTimerTask();
+            mPlayer2.start();
+            mPlayer1.start();
+            mUpdateBarHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
         }
     }
 
-    public void onPreview2Click(View v) {
-        chooseVideo();
-    }
-
     public void onDone(View v) {
-        mShortVideoMixer = new PLShortVideoMixer(this, Config.VIDEO_MIX_PATH,
-                mPlayMode == PLAY_MODE_TOGETHER ? mPlayTogetherDuration : mPlayOneByOneDuration);
+        mShortVideoMixer = new PLShortVideoMixer(this, Config.VIDEO_MIX_PATH, mCurrentPlayMode == PLAY_MODE_TOGETHER ? mPlayTogetherDuration : mPlayOneByOneDuration);
         PLVideoEncodeSetting videoEncodeSetting = new PLVideoEncodeSetting(this);
         videoEncodeSetting.setEncodingSizeLevel(PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_480P_1);
         videoEncodeSetting.setEncodingBitrate(2000 * 1000);
@@ -268,6 +251,7 @@ public class VideoMixActivity extends Activity {
         mShortVideoMixer.setVideoEncodeSetting(videoEncodeSetting);
 
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
 
         List<PLVideoMixItem> items = new LinkedList<>();
         items.add(mVideoMixItem1);
@@ -289,7 +273,7 @@ public class VideoMixActivity extends Activity {
                     if (errorCode == ERROR_INVALID_ARG) {
                         errorMsg = "参数错误！";
                     }
-                    ToastUtils.showShortToast(VideoMixActivity.this, "拼接拼图失败: " + errorMsg);
+                    ToastUtils.showShortToast("拼接拼图失败: " + errorMsg);
                 });
             }
 
@@ -309,103 +293,36 @@ public class VideoMixActivity extends Activity {
         return mVideoMixItem1 != null && mVideoMixItem2 != null;
     }
 
-    private void startPlayer1() {
-        mPlayer1.start();
-    }
-
-    private void startPlayer2() {
-        mPlayer2.start();
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
         if (isVideoReady()) {
+            mPlayer1Playing = mPlayer1.isPlaying();
             mPlayer1.pause();
+            mPlayer2Playing = mPlayer2.isPlaying();
             mPlayer2.pause();
-            mIsPlayer2Paused = true;
         }
-        mTimerPause = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (isVideoReady()) {
-            startPlayer1();
-            if (mPlayMode == PLAY_MODE_TOGETHER) {
-                startPlayer2();
+            if (mPlayer1Playing) {
+                mPlayer1.start();
+            }
+            if (mPlayer2Playing) {
+                mPlayer2.start();
             }
         }
-        mTimerPause = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mTimer = null;
-        }
-        if (mTimerTask != null) {
-            mTimerTask.cancel();
-            mTimerTask = null;
-        }
-    }
-
-
-    private void initTimerTask() {
-        mTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!mTimerPause) {
-                            mCurTime += TIMER_TICK_INTERVAL;
-
-                            checkToPlay();
-
-                            if (mIsPlayer1Completed && mIsPlayer2Completed) {
-                                mCurTime = 0;
-                                mPlayer1.seekTo(0);
-                                if (mIsPlayer1Completed) {
-                                    mIsPlayer1Completed = false;
-                                    startPlayer1();
-                                }
-
-                                if (mPlayMode == PLAY_MODE_ONE_BY_ONE) {
-                                    mPlayer2.pause();
-                                    mIsPlayer2Paused = true;
-                                    mPlayer2.seekTo(0);
-                                    mCover2.setVisibility(View.VISIBLE);
-                                } else {
-                                    mPlayer2.seekTo(0);
-                                    if (mIsPlayer2Completed) {
-                                        mIsPlayer2Completed = false;
-                                        startPlayer2();
-                                    }
-                                }
-                            }
-                            mProgressBar.setProgress((int) mCurTime);
-                        }
-                    }
-                });
-            }
-        };
-        mTimer = new Timer();
-        // scroll fps:20
-        mTimer.schedule(mTimerTask, 0, TIMER_TICK_INTERVAL);
-    }
-
-    private void checkToPlay() {
-        if (mPlayMode == PLAY_MODE_ONE_BY_ONE) {
-            if (mCurTime > mVideoMixItem2.getStartTimeMs() && mIsPlayer2Paused) {
-                startPlayer2();
-                mIsPlayer2Paused = false;
-            }
-        }
+        mUpdateBarHandler.removeCallbacksAndMessages(null);
+        mPlayer1.stopPlayback();
+        mPlayer2.stopPlayback();
     }
 
     private void chooseVideo() {
@@ -432,6 +349,8 @@ public class VideoMixActivity extends Activity {
                     mVideoMixItem2.setVolume(volume);
                     mPlayer2.setVolume(volume, volume);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -449,10 +368,76 @@ public class VideoMixActivity extends Activity {
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
-        // 1 -> hw codec enable, 0 -> disable [recommended]
-        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_AUTO);
         boolean disableLog = getIntent().getBooleanExtra("disable-log", true);
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         return options;
     }
+
+    private PLOnCompletionListener mPlayer1CompletionListener = new PLOnCompletionListener() {
+        @Override
+        public void onCompletion() {
+            mPlayer1Completed = true;
+            if (mCurrentPlayMode == PLAY_MODE_ONE_BY_ONE) {
+                mCover2.setVisibility(View.GONE);
+                mPlayer2.seekTo(0);
+                mPlayer2.start();
+                mPlayer1Completed = false;
+            } else if (mCurrentPlayMode == PLAY_MODE_TOGETHER) {
+                if (mPlayer2Completed) {
+                    mPlayer1.seekTo(0);
+                    mPlayer1.start();
+                    mPlayer1Completed = false;
+
+                    mPlayer2.seekTo(0);
+                    mPlayer2.start();
+                    mPlayer2Completed = false;
+                }
+            }
+        }
+    };
+
+    private PLOnCompletionListener mPlayer2CompletionListener = new PLOnCompletionListener() {
+        @Override
+        public void onCompletion() {
+            mPlayer2Completed = true;
+            if (mCurrentPlayMode == PLAY_MODE_ONE_BY_ONE) {
+                mCover2.setVisibility(View.VISIBLE);
+                mPlayer1.seekTo(0);
+                mPlayer1.start();
+                mPlayer2Completed = false;
+            } else if (mCurrentPlayMode == PLAY_MODE_TOGETHER) {
+                if (mPlayer1Completed) {
+                    mPlayer1.seekTo(0);
+                    mPlayer1.start();
+                    mPlayer1Completed = false;
+
+                    mPlayer2.seekTo(0);
+                    mPlayer2.start();
+                    mPlayer2Completed = false;
+                }
+            }
+        }
+    };
+
+    private Handler mUpdateBarHandler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UPDATE_PROGRESS:
+                    if (mCurrentPlayMode == PLAY_MODE_ONE_BY_ONE) {
+                        long progress = mPlayer1.getCurrentPosition() + mPlayer2.getCurrentPosition();
+                        mProgressBar.setProgress((int) progress);
+                    } else if (mCurrentPlayMode == PLAY_MODE_TOGETHER) {
+                        long progress = Math.max(mPlayer1.getCurrentPosition(), mPlayer2.getCurrentPosition());
+                        mProgressBar.setProgress((int) progress);
+                    }
+                    mUpdateBarHandler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }

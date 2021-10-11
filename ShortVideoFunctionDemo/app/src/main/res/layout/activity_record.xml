@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false">
+    android:layout_height="match_parent">
 
     <com.qiniu.pili.droid.shortvideo.demo.view.SquareGLSurfaceView
         android:id="@+id/preview"
@@ -13,46 +12,43 @@
         android:id="@+id/brightness_panel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_alignEnd="@+id/preview"
         android:layout_alignBottom="@+id/preview"
-        android:layout_alignRight="@+id/preview"
         android:orientation="vertical"
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/adjust_brightness_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:onClick="onClickBrightness"
-            android:src="@mipmap/btn_brightness" />
+            android:src="@drawable/btn_brightness" />
 
         <com.qiniu.pili.droid.shortvideo.demo.view.VerticalSeekBar
             android:id="@+id/adjust_brightness"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="50dp" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/white_balance"
-        android:text="白平衡"
-        android:textColor="@android:color/black"
-        android:background="@color/transparent"
-        android:padding="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onClickWhiteBalance"/>
+        android:background="@color/transparent"
+        android:onClick="onClickWhiteBalance"
+        android:padding="15dp"
+        android:text="白平衡"
+        android:textColor="@android:color/black" />
 
     <LinearLayout
-        android:id="@+id/ll_speed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/preview"
-        android:layout_marginBottom="15dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/speed_panel"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -142,16 +138,14 @@
         android:layout_margin="15dp">
 
         <ImageView
-            android:id="@+id/screen_rotate_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:clickable="true"
             android:onClick="onScreenRotation"
-            android:src="@mipmap/btn_screen_rotation" />
+            android:src="@drawable/btn_screen_rotation" />
 
         <ImageView
-            android:id="@+id/capture_frame_button"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
@@ -178,7 +172,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/bottom_control_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/preview"
@@ -192,38 +185,34 @@
             android:layout_height="8dp" />
 
         <LinearLayout
-            android:id="@+id/btns"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:background="@drawable/btn_delete"
-                android:clickable="true"
                 android:onClick="onClickDelete" />
 
             <ImageView
                 android:id="@+id/record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:clickable="true"
                 android:src="@drawable/btn_record" />
 
             <ImageView
                 android:id="@+id/concat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:background="@drawable/btn_concat"
-                android:clickable="true"
                 android:onClick="onClickConcat" />
 
         </LinearLayout>
@@ -235,12 +224,11 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/audio_mix_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:onClick="onClickAddMixAudio"
-                android:src="@mipmap/btn_mix_audio" />
+                android:src="@drawable/btn_mix_audio" />
 
             <TextView
                 android:id="@+id/recording_percentage"
@@ -249,10 +237,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="0%"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#FFFFFF" />
 
             <ImageView
-                android:id="@+id/save_to_draft_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"

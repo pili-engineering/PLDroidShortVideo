@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.os.Environment;
 import android.view.View;
 
 import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
@@ -31,7 +31,6 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
     public static final String MP4_PATH = "MP4_PATH";
     public static final String DUB_MP4_PATH = "DUB_MP4_PATH";
 
-    private GLSurfaceView mPreviewView;
     private PLShortVideoEditor mShortVideoEditor;
     private PLShortAudioRecorder mShortAudioRecorder;
 
@@ -42,6 +41,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
     private Stack<Integer> mSectionTimestamps;
     private boolean mIsRecordCompleted = false;
+    private boolean mSectionBegan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +49,13 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
         setContentView(R.layout.activity_video_dub);
 
-        mPreviewView = (GLSurfaceView) findViewById(R.id.preview);
+        GLSurfaceView previewView = findViewById(R.id.preview);
 
-        mSectionProgressBar = (SectionProgressBar) findViewById(R.id.record_progressbar);
+        mSectionProgressBar = findViewById(R.id.record_progressbar);
         mRecordBtn = findViewById(R.id.record);
         mDeleteBtn = findViewById(R.id.delete);
 
-        mSectionTimestamps = new Stack<Integer>();
+        mSectionTimestamps = new Stack<>();
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mShortAudioRecorder.cancelConcat());
@@ -63,9 +63,10 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
         String originFilePath = getIntent().getStringExtra(MP4_PATH);
         PLVideoEditSetting setting = new PLVideoEditSetting();
         setting.setSourceFilepath(originFilePath);
-        setting.setDestFilepath(Config.DUB_FILE_PATH);
+        String dubFilePath = getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/ShortVideo/dub_" + System.currentTimeMillis() + ".mp4";
+        setting.setDestFilepath(dubFilePath);
 
-        mShortVideoEditor = new PLShortVideoEditor(mPreviewView, setting);
+        mShortVideoEditor = new PLShortVideoEditor(previewView, setting);
         mShortVideoEditor.setVideoSaveListener(this);
         mShortVideoEditor.startPlayback(this);
         mShortVideoEditor.setAudioMixLooping(false);
@@ -80,36 +81,30 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
         PLRecordSetting recordSetting = new PLRecordSetting();
         recordSetting.setMaxRecordDuration(mShortVideoEditor.getDurationMs());
         recordSetting.setVideoCacheDir(Config.VIDEO_STORAGE_DIR);
-        recordSetting.setVideoFilepath(Config.AUDIO_RECORD_FILE_PATH);
+        String audioRecordFilePath = getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/ShortVideo/audio_record_" + System.currentTimeMillis() + ".m4a";
+        recordSetting.setVideoFilepath(audioRecordFilePath);
 
         mShortAudioRecorder.prepare(this, microphoneSetting, audioEncodeSetting, recordSetting);
 
         mSectionProgressBar.setFirstPointTime(0);
         mSectionProgressBar.setTotalTime(this, mShortVideoEditor.getDurationMs());
 
-        mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                if (action == MotionEvent.ACTION_DOWN) {
-                    if (mIsRecordCompleted) {
-                        ToastUtils.showShortToast(VideoDubActivity.this, "已达到拍摄总时长");
-                        return false;
-                    }
-                    if (mShortAudioRecorder.beginSection()) {
-                        mSectionTimestamps.push(mShortVideoEditor.getCurrentPosition());
-                        mShortVideoEditor.startPlayback();
-                        updateRecordingBtns(true);
-                    } else {
-                        ToastUtils.showShortToast(VideoDubActivity.this, "无法开始视频段录制");
-                    }
-                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                    mShortAudioRecorder.endSection();
-                    mShortVideoEditor.pausePlayback();
-                    updateRecordingBtns(false);
+        mRecordBtn.setOnClickListener(v -> {
+            if (mIsRecordCompleted) {
+                ToastUtils.showShortToast("已达到拍摄总时长");
+                return;
+            }
+            if (mSectionBegan) {
+                mShortAudioRecorder.endSection();
+                mShortVideoEditor.pausePlayback();
+                updateRecordingBtns(false);
+            } else {
+                if (mShortAudioRecorder.beginSection()) {
+                    mShortVideoEditor.startPlayback();
+                    updateRecordingBtns(true);
+                } else {
+                    ToastUtils.showShortToast("无法开始音频段录制");
                 }
-
-                return false;
             }
         });
 
@@ -146,7 +141,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
     public void onClickDelete(View v) {
         if (!mShortAudioRecorder.deleteLastSection()) {
-            ToastUtils.showShortToast(this, "回删视频段失败");
+            ToastUtils.showShortToast("回删视频段失败");
         } else {
             mIsRecordCompleted = false;
             if (!mSectionTimestamps.isEmpty()) {
@@ -171,7 +166,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
             @Override
             public void onSaveVideoFailed(final int errorCode) {
-                runOnUiThread(() -> ToastUtils.showShortToast(VideoDubActivity.this, "拼接音频段失败，错误码：" + errorCode));
+                ToastUtils.showShortToast("拼接音频段失败，错误码：" + errorCode);
             }
 
             @Override
@@ -197,7 +192,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
     public void onSaveVideoFailed(final int errorCode) {
         runOnUiThread(() -> {
             mProcessingDialog.dismiss();
-            ToastUtils.showShortToast(VideoDubActivity.this, "保存视频失败: " + errorCode);
+            ToastUtils.showShortToast("保存视频失败: " + errorCode);
         });
     }
 
@@ -235,7 +230,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
     public void onReady() {
         runOnUiThread(() -> {
             mRecordBtn.setEnabled(true);
-            ToastUtils.showShortToast(VideoDubActivity.this, "可以开始录音咯");
+            ToastUtils.showShortToast("可以开始录音咯");
         });
     }
 
@@ -251,11 +246,14 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
 
     @Override
     public void onRecordStarted() {
+        mSectionBegan = true;
+        mSectionTimestamps.push(mShortVideoEditor.getCurrentPosition());
         mSectionProgressBar.setCurrentState(SectionProgressBar.State.START);
     }
 
     @Override
     public void onRecordStopped() {
+        mSectionBegan = false;
         mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
     }
 
@@ -280,6 +278,6 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
     public void onRecordCompleted() {
         mIsRecordCompleted = true;
         mShortVideoEditor.pausePlayback();
-        runOnUiThread(() -> ToastUtils.showShortToast(VideoDubActivity.this, "已达到拍摄总时长"));
+        ToastUtils.showShortToast("已达到拍摄总时长");
     }
 }

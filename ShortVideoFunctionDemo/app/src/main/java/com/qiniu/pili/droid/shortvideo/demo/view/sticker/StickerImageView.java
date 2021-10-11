@@ -113,7 +113,7 @@ public class StickerImageView extends PLImageView {
     /**
      * 用于缩放，旋转，平移的矩阵
      */
-    private Matrix mTransformMatrix = new Matrix();
+    private final Matrix mTransformMatrix = new Matrix();
 
     /**
      * 距离父类布局的左间距与上间距
@@ -146,7 +146,7 @@ public class StickerImageView extends PLImageView {
      * 外边框
      */
     //外边框的 path
-    private Path mPath = new Path();
+    private final Path mPath = new Path();
     //外边框的画笔
     private Paint mPaint;
     //外边框与图片之间的间距, 单位是 dip
@@ -169,8 +169,8 @@ public class StickerImageView extends PLImageView {
     private DisplayMetrics mDisplayMetrics;
 
     //相对于父布局
-    private PointF mPreMovePointF = new PointF();
-    private PointF mCurMovePointF = new PointF();
+    private final PointF mPreMovePointF = new PointF();
+    private final PointF mCurMovePointF = new PointF();
 
     /**
      * 图片在旋转时 x 和 y 方向的偏移量
@@ -539,9 +539,9 @@ public class StickerImageView extends PLImageView {
         //设置缩放比例
         mTransformMatrix.setScale(mScale, mScale);
         //绕着图片中心进行旋转
-        mTransformMatrix.postRotate(mDegree % 360, bitmapWidth / 2, bitmapHeight / 2);
+        mTransformMatrix.postRotate(mDegree % 360, bitmapWidth / 2.0f, bitmapHeight / 2.0f);
         //设置画该图片的起始点
-        mTransformMatrix.postTranslate(mOffsetX + mControlDrawableWidth / 2, mOffsetY + mControlDrawableHeight / 2);
+        mTransformMatrix.postTranslate(mOffsetX + mControlDrawableWidth / 2.0f, mOffsetY + mControlDrawableHeight / 2.0f);
 
         adjustLayout();
     }
@@ -784,12 +784,12 @@ public class StickerImageView extends PLImageView {
         return mFirstGifFrame.getHeight();
     }
 
-    public int getViewX() {
-        return getLeft() + mDeleteDrawableWidth + mFramePadding;
+    public float getViewX() {
+        return getLeft() + mDeleteDrawableWidth / 2.0f + mFramePadding;
     }
 
-    public int getViewY() {
-        return getTop() + mDeleteDrawableHeight + mFramePadding;
+    public float getViewY() {
+        return getTop() + mDeleteDrawableHeight / 2.0f + mFramePadding;
     }
 
     public void setControlDrawable(Drawable drawable) {
@@ -935,7 +935,7 @@ public class StickerImageView extends PLImageView {
         return mGifFrameLoader.isRunning();
     }
 
-    private GifFrameLoader.FrameCallback mFrameCallback = new GifFrameLoader.FrameCallback() {
+    private final GifFrameLoader.FrameCallback mFrameCallback = new GifFrameLoader.FrameCallback() {
         @Override
         public void onFrameReady() {
             invalidate();

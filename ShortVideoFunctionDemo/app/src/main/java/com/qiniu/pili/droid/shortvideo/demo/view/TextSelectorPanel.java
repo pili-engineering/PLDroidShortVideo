@@ -18,10 +18,10 @@ import android.widget.LinearLayout;
 import com.qiniu.pili.droid.shortvideo.demo.R;
 
 public class TextSelectorPanel extends LinearLayout {
-    private RecyclerView mTextViews;
-    private Context mContext;
+    private final RecyclerView mTextViews;
+    private final Context mContext;
     private OnTextSelectorListener mOnTextSelectorListener;
-    private ImageButton mCloseBtn;
+    private final ImageButton mCloseBtn;
 
     public static int[] colors = {R.color.text1, R.color.text2, R.color.text3, R.color.text4,
             R.color.text5, R.color.text6, R.color.text7, R.color.text8,
@@ -33,13 +33,13 @@ public class TextSelectorPanel extends LinearLayout {
         mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.panel_text_selector, this);
 
-        mTextViews = (RecyclerView) view.findViewById(R.id.recycler_text);
+        mTextViews = view.findViewById(R.id.recycler_text);
         TextInfo[] infos = initTextInfos();
 
         mTextViews.setLayoutManager(new GridLayoutManager(getContext(), 4));
         mTextViews.setAdapter(new TextEffectListAdapter(infos));
 
-        mCloseBtn = (ImageButton) view.findViewById(R.id.close_btn);
+        mCloseBtn = view.findViewById(R.id.close_btn);
         mCloseBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class TextSelectorPanel extends LinearLayout {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mText = (StrokedTextView) itemView.findViewById(R.id.TextView);
+            mText = itemView.findViewById(R.id.TextView);
             mText.setClickable(true);
             mText.setOnClickListener(new OnClickListener() {
                 @Override
@@ -96,7 +96,7 @@ public class TextSelectorPanel extends LinearLayout {
     }
 
     private class TextEffectListAdapter extends RecyclerView.Adapter<ItemViewHolder> {
-        private TextInfo[] mInfos;
+        private final TextInfo[] mInfos;
 
         public TextEffectListAdapter(TextInfo[] infos) {
             this.mInfos = infos;

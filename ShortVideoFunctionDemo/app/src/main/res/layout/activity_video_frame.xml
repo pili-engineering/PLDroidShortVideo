@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_back"
+            android:background="@drawable/btn_back"
             android:onClick="onBack" />
 
         <TextView
@@ -28,11 +28,10 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/btn_next"
+            android:background="@drawable/btn_next"
             android:onClick="onDone" />
     </LinearLayout>
 
@@ -71,7 +70,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/add_video_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -89,7 +87,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/add_transition_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

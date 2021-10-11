@@ -4,6 +4,7 @@ import androidx.multidex.MultiDexApplication;
 
 import com.qiniu.pili.droid.shortvideo.PLShortVideoEnv;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
+import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 
 public class ShortVideoApplication extends MultiDexApplication {
 
@@ -13,5 +14,6 @@ public class ShortVideoApplication extends MultiDexApplication {
         // init resources needed by short video sdk
         PLShortVideoEnv.init(getApplicationContext());
         Config.init(this);
+        ToastUtils.init(this);
     }
 }

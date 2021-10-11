@@ -43,7 +43,7 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
         setContentView(R.layout.dialog_audio_mix);
         super.onCreate(savedInstanceState);
 
-        mSrcVolumeSeekBar = (SeekBar) findViewById(R.id.fg_volume);
+        mSrcVolumeSeekBar = findViewById(R.id.fg_volume);
         mSrcVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -60,7 +60,7 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
             }
         });
 
-        mMixVolumeSeekBar = (SeekBar) findViewById(R.id.bg_volume);
+        mMixVolumeSeekBar = findViewById(R.id.bg_volume);
         mMixVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -77,7 +77,7 @@ public class AudioMixSettingDialog extends BottomSheetDialog {
             }
         });
 
-        mMixPositionSeekBar = (SeekBar) findViewById(R.id.mix_position);
+        mMixPositionSeekBar = findViewById(R.id.mix_position);
         mMixPositionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

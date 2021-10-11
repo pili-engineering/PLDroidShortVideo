@@ -7,9 +7,6 @@ import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -24,6 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.qiniu.pili.droid.shortvideo.PLAudioEncodeSetting;
 import com.qiniu.pili.droid.shortvideo.PLAudioMixMode;
@@ -95,22 +94,19 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     private GestureDetector mGestureDetector;
 
     private PLCameraSetting mCameraSetting;
-    private PLMicrophoneSetting mMicrophoneSetting;
     private PLRecordSetting mRecordSetting;
-    private PLVideoEncodeSetting mVideoEncodeSetting;
-    private PLAudioEncodeSetting mAudioEncodeSetting;
-    private PLFaceBeautySetting mFaceBeautySetting;
 
     private int mFocusIndicatorX;
     private int mFocusIndicatorY;
     private int mSampleVideoWidth;
     private int mSampleVideoHeight;
 
-    private final Stack<Long> mDurationRecordStack = new Stack();
-    private final Stack<Double> mDurationVideoStack = new Stack();
+    private final Stack<Long> mDurationRecordStack = new Stack<>();
+    private final Stack<Double> mDurationVideoStack = new Stack<>();
 
     private boolean mSectionBegan;
     private int mMixMode;
+    private long mSectionBeginMs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,20 +115,20 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mix_record);
 
-        mSectionProgressBar = (SectionProgressBar) findViewById(R.id.record_progressbar);
+        mSectionProgressBar = findViewById(R.id.record_progressbar);
         mRecordBtn = findViewById(R.id.record);
         mDeleteBtn = findViewById(R.id.delete);
         mConcatBtn = findViewById(R.id.concat);
         mSwitchCameraBtn = findViewById(R.id.switch_camera);
         mSwitchFlashBtn = findViewById(R.id.switch_flash);
-        mFocusIndicator = (FocusIndicator) findViewById(R.id.focus_indicator);
-        mAdjustBrightnessSeekBar = (SeekBar) findViewById(R.id.adjust_brightness);
-        mRecordingPercentageView = (TextView) findViewById(R.id.recording_percentage);
-        mEarphoneModeCheck = (CheckBox) findViewById(R.id.earphone_mode);
+        mFocusIndicator = findViewById(R.id.focus_indicator);
+        mAdjustBrightnessSeekBar = findViewById(R.id.adjust_brightness);
+        mRecordingPercentageView = findViewById(R.id.recording_percentage);
+        mEarphoneModeCheck = findViewById(R.id.earphone_mode);
         mEarphoneModeCheck.setOnCheckedChangeListener(audioCheckedListener);
-        mMuteSampleCheck = (CheckBox) findViewById(R.id.mute_sample);
+        mMuteSampleCheck = findViewById(R.id.mute_sample);
         mMuteSampleCheck.setOnCheckedChangeListener(audioCheckedListener);
-        mMuteMicrophoneCheck = (CheckBox) findViewById(R.id.mute_microphone);
+        mMuteMicrophoneCheck = findViewById(R.id.mute_microphone);
         mMuteMicrophoneCheck.setOnCheckedChangeListener(audioCheckedListener);
 
         mProcessingDialog = new CustomProgressDialog(this);
@@ -141,42 +137,13 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
         onSectionCountChanged(0, 0);
 
-        mRecordBtn.setOnTouchListener(new View.OnTouchListener() {
-            private long mSectionBeginTSMs;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                if (action == MotionEvent.ACTION_DOWN) {
-                    if (!mSectionBegan && mMixRecorder.beginSection()) {
-                        mSectionBegan = true;
-                        mSectionBeginTSMs = System.currentTimeMillis();
-                        mSectionProgressBar.setCurrentState(SectionProgressBar.State.START);
-                        updateRecordingBtns(true);
-                    } else {
-                        ToastUtils.showShortToast(VideoMixRecordActivity.this, "无法开始视频段录制");
-                    }
-                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                    if (mSectionBegan) {
-                        long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginTSMs;
-                        long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek().longValue());
-                        double sectionVideoDurationMs = sectionRecordDurationMs;
-                        double totalVideoDurationMs = sectionVideoDurationMs + (mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue());
-                        mDurationRecordStack.push(new Long(totalRecordDurationMs));
-                        mDurationVideoStack.push(new Double(totalVideoDurationMs));
-                        if (mRecordSetting.IsRecordSpeedVariable()) {
-                            Log.d(TAG, "SectionRecordDuration: " + sectionRecordDurationMs + "; sectionVideoDuration: " + sectionVideoDurationMs + "; totalVideoDurationMs: " + totalVideoDurationMs + "Section count: " + mDurationVideoStack.size());
-                            mSectionProgressBar.addBreakPointTime((long) totalVideoDurationMs);
-                        } else {
-                            mSectionProgressBar.addBreakPointTime(totalRecordDurationMs);
-                        }
-
-                        mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
-                        mMixRecorder.endSection();
-                        mSectionBegan = false;
-                    }
+        mRecordBtn.setOnClickListener(v -> {
+            if (mSectionBegan) {
+                mMixRecorder.endSection();
+            } else {
+                if (!mMixRecorder.beginSection()) {
+                    ToastUtils.showShortToast("无法开始视频段录制");
                 }
-                return false;
             }
         });
         mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -209,11 +176,13 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
             case MIX_MODE_VERTICAL:
                 configVerticalMixPreview();
                 break;
+            default:
+                break;
         }
     }
 
     private void configCameraAboveSampleMixPreview() {
-        mPreviewParent = (ViewGroup) findViewById(R.id.framePreviewParent);
+        mPreviewParent = findViewById(R.id.framePreviewParent);
         mSamplePreview = new SquareGLSurfaceView(this, null);
         mPreviewParent.addView(mSamplePreview);
         mCameraPreview = new SquareGLSurfaceView(this, null);
@@ -224,7 +193,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     }
 
     private void configSampleAboveCameraMixPreview() {
-        mPreviewParent = (ViewGroup) findViewById(R.id.framePreviewParent);
+        mPreviewParent = findViewById(R.id.framePreviewParent);
         mCameraPreview = new SquareGLSurfaceView(this, null);
         mPreviewParent.addView(mCameraPreview);
         mSamplePreview = new SquareGLSurfaceView(this, null);
@@ -235,7 +204,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     }
 
     private void configVerticalMixPreview() {
-        mPreviewParent = (ViewGroup) findViewById(R.id.linearPreviewParent);
+        mPreviewParent = findViewById(R.id.linearPreviewParent);
         mCameraPreview = new VideoMixGLSurfaceView(this, null);
         mCameraPreview.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
         mPreviewParent.addView(mCameraPreview);
@@ -314,17 +283,17 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         mCameraSetting.setCameraPreviewSizeRatio(PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO.RATIO_16_9);
         mCameraSetting.setCameraPreviewSizeLevel(PLCameraSetting.CAMERA_PREVIEW_SIZE_LEVEL.PREVIEW_SIZE_LEVEL_720P);
 
-        mMicrophoneSetting = new PLMicrophoneSetting();
-        mMicrophoneSetting.setChannelConfig(AudioFormat.CHANNEL_IN_MONO);
+        PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
+        microphoneSetting.setChannelConfig(AudioFormat.CHANNEL_IN_MONO);
 
 
-        mVideoEncodeSetting = new PLVideoEncodeSetting(this);
-        mVideoEncodeSetting.setPreferredEncodingSize(VIDEO_MIX_ENCODE_WIDTH, VIDEO_MIX_ENCODE_HEIGHT);
-        mVideoEncodeSetting.setEncodingBitrate(2000 * 1000);
-        mVideoEncodeSetting.setEncodingFps(30);
+        PLVideoEncodeSetting videoEncodeSetting = new PLVideoEncodeSetting(this);
+        videoEncodeSetting.setPreferredEncodingSize(VIDEO_MIX_ENCODE_WIDTH, VIDEO_MIX_ENCODE_HEIGHT);
+        videoEncodeSetting.setEncodingBitrate(2000 * 1000);
+        videoEncodeSetting.setEncodingFps(30);
 
-        mAudioEncodeSetting = new PLAudioEncodeSetting();
-        mAudioEncodeSetting.setChannels(1);
+        PLAudioEncodeSetting audioEncodeSetting = new PLAudioEncodeSetting();
+        audioEncodeSetting.setChannels(1);
 
         PLMediaFile mediaFile = new PLMediaFile(sampleVideoPath);
         long maxDuration = mediaFile.getDurationMs();
@@ -342,7 +311,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         PLDisplayMode cameraDisplayMode = (mMixMode == MIX_MODE_VERTICAL ? PLDisplayMode.FIT : PLDisplayMode.FULL);
         mRecordSetting.setDisplayMode(cameraDisplayMode);
 
-        mFaceBeautySetting = new PLFaceBeautySetting(1.0f, 0.5f, 0.5f);
+        PLFaceBeautySetting faceBeautySetting = new PLFaceBeautySetting(1.0f, 0.5f, 0.5f);
 
         PLVideoMixSetting mixSetting;
         if (mMixMode == MIX_MODE_CAMERA_ABOVE_SAMPLE) {
@@ -352,8 +321,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         } else {
             mixSetting = getVerticalMixSetting(sampleVideoPath);
         }
-        mMixRecorder.prepare(mCameraPreview, mSamplePreview, mixSetting, mCameraSetting, mMicrophoneSetting, mVideoEncodeSetting,
-                mAudioEncodeSetting, mFaceBeautySetting, mRecordSetting);
+        mMixRecorder.prepare(mCameraPreview, mSamplePreview, mixSetting, mCameraSetting, microphoneSetting, videoEncodeSetting, audioEncodeSetting, faceBeautySetting, mRecordSetting);
 
         mMuteSampleCheck.setChecked(false);
         mMuteMicrophoneCheck.setChecked(true);
@@ -400,12 +368,13 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
 
     public void onClickDelete(View v) {
         if (!mMixRecorder.deleteLastSection()) {
-            ToastUtils.showShortToast(this, "回删视频段失败");
+            ToastUtils.showShortToast("回删视频段失败");
         }
     }
 
     public void onClickConcat(View v) {
         mProcessingDialog.show();
+        mProcessingDialog.setProgress(0);
         showChooseDialog();
     }
 
@@ -441,37 +410,52 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
 
     @Override
     public void onReady() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mSwitchFlashBtn.setVisibility(mMixRecorder.isFlashSupport() ? View.VISIBLE : View.GONE);
-                mFlashEnabled = false;
-                mSwitchFlashBtn.setActivated(mFlashEnabled);
-                mRecordBtn.setEnabled(true);
-                refreshSeekBar();
-                ToastUtils.showShortToast(VideoMixRecordActivity.this, "可以开始拍摄咯");
-            }
+        runOnUiThread(() -> {
+            mSwitchFlashBtn.setVisibility(mMixRecorder.isFlashSupport() ? View.VISIBLE : View.GONE);
+            mFlashEnabled = false;
+            mSwitchFlashBtn.setActivated(mFlashEnabled);
+            mRecordBtn.setEnabled(true);
+            refreshSeekBar();
+            ToastUtils.showShortToast("可以开始拍摄咯");
         });
     }
 
     @Override
     public void onError(final int code) {
-        runOnUiThread(() -> ToastUtils.toastErrorCode(VideoMixRecordActivity.this, code));
+        ToastUtils.toastErrorCode(code);
     }
 
     @Override
     public void onDurationTooShort() {
-        runOnUiThread(() -> ToastUtils.showShortToast(VideoMixRecordActivity.this, "该视频段太短了"));
+        mSectionProgressBar.removeLastBreakPoint();
+        ToastUtils.showShortToast("该视频段太短了");
     }
 
     @Override
     public void onRecordStarted() {
+        mSectionBegan = true;
+        mSectionBeginMs = System.currentTimeMillis();
+        mSectionProgressBar.setCurrentState(SectionProgressBar.State.START);
+        updateRecordingBtns(true);
         Log.i(TAG, "record start time: " + System.currentTimeMillis());
     }
 
     @Override
     public void onRecordStopped() {
         Log.i(TAG, "record stop time: " + System.currentTimeMillis());
+        long sectionRecordDurationMs = System.currentTimeMillis() - mSectionBeginMs;
+        long totalRecordDurationMs = sectionRecordDurationMs + (mDurationRecordStack.isEmpty() ? 0 : mDurationRecordStack.peek());
+        double totalVideoDurationMs = (double) sectionRecordDurationMs + (mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek());
+        mDurationRecordStack.push(totalRecordDurationMs);
+        mDurationVideoStack.push(totalVideoDurationMs);
+        if (mRecordSetting.IsRecordSpeedVariable()) {
+            Log.d(TAG, "SectionRecordDuration: " + sectionRecordDurationMs + "; sectionVideoDuration: " + (double) sectionRecordDurationMs + "; totalVideoDurationMs: " + totalVideoDurationMs + "Section count: " + mDurationVideoStack.size());
+            mSectionProgressBar.addBreakPointTime((long) totalVideoDurationMs);
+        } else {
+            mSectionProgressBar.addBreakPointTime(totalRecordDurationMs);
+        }
+        mSectionBegan = false;
+        mSectionProgressBar.setCurrentState(SectionProgressBar.State.PAUSE);
         runOnUiThread(() -> updateRecordingBtns(false));
     }
 
@@ -483,7 +467,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
 
     @Override
     public void onSectionIncreased(long incDuration, long totalDuration, int sectionCount) {
-        double videoSectionDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
+        double videoSectionDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek();
         if ((videoSectionDuration + incDuration) >= mRecordSetting.getMaxRecordDuration()) {
             videoSectionDuration = mRecordSetting.getMaxRecordDuration();
         }
@@ -500,14 +484,14 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         if (!mDurationRecordStack.isEmpty()) {
             mDurationRecordStack.pop();
         }
-        double currentDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek().doubleValue();
+        double currentDuration = mDurationVideoStack.isEmpty() ? 0 : mDurationVideoStack.peek();
         onSectionCountChanged(sectionCount, (long) currentDuration);
         updateRecordingPercentageView((long) currentDuration);
     }
 
     @Override
     public void onRecordCompleted() {
-        runOnUiThread(() -> ToastUtils.showShortToast(VideoMixRecordActivity.this, "已达到拍摄总时长"));
+        ToastUtils.showShortToast("已达到拍摄总时长");
     }
 
     @Override
@@ -519,7 +503,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     public void onSaveVideoFailed(final int errorCode) {
         runOnUiThread(() -> {
             mProcessingDialog.dismiss();
-            ToastUtils.showShortToast(VideoMixRecordActivity.this, "拼接视频段失败: " + errorCode);
+            ToastUtils.showShortToast("拼接视频段失败: " + errorCode);
         });
     }
 
@@ -553,7 +537,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
             return;
         }
         runOnUiThread(() -> {
-            mRecordingPercentageView.setText((per > 100 ? 100 : per) + "%");
+            mRecordingPercentageView.setText((Math.min(per, 100)) + "%");
             mLastRecordingPercentageViewUpdateTime = curTime;
         });
     }
@@ -684,6 +668,8 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
                     break;
                 case R.id.earphone_mode:
                     mMixRecorder.setAudioMixMode(isChecked ? PLAudioMixMode.EARPHONE_MODE : PLAudioMixMode.SPEAKERPHONE_MODE);
+                default:
+                    break;
             }
         }
     };

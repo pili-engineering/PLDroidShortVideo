@@ -36,24 +36,24 @@ public class TransitionEditView extends LinearLayout {
     };
 
     private TransitionBase mTransition;
-    private Button mBackBtn;
-    private EditText mTitleEditText;
-    private EditText mSubtitleEditText;
+    private final Button mBackBtn;
+    private final EditText mTitleEditText;
+    private final EditText mSubtitleEditText;
 
     private TransitionTextView mTransitionTitle;
     private TransitionTextView mTransitionSubtitle;
     private EditText mCurFocusText;
-    private NumberPicker mNumberPicker;
-    private ViewGroup mNumberPickerGroup;
-    private TextView mConfirmText;
+    private final NumberPicker mNumberPicker;
+    private final ViewGroup mNumberPickerGroup;
+    private final TextView mConfirmText;
 
     private Typeface[] mTypefaces;
 
-    private ViewGroup mColorGroup;
-    private ViewGroup mSizeGroup;
-    private ViewGroup mTypefaceGroup;
+    private final ViewGroup mColorGroup;
+    private final ViewGroup mSizeGroup;
+    private final ViewGroup mTypefaceGroup;
 
-    private Context mContext;
+    private final Context mContext;
 
     public TransitionEditView(Context context) {
         this(context, null);
@@ -63,15 +63,15 @@ public class TransitionEditView extends LinearLayout {
         super(context, attrs);
         mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.transition_edit_view, this);
-        mBackBtn = (Button) view.findViewById(R.id.back_button);
-        mTitleEditText = (EditText) view.findViewById(R.id.title_edit_text);
-        mSubtitleEditText = (EditText) view.findViewById(R.id.subtitle_edit_text);
-        mNumberPicker = (NumberPicker) view.findViewById(R.id.number_picker);
-        mColorGroup = (ViewGroup) view.findViewById(R.id.color_group);
-        mSizeGroup = (ViewGroup) view.findViewById(R.id.size_group);
-        mTypefaceGroup = (ViewGroup) view.findViewById(R.id.typeface_group);
-        mNumberPickerGroup = (ViewGroup) view.findViewById(R.id.number_picker_group);
-        mConfirmText = (TextView) view.findViewById(R.id.text_confirm);
+        mBackBtn = view.findViewById(R.id.back_button);
+        mTitleEditText = view.findViewById(R.id.title_edit_text);
+        mSubtitleEditText = view.findViewById(R.id.subtitle_edit_text);
+        mNumberPicker = view.findViewById(R.id.number_picker);
+        mColorGroup = view.findViewById(R.id.color_group);
+        mSizeGroup = view.findViewById(R.id.size_group);
+        mTypefaceGroup = view.findViewById(R.id.typeface_group);
+        mNumberPickerGroup = view.findViewById(R.id.number_picker_group);
+        mConfirmText = view.findViewById(R.id.text_confirm);
 
         mConfirmText.setOnClickListener(v -> {
             mNumberPickerGroup.setVisibility(GONE);
@@ -108,7 +108,7 @@ public class TransitionEditView extends LinearLayout {
         mTypefaces[3] = Typeface.createFromAsset(mContext.getAssets(), "fonts/HappyZcool-2016.ttf");
     }
 
-    private OnClickListener mOnClickListener = new OnClickListener() {
+    private final OnClickListener mOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             showNumberPicker(v);
@@ -124,7 +124,7 @@ public class TransitionEditView extends LinearLayout {
 
     private void showNumberPicker(final View view) {
         if (null == mCurFocusText) {
-            ToastUtils.showShortToast(mContext, "请先选中需要修改的文字");
+            ToastUtils.showShortToast("请先选中需要修改的文字");
             return;
         }
 
@@ -165,7 +165,7 @@ public class TransitionEditView extends LinearLayout {
         });
     }
 
-    private OnFocusChangeListener mOnFocusChangeListener = new OnFocusChangeListener() {
+    private final OnFocusChangeListener mOnFocusChangeListener = new OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
