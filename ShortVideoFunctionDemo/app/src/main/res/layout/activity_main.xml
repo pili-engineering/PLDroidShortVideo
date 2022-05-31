@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:onClick="onClickImageCompose2"
+                android:onClick="onClickImageComposeWithTransition"
                 app:text="图片拼接（预览+转场）" />
 
             <com.qiniu.pili.droid.shortvideo.demo.view.ItemView

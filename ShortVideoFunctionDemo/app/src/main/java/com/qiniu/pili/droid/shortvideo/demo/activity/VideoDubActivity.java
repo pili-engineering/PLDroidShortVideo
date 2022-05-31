@@ -87,7 +87,7 @@ public class VideoDubActivity extends Activity implements PLRecordStateListener,
         mShortAudioRecorder.prepare(this, microphoneSetting, audioEncodeSetting, recordSetting);
 
         mSectionProgressBar.setFirstPointTime(0);
-        mSectionProgressBar.setTotalTime(this, mShortVideoEditor.getDurationMs());
+        mSectionProgressBar.setTotalTime(mShortVideoEditor.getDurationMs());
 
         mRecordBtn.setOnClickListener(v -> {
             if (mIsRecordCompleted) {

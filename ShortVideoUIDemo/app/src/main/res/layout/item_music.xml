@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
                                              xmlns:tools="http://schemas.android.com/tools"
                                              xmlns:seekbar="http://schemas.android.com/apk/res-auto"
@@ -106,7 +106,7 @@
         app:layout_constraintEnd_toEndOf="@+id/music_select_layout"
         app:layout_constraintTop_toBottomOf="@+id/music_select_layout"/>
 
-    <android.support.constraint.Group
+    <androidx.constraintlayout.widget.Group
         android:id="@+id/music_select_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,4 +114,4 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="8dp"/>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

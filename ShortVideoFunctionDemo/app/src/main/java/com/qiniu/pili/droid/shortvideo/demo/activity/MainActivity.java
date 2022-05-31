@@ -3,11 +3,16 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 
 import com.qiniu.pili.droid.shortvideo.PLAuthenticationResultCallback;
@@ -24,6 +29,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    private ActivityResultLauncher<Intent> mActivityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() != RESULT_OK || result.getData() == null) {
+                ToastUtils.showShortToast("未获得全局存储权限");
+            }
+        });
     }
 
     @Override
@@ -59,6 +71,18 @@ public class MainActivity extends AppCompatActivity {
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
         if (!isPermissionOK) {
             ToastUtils.showShortToast("Some permissions is not approved !!!");
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageManager()) {
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                mActivityResultLauncher.launch(intent);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            return false;
         }
         return isPermissionOK;
     }
@@ -106,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickImageCompose2(View v) {
+    public void onClickImageComposeWithTransition(View v) {
         if (isPermissionOK()) {
             jumpToActivity(ImageComposeWithTransitionActivity.class);
         }

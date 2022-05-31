@@ -56,7 +56,7 @@
     </LinearLayout>
 
     <!--文字控制content-->
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lsq_editor_effect_scene_list"
         android:layout_width="match_parent"
         android:layout_height="80dp"

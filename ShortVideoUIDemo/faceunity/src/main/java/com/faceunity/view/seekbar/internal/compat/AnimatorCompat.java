@@ -5,7 +5,7 @@ package com.faceunity.view.seekbar.internal.compat;
  * and as we didn't want to throw in external dependencies, we made this small class.
  * <p/>
  * <p>
- * This will work like {@link android.support.v4.view.ViewPropertyAnimatorCompat}, that is,
+ * This will work like {@link androidx.core.view.ViewPropertyAnimatorCompat}, that is,
  * not doing anything on API<11 and using the default {@link android.animation.ValueAnimator}
  * on API>=11
  * </p>

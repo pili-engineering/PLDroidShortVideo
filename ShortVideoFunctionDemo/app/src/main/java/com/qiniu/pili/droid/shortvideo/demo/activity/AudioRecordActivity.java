@@ -79,7 +79,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         mShortAudioRecorder.prepare(this, microphoneSetting, audioEncodeSetting, recordSetting);
 
         mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
-        mSectionProgressBar.setTotalTime(this, recordSetting.getMaxRecordDuration());
+        mSectionProgressBar.setTotalTime(recordSetting.getMaxRecordDuration());
 
         mRecordBtn.setOnClickListener(v -> {
             if (mSectionBegan) {

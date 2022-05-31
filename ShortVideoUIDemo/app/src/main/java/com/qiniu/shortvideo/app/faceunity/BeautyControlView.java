@@ -2,12 +2,12 @@ package com.qiniu.shortvideo.app.faceunity;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -222,8 +222,9 @@ public class BeautyControlView extends FrameLayout {
         initExpression();
         initHahaMirror();
         initBackground();
-        initFaceChange();
-        initPortraitDrive();
+        // 换脸和人像驱动已废弃
+        // initFaceChange();
+        // initPortraitDrive();
         initViewTop();
     }
 
@@ -393,8 +394,8 @@ public class BeautyControlView extends FrameLayout {
         mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.cartoon_filter)));
         mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_background)));
         mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_hair)));
-        mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_face_change)));
-        mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_portrait_drive)));
+//        mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_face_change)));
+//        mStickerOptionItems.add(new StickerOptionItem(mContext.getResources().getString(R.string.home_function_name_portrait_drive)));
 
         mStickerOptionAdapter = new StickerOptionAdapter(mContext, mStickerOptionItems);
         mStickerOptionAdapter.setOnStickerOptionsClickedListener(new StickerOptionAdapter.OnStickerOptionsClickedListener() {
@@ -734,8 +735,8 @@ public class BeautyControlView extends FrameLayout {
         mRvExpression.setVisibility(GONE);
         mRvHahaMirror.setVisibility(GONE);
         mRvBackground.setVisibility(GONE);
-        mRvFaceChange.setVisibility(GONE);
-        mRvPortraitDrive.setVisibility(GONE);
+//        mRvFaceChange.setVisibility(GONE);
+//        mRvPortraitDrive.setVisibility(GONE);
 
         mFaceShapeLayout.setVisibility(GONE);
         mBeautySeekBar.setVisibility(INVISIBLE);

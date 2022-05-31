@@ -161,7 +161,7 @@ public class MediaUtils {
 
     public static ArrayList<AudioFile> getLocalAudios(Context context) {
 
-        ArrayList<AudioFile> audioFiles = null;
+        ArrayList<AudioFile> audioFiles = new ArrayList<>();
 
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -178,8 +178,6 @@ public class MediaUtils {
                 MediaStore.Audio.Media.MIME_TYPE + "=? or "
                         + MediaStore.Audio.Media.MIME_TYPE + "=?",
                 new String[] { "audio/mpeg", "audio/x-ms-wma" }, null);
-
-        audioFiles = new ArrayList<AudioFile>();
 
         if (cursor != null && cursor.moveToFirst()) {
             AudioFile audioFile = null;
@@ -218,7 +216,9 @@ public class MediaUtils {
                 if (cursor.getString(9) != null) {
                     audioFile.setFilePath(cursor.getString(9));
                 }
-                audioFiles.add(audioFile);
+                if (audioFile.getDuration() > 0) {
+                    audioFiles.add(audioFile);
+                }
             } while (cursor.moveToNext());
 
             cursor.close();
@@ -229,6 +229,10 @@ public class MediaUtils {
 
     public static Uri storeVideo(Context context, File srcFile, String mime) {
         File dstFile = new File(Config.VIDEO_PUBLIC_STORAGE_DIR, srcFile.getName());
+        return storeVideo(context, srcFile, dstFile, mime);
+    }
+
+    public static Uri storeVideo(Context context, File srcFile, File dstFile, String mime) {
         boolean succeed = FileUtils.copyFile(srcFile, dstFile);
         if (succeed) {
             ContentValues values = new ContentValues();

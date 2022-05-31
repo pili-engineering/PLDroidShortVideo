@@ -1,17 +1,20 @@
 package com.qiniu.shortvideo.app.activity;
 
+import static com.qiniu.shortvideo.app.activity.VideoMixRecordActivity.VIDEO_PATH;
+
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLOnCompletionListener;
@@ -36,8 +39,6 @@ import com.qiniu.shortvideo.app.view.crop.CropVideoView;
 import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
-import static com.qiniu.shortvideo.app.activity.VideoMixRecordActivity.VIDEO_PATH;
 
 /**
  * 视频剪辑模块，包含了视频剪辑、区域剪裁以及旋转等功能
@@ -165,6 +166,12 @@ public class VideoTrimActivity extends AppCompatActivity implements
 
                                 // 剪裁 + 旋转同时操作的情况下，会先进行剪裁再进行旋转，因此，剪裁的区域坐标应该换算
                                 // 成 rotation = 0 的场景下的坐标，以防剪裁后的视频出现拉伸的现象
+                                int videoWidth = mMediaFile.getVideoWidth();
+                                int videoHeight = mMediaFile.getVideoHeight();
+                                if (mMediaFile.getVideoRotation() == 90 || mMediaFile.getVideoRotation() == 270) {
+                                    videoWidth = mMediaFile.getVideoHeight();
+                                    videoHeight = mMediaFile.getVideoWidth();
+                                }
                                 if (mRotation == 0) {
                                     dstX = x;
                                     dstY = y;
@@ -172,24 +179,36 @@ public class VideoTrimActivity extends AppCompatActivity implements
                                     dstHeight = height;
                                 } else if (mRotation == 90) {
                                     dstX = y;
-                                    dstY = mMediaFile.getVideoHeight() - x - width;
+                                    dstY = videoHeight - x - width;
                                     dstWidth = height;
                                     dstHeight = width;
-                                } else if (mRotation ==  180) {
-                                    dstX = mMediaFile.getVideoWidth() - x - width;
-                                    dstY = mMediaFile.getVideoHeight() - y - height;
+                                } else if (mRotation == 180) {
+                                    dstX = videoWidth - x - width;
+                                    dstY = videoHeight - y - height;
                                     dstWidth = width;
                                     dstHeight = height;
                                 } else if (mRotation == 270) {
-                                    dstX = mMediaFile.getVideoWidth() - y - height;
+                                    dstX = videoWidth - y - height;
                                     dstY = x;
                                     dstWidth = height;
                                     dstHeight = width;
                                 }
                                 mShortVideoTranscoder.setClipArea(dstX, dstY, dstWidth, dstHeight);
+                                if (mMediaFile.getVideoRotation() == 90 || mMediaFile.getVideoRotation() == 270) {
+                                    int swap = dstWidth;
+                                    dstWidth = dstHeight;
+                                    dstHeight = swap;
+                                }
+                            } else {
+                                if ((mMediaFile.getVideoRotation() + mRotation) % 90 % 2 == 1) {
+                                    int swap = dstWidth;
+                                    dstWidth = dstHeight;
+                                    dstHeight = swap;
+                                }
                             }
 
                             mIsTranscodingVideo = true;
+                            mShortVideoTranscoder.setDisplayMode(null);
                             mShortVideoTranscoder.transcode(dstWidth, dstHeight, mMediaFile.getVideoBitrate(), mRotation, new PLVideoSaveListener() {
 
                                 @Override
@@ -400,7 +419,6 @@ public class VideoTrimActivity extends AppCompatActivity implements
             mRealVideoHeight = mPreviewLayoutHeight;
             mRealVideoWidth = mRealVideoHeight * videoWidth / videoHeight;
         }
-
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(mRealVideoWidth, mRealVideoHeight);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         mPreview.setLayoutParams(lp);
@@ -408,7 +426,7 @@ public class VideoTrimActivity extends AppCompatActivity implements
     }
 
     private boolean isNormalOrientation() {
-        return mRotation == 0 || mRotation == 180;
+        return (mRotation + mMediaFile.getVideoRotation()) / 90 % 2 == 0;
     }
 
     private boolean isCroppingVideo() {
@@ -435,22 +453,22 @@ public class VideoTrimActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onError(int i) {
-        return false;
-    }
-
-    @Override
-    public void onInfo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onPrepared(int i) {
+    public void onPrepared(int preparedTime) {
 
     }
 
     @Override
     public void onVideoSizeChanged(int width, int height) {
+
+    }
+
+    @Override
+    public boolean onError(int errorCode, Object extraData) {
+        return false;
+    }
+
+    @Override
+    public void onInfo(int what, int extra, Object extraData) {
 
     }
 }

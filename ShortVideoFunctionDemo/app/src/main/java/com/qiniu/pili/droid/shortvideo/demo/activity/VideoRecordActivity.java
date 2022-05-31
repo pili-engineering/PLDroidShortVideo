@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.media.AudioFormat;
+import android.net.DnsResolver;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,7 @@ import com.qiniu.pili.droid.shortvideo.demo.view.SectionProgressBar;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_SPEED_ARRAY;
 import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.chooseCameraFacingId;
@@ -164,7 +166,6 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
             mShortVideoRecorder.prepare(preview, mCameraSetting, mMicrophoneSetting, mVideoEncodeSetting,
                     mAudioEncodeSetting, mFaceBeautySetting, mRecordSetting);
-            mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
             onSectionCountChanged(0, 0);
         } else {
             PLDraftBox draftBox = PLDraftBox.getInstance(this);
@@ -190,17 +191,16 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
                     draftDuration += draft.getSectionDuration(i);
                     onSectionIncreased(currentDuration, draftDuration, i + 1);
                 }
-                mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
                 ToastUtils.showShortToast(getString(R.string.toast_draft_recover_success));
             } else {
                 onSectionCountChanged(0, 0);
-                mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
                 ToastUtils.showShortToast(getString(R.string.toast_draft_recover_fail));
             }
         }
         mShortVideoRecorder.setRecordSpeed(mRecordSpeed);
         mSectionProgressBar.setProceedingSpeed(mRecordSpeed);
-        mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
+        mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+        mSectionProgressBar.setTotalTime(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
 
         mRecordBtn.setOnClickListener(v -> {
             if (mSectionBegan) {
@@ -368,8 +368,8 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
             if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                 mShortVideoRecorder.setMusicFile(selectedFilepath);
@@ -579,16 +579,7 @@ public class VideoRecordActivity extends Activity implements PLRecordStateListen
         }
 
         mShortVideoRecorder.setRecordSpeed(mRecordSpeed);
-        if (mRecordSetting.IsRecordSpeedVariable() && mVideoEncodeSetting.IsConstFrameRateEnabled()) {
-            mSectionProgressBar.setProceedingSpeed(mRecordSpeed);
-            mRecordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
-            mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
-        } else {
-            mRecordSetting.setMaxRecordDuration((long) (RecordSettings.DEFAULT_MAX_RECORD_DURATION * mRecordSpeed));
-            mSectionProgressBar.setFirstPointTime((long) (RecordSettings.DEFAULT_MIN_RECORD_DURATION * mRecordSpeed));
-        }
-
-        mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
+        mSectionProgressBar.setProceedingSpeed(mRecordSpeed);
     }
 
     @Override

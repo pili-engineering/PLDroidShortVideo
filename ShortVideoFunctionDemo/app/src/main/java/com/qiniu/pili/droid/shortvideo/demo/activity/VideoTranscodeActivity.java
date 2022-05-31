@@ -108,6 +108,14 @@ public class VideoTranscodeActivity extends AppCompatActivity {
             }
         });
 
+        ((AppCompatCheckBox) findViewById(R.id.cb_hw_encode)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mShortVideoTranscoder.setHWEncodeEnable(true);
+            } else {
+                mShortVideoTranscoder.setHWEncodeEnable(false);
+            }
+        });
+
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("video/*");
@@ -129,17 +137,17 @@ public class VideoTranscodeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
             if (requestCode == REQUEST_MIX_AUDIO) {
                 //增加混音文件
-                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
                 Log.i(TAG, "Select mix audio file: " + selectedFilepath);
                 if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
                     onMixAudioFileSelected(selectedFilepath);
                     return;
                 }
             } else {
-                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
                 Log.i(TAG, "Select file: " + selectedFilepath);
                 if (!StringUtils.isNullOrEmpty(selectedFilepath)) {
                     onVideoFileSelected(selectedFilepath);

@@ -9,9 +9,9 @@ import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -236,6 +236,12 @@ public class VideoEditActivity extends AppCompatActivity implements
         super.onResume();
         startTimerTask();
         updatePlayStatus(true);
+        findViewById(R.id.next_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveVideo();
+            }
+        });
     }
 
     @Override
@@ -294,7 +300,7 @@ public class VideoEditActivity extends AppCompatActivity implements
         finish();
     }
 
-    public void onClickSaveEdit(View v) {
+    public void saveVideo() {
         updatePlayStatus(false);
         cancelTimerTask();
 
@@ -1024,9 +1030,10 @@ public class VideoEditActivity extends AppCompatActivity implements
     @Override
     public void onSaveVideoSuccess(String filePath) {
         Log.i(TAG, "save edit success filePath: " + filePath);
-        MediaUtils.storeVideo(this, new File(filePath), Config.MIME_TYPE_VIDEO);
+        File dstFile = new File(Config.VIDEO_PUBLIC_STORAGE_DIR, System.currentTimeMillis() + "_" + (new File(filePath).getName()));
+        MediaUtils.storeVideo(this, new File(filePath), dstFile, Config.MIME_TYPE_VIDEO);
         mProcessingDialog.dismiss();
-        PlaybackActivity.start(VideoEditActivity.this, filePath);
+        PlaybackActivity.start(VideoEditActivity.this, dstFile.getAbsolutePath());
     }
 
     @Override

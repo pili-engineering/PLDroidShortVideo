@@ -84,7 +84,8 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
 
         AVOptions options = new AVOptions();
         options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
-        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_AUTO);
+        options.setInteger(AVOptions.KEY_AUDIO_DATA_CALLBACK, 1);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
         mVideoTextureView.setAVOptions(options);
         mVideoTextureView.setOnVideoFrameListener((data, size, width, height, format, ts) -> {
             if (format == 0) {
@@ -116,16 +117,17 @@ public class ExternalMediaRecordActivity extends AppCompatActivity implements Vi
 
     @Override
     public void onClick(View view) {
-        view.setEnabled(false);
         switch (view.getId()) {
             case R.id.play:
                 if (!mVideoTextureView.isPlaying()) {
+                    mPlayButton.setEnabled(false);
                     mVideoTextureView.start();
                     mExternalMediaRecorder.start();
                 }
                 break;
             case R.id.stop:
                 if (mVideoTextureView.isPlaying()) {
+                    mStopButton.setEnabled(false);
                     mExternalMediaRecorder.stop();
                     if (mVideoTextureView != null) {
                         mVideoTextureView.stopPlayback();

@@ -376,6 +376,8 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         stickerTextView.setTextColor(selectText.getCurrentTextColor());
         stickerTextView.setTypeface(selectText.getTypeface());
         stickerTextView.setShadowLayer(selectText.getShadowRadius(), selectText.getShadowDx(), selectText.getShadowDy(), selectText.getShadowColor());
+        stickerTextView.setStrokeWidth(selectText.getStrokeWidth());
+        stickerTextView.setStrokeColor(selectText.getStrokeColor());
         mShortVideoEditor.addTextView(stickerTextView);
 
         stickerTextView.setOnStickerOperateListener(new StickerOperateListener(stickerTextView));
@@ -999,16 +1001,16 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == REQUEST_CODE_PICK_AUDIO_MIX_FILE) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        if (requestCode == REQUEST_CODE_PICK_AUDIO_MIX_FILE && data.getData() != null) {
+            String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
             if (!TextUtils.isEmpty(selectedFilepath)) {
                 mShortVideoEditor.setAudioMixFile(selectedFilepath);
                 mAudioMixSettingDialog.setMixMaxPosition(mShortVideoEditor.getAudioMixFileDuration());
                 mIsMixAudio = true;
             }
-        } else if (requestCode == REQUEST_CODE_MULTI_AUDIO_MIX_FILE) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        } else if (requestCode == REQUEST_CODE_MULTI_AUDIO_MIX_FILE && data.getData() != null) {
+            String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             try {
                 if (!mMainAudioFileAdded) {
                     mMainMixAudioFile = new PLMixAudioFile(mMp4path);
@@ -1120,6 +1122,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mMainMixAudioFile.setSpeed(mSpeed);
             mMainMixAudioFile.setDurationInVideo((int) (mInputMp4FileDurationMs * 1000 / mSpeed));
         }
+        mSaveWatermarkSetting.setZOrderOnTop(true);
         mShortVideoEditor.save(new PLVideoFilterListener() {
             @Override
             public void onSurfaceCreated() {
@@ -1238,18 +1241,18 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
         @Override
         public void onBindViewHolder(FilterItemViewHolder holder, int position) {
-            try {
-                if (position == 0) {
-                    holder.mName.setText("None");
-                    Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("filters/none.png"));
-                    holder.mIcon.setImageBitmap(bitmap);
-                    holder.mIcon.setOnClickListener(v -> {
-                        mSelectedFilter = null;
-                        mShortVideoEditor.setBuiltinFilter(null);
-                    });
-                    return;
-                }
+            if (position == 0) {
+                holder.mName.setText("None");
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.filter_none);
+                holder.mIcon.setImageBitmap(bitmap);
+                holder.mIcon.setOnClickListener(v -> {
+                    mSelectedFilter = null;
+                    mShortVideoEditor.setBuiltinFilter(null);
+                });
+                return;
+            }
 
+            try {
                 final PLBuiltinFilter filter = mFilters[position - 1];
                 holder.mName.setText(filter.getName());
                 InputStream is = getAssets().open(filter.getAssetFilePath());

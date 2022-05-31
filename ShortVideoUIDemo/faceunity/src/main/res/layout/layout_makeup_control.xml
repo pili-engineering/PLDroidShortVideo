@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_makeup_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -53,7 +53,7 @@
             app:layout_constraintLeft_toRightOf="@id/iv_makeup_back"
             app:layout_constraintTop_toTopOf="@id/iv_makeup_back" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/makeup_mid_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/x116"
@@ -73,15 +73,15 @@
             android:background="#33E5E5E5"
             app:layout_constraintBottom_toTopOf="@id/rv_makeup_item" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_makeup_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/x98"
             android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_face_makeup"
         android:layout_width="match_parent"
         android:layout_height="@dimen/x268"
@@ -121,7 +121,7 @@
             app:layout_constraintLeft_toRightOf="@id/iv_custom_makeup"
             app:layout_constraintTop_toTopOf="@id/iv_custom_makeup" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_face_makeup"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/x166"
@@ -152,5 +152,5 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

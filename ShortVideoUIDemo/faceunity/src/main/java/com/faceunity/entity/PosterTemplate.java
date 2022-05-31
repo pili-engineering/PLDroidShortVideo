@@ -1,7 +1,7 @@
 package com.faceunity.entity;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.faceunity.utils.FileUtils;

@@ -3,7 +3,7 @@ package org.lasque.tusdkdemohelper.tusdk;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import org.lasque.tusdk.core.TuSdkContext;
 import org.lasque.tusdk.core.secret.TuSDKOnlineStickerDownloader;
