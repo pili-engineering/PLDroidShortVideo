@@ -189,6 +189,7 @@ public class ImageComposeActivity extends AppCompatActivity {
         PLVideoEncodeSetting setting = new PLVideoEncodeSetting(this);
         setting.setEncodingSizeLevel(getEncodingSizeLevel(mEncodingSizeLevelSpinner.getSelectedItemPosition()));
         setting.setEncodingBitrate(getEncodingBitrateLevel(mEncodingBitrateLevelSpinner.getSelectedItemPosition()));
+        setting.setHWCodecEnabled(false);
         PLDisplayMode displayMode = ((RadioButton) findViewById(R.id.fit_radio_btn)).isChecked() ? PLDisplayMode.FIT : PLDisplayMode.FULL;
         mShortVideoComposer.composeImages(items, mAudioFilePath, true, Config.IMAGE_COMPOSE_FILE_PATH, displayMode, setting, mVideoSaveListener);
     }
@@ -236,9 +237,9 @@ public class ImageComposeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CODE) {
-                String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            if (requestCode == REQUEST_IMAGE_CODE && data.getData() != null) {
+                String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
                 Log.i(TAG, "Select file: " + selectedFilepath);
                 if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                     PLComposeItem item = new PLComposeItem(selectedFilepath);
@@ -247,8 +248,8 @@ public class ImageComposeActivity extends AppCompatActivity {
                     mImageListAdapter.notifyDataSetChanged();
                     ToastUtils.showShortToast("单击条目可以进行编辑，长按可以删除");
                 }
-            } else if (requestCode == REQUEST_AUDIO_CODE) {
-                mAudioFilePath = GetPathFromUri.getPath(this, data.getData());
+            } else if (requestCode == REQUEST_AUDIO_CODE && data.getData() != null) {
+                mAudioFilePath = GetPathFromUri.getRealPathFromURI(this, data.getData());
                 if (mAudioFilePath != null && !"".equals(mAudioFilePath)) {
                     String audioName = ImageListAdapter.getFileNameWithSuffix(mAudioFilePath);
                     if (!audioName.isEmpty()) {

@@ -57,7 +57,6 @@
             android:layout_marginEnd="16dp"
             android:background="@drawable/rectangle_btn_background"
             android:gravity="center"
-            android:onClick="onClickSaveEdit"
             android:text="@string/finish"
             android:textColor="@android:color/white"/>
     </FrameLayout>

@@ -1,8 +1,8 @@
 package com.qiniu.shortvideo.app.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.constraint.Group;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,6 @@ public class ChooseMusicAdapter extends RecyclerView.Adapter<ChooseMusicAdapter.
 
     public ChooseMusicAdapter(ArrayList<AudioFile> audioFiles) {
         mAudioFiles = audioFiles;
-        mAudioFiles.add(0, null);
     }
 
     public void setOnMusicClickListener(OnMusicClickListener listener) {
@@ -80,63 +79,49 @@ public class ChooseMusicAdapter extends RecyclerView.Adapter<ChooseMusicAdapter.
     public void onBindViewHolder(@NonNull final MusicViewHolder musicViewHolder, final int position) {
         final AudioFile audioFile = mAudioFiles.get(position);
         musicViewHolder.mMusicSelectView.setVisibility(View.GONE);
-        if (audioFile == null) {
-            musicViewHolder.mMusicNameText.setText(R.string.no_music);
-            musicViewHolder.mSingerText.setVisibility(View.GONE);
-            musicViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    musicViewHolder.mConfirmBtn.setVisibility(View.VISIBLE);
-                    if (mOnMusicClickListener != null) {
-                        mOnMusicClickListener.onMusicClicked(audioFile, position, false);
+        musicViewHolder.mMusicNameText.setText(audioFile.getTitle());
+        musicViewHolder.mSingerText.setText(audioFile.getSinger());
+        musicViewHolder.mMusicWaveView.setMusicDuration(audioFile.getDuration());
+        musicViewHolder.mMusicWaveView.setVideoDuration(mVideoDurationMs);
+        musicViewHolder.mMusicWaveView.layout();
+        setDurationTxt(musicViewHolder, 0, audioFile.getDuration());
+        musicViewHolder.mMusicSelectSlider.setRangeChangeListener(new RangeSlider.OnRangeChangeListener() {
+            @Override
+            public void onKeyDown(int type) {
+
+            }
+
+            @Override
+            public void onKeyUp(int type, int leftPinIndex, int rightPinIndex) {
+                if (mOnMusicClickListener != null) {
+                    long startTime = audioFile.getDuration() * leftPinIndex / 100;
+                    long endTime = audioFile.getDuration() * rightPinIndex / 100;
+                    setDurationTxt(musicViewHolder, startTime, endTime);
+                    mOnMusicClickListener.onMusicRangeChanged(audioFile, startTime, endTime);
+                }
+            }
+        });
+
+        musicViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                musicViewHolder.mConfirmBtn.setVisibility(View.VISIBLE);
+                musicViewHolder.mMusicSelectView.setVisibility(View.VISIBLE);
+                if (musicViewHolder.mIsPlaying) {
+                    if (mOnMusicClickListener != null
+                            && mOnMusicClickListener.onMusicClicked(audioFile, position, true)) {
+                        musicViewHolder.mPlayControlView.setImageResource(R.drawable.ic_music_play);
+                        musicViewHolder.mIsPlaying = false;
+                    }
+                } else {
+                    if (mOnMusicClickListener != null
+                            && mOnMusicClickListener.onMusicClicked(audioFile, position, false)) {
+                        musicViewHolder.mPlayControlView.setImageResource(R.drawable.ic_music_pause);
+                        musicViewHolder.mIsPlaying = true;
                     }
                 }
-            });
-        } else {
-            musicViewHolder.mMusicNameText.setText(audioFile.getTitle());
-            musicViewHolder.mSingerText.setText(audioFile.getSinger());
-            musicViewHolder.mMusicWaveView.setMusicDuration(audioFile.getDuration());
-            musicViewHolder.mMusicWaveView.setVideoDuration(mVideoDurationMs);
-            musicViewHolder.mMusicWaveView.layout();
-            setDurationTxt(musicViewHolder, 0, audioFile.getDuration());
-            musicViewHolder.mMusicSelectSlider.setRangeChangeListener(new RangeSlider.OnRangeChangeListener() {
-                @Override
-                public void onKeyDown(int type) {
-
-                }
-
-                @Override
-                public void onKeyUp(int type, int leftPinIndex, int rightPinIndex) {
-                    if (mOnMusicClickListener != null) {
-                        long startTime = audioFile.getDuration() * leftPinIndex / 100;
-                        long endTime = audioFile.getDuration() * rightPinIndex / 100;
-                        setDurationTxt(musicViewHolder, startTime, endTime);
-                        mOnMusicClickListener.onMusicRangeChanged(audioFile, startTime, endTime);
-                    }
-                }
-            });
-
-            musicViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    musicViewHolder.mConfirmBtn.setVisibility(View.VISIBLE);
-                    musicViewHolder.mMusicSelectView.setVisibility(View.VISIBLE);
-                    if (musicViewHolder.mIsPlaying) {
-                        if (mOnMusicClickListener != null
-                                && mOnMusicClickListener.onMusicClicked(audioFile, position, true)) {
-                            musicViewHolder.mPlayControlView.setImageResource(R.drawable.ic_music_play);
-                            musicViewHolder.mIsPlaying = false;
-                        }
-                    } else {
-                        if (mOnMusicClickListener != null
-                                && mOnMusicClickListener.onMusicClicked(audioFile, position, false)) {
-                            musicViewHolder.mPlayControlView.setImageResource(R.drawable.ic_music_pause);
-                            musicViewHolder.mIsPlaying = true;
-                        }
-                    }
-                }
-            });
-        }
+            }
+        });
 
         musicViewHolder.mConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -41,7 +41,7 @@
             android:background="@color/alpha_white_26" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/advanced_filter_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

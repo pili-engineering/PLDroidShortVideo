@@ -174,6 +174,7 @@ public class StickerTextView extends PLTextView {
      * 文字相关
      */
     private final Paint mTextPaint = new Paint();
+    private final Paint mStrokePaint = new Paint();
     private float mTextWidth;
     private float mTextHeight;
     //文字的 X 、 Y 坐标
@@ -229,6 +230,12 @@ public class StickerTextView extends PLTextView {
         mTextPaint.setTypeface(getTypeface());
         mTextPaint.setAlpha((int) (getAlpha() * 255));
 
+        mStrokePaint.setAntiAlias(true);
+        mStrokePaint.setStyle(Paint.Style.STROKE);
+        mStrokePaint.setTextSize(getTextSize());
+        mStrokePaint.setTypeface(getTypeface());
+        mStrokePaint.setAlpha((int) (getAlpha() * 255));
+
         if (mControlDrawable == null) {
             mControlDrawable = getContext().getResources().getDrawable(R.drawable.ic_rotation);
         }
@@ -250,8 +257,15 @@ public class StickerTextView extends PLTextView {
         mEditDrawableWidth = mEditDrawable.getIntrinsicWidth();
         mEditDrawableHeight = mEditDrawable.getIntrinsicHeight();
 
-        mTextWidth = mTextPaint.measureText(getText().toString());
-        mTextHeight = mTextPaint.descent() - mTextPaint.ascent();
+        String[] strings = getText().toString().split("\n");
+        mTextWidth = 0;
+        for (String s : strings) {
+            float width = mTextPaint.measureText(s);
+            if (width > mTextWidth) {
+                mTextWidth = width;
+            }
+        }
+        mTextHeight = (mTextPaint.descent() - mTextPaint.ascent()) * strings.length;
 
         transformDraw();
     }
@@ -305,7 +319,18 @@ public class StickerTextView extends PLTextView {
         canvas.save();
         canvas.translate(mLTPoint.x, mLTPoint.y);
         canvas.rotate(mDegree);
-        canvas.drawText(getText().toString(), 0, mTextHeight - mTextPaint.descent(), mTextPaint);
+
+        float singleHeight = mTextPaint.descent() - mTextPaint.ascent();
+        float yPostion = singleHeight - mTextPaint.descent();
+        String[] strings = getText().toString().split("\n");
+        for (String s : strings) {
+            if (mStrokePaint.getStrokeWidth() != 0) {
+                canvas.drawText(s, 0, yPostion, mStrokePaint);
+            }
+            canvas.drawText(s, 0, yPostion, mTextPaint);
+            yPostion += singleHeight;
+        }
+
         canvas.restore();
 
         adjustLayout();
@@ -381,6 +406,7 @@ public class StickerTextView extends PLTextView {
 
                     mDegree = mDegree + newDegree;
                     mTextPaint.setTextSize(getTextSize() * mScale);
+                    mStrokePaint.setTextSize(getTextSize() * mScale);
                     transformDraw();
                 } else if (mStatus == STATUS_DRAG) {
                     // 修改中心点
@@ -413,8 +439,9 @@ public class StickerTextView extends PLTextView {
     @Override
     public void setTypeface(Typeface tf) {
         super.setTypeface(tf);
-        if (mTextPaint != null) {
+        if (mTextPaint != null && mStrokePaint != null) {
             mTextPaint.setTypeface(tf);
+            mStrokePaint.setTypeface(tf);
             transformDraw();
         }
     }
@@ -422,7 +449,7 @@ public class StickerTextView extends PLTextView {
     @Override
     public void setTextColor(int color) {
         super.setTextColor(color);
-        if (mTextPaint != null) {
+        if (mTextPaint != null && mStrokePaint != null) {
             mTextPaint.setColor(color);
             invalidate();
         }
@@ -431,7 +458,7 @@ public class StickerTextView extends PLTextView {
     @Override
     public void setShadowLayer(float shadowRadius, float shadowDx, float shadowDy, int shadowColor) {
         super.setShadowLayer(shadowRadius, shadowDx, shadowDy, shadowColor);
-        if (mTextPaint != null) {
+        if (mTextPaint != null && mStrokePaint != null) {
             mTextPaint.setShadowLayer(shadowRadius, shadowDx, shadowDy, shadowColor);
             invalidate();
         }
@@ -440,10 +467,21 @@ public class StickerTextView extends PLTextView {
     @Override
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);
-        if (mTextPaint != null) {
+        if (mTextPaint != null && mStrokePaint != null) {
             mTextPaint.setAlpha((int) (alpha * 255));
+            mStrokePaint.setAlpha((int) (alpha * 255));
             invalidate();
         }
+    }
+
+    public void setStrokeColor(int color) {
+        mStrokePaint.setColor(color);
+        invalidate();
+    }
+
+    public void setStrokeWidth(float width) {
+        mStrokePaint.setStrokeWidth(width);
+        invalidate();
     }
 
     @Override
@@ -484,8 +522,15 @@ public class StickerTextView extends PLTextView {
      */
     private void transformDraw() {
         //测量文字宽高
-        mTextWidth = mTextPaint.measureText(getText().toString());
-        mTextHeight = mTextPaint.descent() - mTextPaint.ascent();
+        String[] strings = getText().toString().split("\n");
+        mTextWidth = 0;
+        for (String s : strings) {
+            float width = mTextPaint.measureText(s);
+            if (width > mTextWidth) {
+                mTextWidth = width;
+            }
+        }
+        mTextHeight = (mTextPaint.descent() - mTextPaint.ascent()) * strings.length;
         //计算旋转后的矩形位置和宽高
         computeRect(mFramePadding, mFramePadding, (int) mTextWidth + mFramePadding, (int) mTextHeight + mFramePadding, mDegree);
         //调整布局

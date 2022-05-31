@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
 
@@ -24,10 +24,8 @@ android {
 }
 
 dependencies {
-
-    compileOnly 'com.android.support:appcompat-v7:25.4.0'
-
-    compileOnly 'com.android.support:recyclerview-v7:25.3.1'
+    compileOnly 'androidx.appcompat:appcompat:1.0.0'
+    compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
 
     api files('libs/TuSDKCore-3.0.6.jar')
     api files('libs/TuSDKFace-3.0.1.jar')

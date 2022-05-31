@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -94,8 +95,8 @@ public class VideoDivideActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            mSrcVideoPath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            mSrcVideoPath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + mSrcVideoPath);
             if (mSrcVideoPath != null && !"".equals(mSrcVideoPath)) {
                 init();
@@ -193,6 +194,7 @@ public class VideoDivideActivity extends Activity {
     private void initVideoPlayer() {
         mPreview.setVideoPath(mSrcVideoPath);
         mPreview.setOnCompletionListener(mediaPlayer -> play());
+        makeUpVideoViewSize();
         play();
     }
 
@@ -219,6 +221,41 @@ public class VideoDivideActivity extends Activity {
         mFrameList.setItemViewCacheSize(getShowFrameCount());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mFrameList.setLayoutManager(layoutManager);
+    }
+
+    private void makeUpVideoViewSize() {
+        int viewWidth, viewHeight, videoWidth, videoHeight, displayWidth, displayHeight;
+        float videoAspectRatio;
+        WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(outMetrics);
+
+        viewWidth = outMetrics.widthPixels;
+        viewHeight = outMetrics.widthPixels;
+        Log.i(TAG, "View size: " + viewWidth + " × " + viewHeight);
+        if (mMediaFile.getVideoRotation() / 90 % 2 == 1) {
+            videoWidth = mMediaFile.getVideoHeight();
+            videoHeight = mMediaFile.getVideoWidth();
+        } else {
+            videoWidth = mMediaFile.getVideoWidth();
+            videoHeight = mMediaFile.getVideoHeight();
+        }
+        videoAspectRatio = (float) videoHeight / videoWidth;
+        Log.i(TAG, "Video size: " + videoWidth + " × " + videoHeight);
+
+        // view 的视图为一个正方形，宽高比为 1
+        if (1 > videoAspectRatio) {
+            displayWidth = viewWidth;
+            displayHeight = (int) ((float) viewWidth / videoWidth * videoHeight);
+        } else {
+            displayWidth = (int) ((float) viewHeight / videoHeight * videoWidth);
+            displayHeight = viewHeight;
+        }
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mPreview.getLayoutParams();
+        layoutParams.width = displayWidth;
+        layoutParams.height = displayHeight;
+        mPreview.setLayoutParams(layoutParams);
     }
 
     private void resetData() {

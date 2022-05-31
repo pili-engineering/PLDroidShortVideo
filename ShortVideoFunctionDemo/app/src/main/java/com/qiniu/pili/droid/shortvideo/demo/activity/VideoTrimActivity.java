@@ -158,8 +158,14 @@ public class VideoTrimActivity extends Activity {
         windowManager.getDefaultDisplay().getMetrics(outMetrics);
 
         int screenWidth = outMetrics.widthPixels;
-        int videoWidth = mMediaFile.getVideoWidth();
-        int videoHeight = mMediaFile.getVideoHeight();
+        int videoWidth, videoHeight;
+        if (mMediaFile.getVideoRotation() / 90 % 2 == 1) {
+            videoWidth = mMediaFile.getVideoHeight();
+            videoHeight = mMediaFile.getVideoWidth();
+        } else {
+            videoWidth = mMediaFile.getVideoWidth();
+            videoHeight = mMediaFile.getVideoHeight();
+        }
         float videoAspectRatio = (float) videoWidth / videoHeight;
         int displayWidth = 0, displayHeight = 0;
         if (videoAspectRatio < 1) {
@@ -294,8 +300,8 @@ public class VideoTrimActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
             if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                 init(selectedFilepath);

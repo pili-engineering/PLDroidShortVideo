@@ -1,12 +1,10 @@
 package com.qiniu.pili.droid.shortvideo.demo.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.View;
 
 import java.util.LinkedList;
@@ -126,7 +124,7 @@ public class SectionProgressBar extends View {
         mBreakPointPaint.setStyle(Paint.Style.FILL);
         mBreakPointPaint.setColor(Color.parseColor("#000000"));
 
-        setTotalTime(paramContext, DEFAULT_TOTAL_TIME);
+        setTotalTime(DEFAULT_TOTAL_TIME);
     }
 
     /**
@@ -149,17 +147,15 @@ public class SectionProgressBar extends View {
     /**
      * Sets total time in millisecond
      *
-     * @param context     the context
      * @param millisecond the millisecond
      */
-    public void setTotalTime(Context context, long millisecond) {
+    public void setTotalTime(long millisecond) {
         mTotalTime = millisecond;
 
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mPixelUnit = dm.widthPixels / mTotalTime;
-
-        mPixelsPerMilliSecond = mPixelUnit;
+        if (getWidth() != 0) {
+            mPixelUnit = getWidth() / mTotalTime;
+            mPixelsPerMilliSecond = mPixelUnit;
+        }
     }
 
     /**
@@ -208,6 +204,7 @@ public class SectionProgressBar extends View {
             if (!mBreakPointInfoList.isEmpty()) {
                 float lastTime = 0;
                 int color = mProgressBarPaint.getColor();
+                mProgressBarPaint.setColor(color);
                 for (BreakPointInfo info : mBreakPointInfoList) {
                     mProgressBarPaint.setColor(info.getColor());
                     float left = startPoint;
@@ -217,7 +214,6 @@ public class SectionProgressBar extends View {
                     startPoint += DEFAULT_BREAK_POINT_WIDTH;
                     lastTime = info.getTime();
                 }
-                mProgressBarPaint.setColor(color);
             }
 
             // draw the first point
@@ -252,6 +248,14 @@ public class SectionProgressBar extends View {
         mLastUpdateTime = System.currentTimeMillis();
 
         invalidate();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        mPixelUnit = widthSize / mTotalTime;
+        mPixelsPerMilliSecond = mPixelUnit;
     }
 
     private class BreakPointInfo {

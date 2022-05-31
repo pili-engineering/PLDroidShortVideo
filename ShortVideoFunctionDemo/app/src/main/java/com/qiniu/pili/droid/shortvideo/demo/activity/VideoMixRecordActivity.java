@@ -328,7 +328,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
 
         mMixRecorder.setAudioMixMode(PLAudioMixMode.EARPHONE_MODE);
 
-        mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());
+        mSectionProgressBar.setTotalTime(mRecordSetting.getMaxRecordDuration());
         mCameraPreview.setOnTouchListener((view, motionEvent) -> {
             mGestureDetector.onTouchEvent(motionEvent);
             return true;
@@ -397,8 +397,8 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + selectedFilepath);
             if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                 init(selectedFilepath);

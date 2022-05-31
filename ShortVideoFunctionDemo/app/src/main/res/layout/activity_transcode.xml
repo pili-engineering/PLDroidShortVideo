@@ -314,6 +314,13 @@
             android:checked="false"
             android:text="增加水印" />
 
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_hw_encode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="硬件编码" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

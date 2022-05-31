@@ -274,11 +274,11 @@ public class ImageComposeWithTransitionActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
             if (requestCode == 100) {
-                final String selectedFilepath = GetPathFromUri.getPath(this, data.getData());
+                final String selectedFilepath = GetPathFromUri.getRealPathFromURI(this, data.getData());
                 Log.i(TAG, "Select file: " + selectedFilepath);
                 if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                     showAddItemDialog(selectedFilepath);

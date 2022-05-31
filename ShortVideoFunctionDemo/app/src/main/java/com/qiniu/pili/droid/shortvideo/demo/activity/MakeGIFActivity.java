@@ -95,8 +95,8 @@ public class MakeGIFActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            mInputFilePath = GetPathFromUri.getPath(this, data.getData());
+        if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+            mInputFilePath = GetPathFromUri.getRealPathFromURI(this, data.getData());
             Log.i(TAG, "Select file: " + mInputFilePath);
             if (mInputFilePath != null && !"".equals(mInputFilePath)) {
                 init(mInputFilePath);

@@ -1,6 +1,6 @@
 package com.faceunity.entity;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.util.SparseArray;
 
 import com.faceunity.R;
