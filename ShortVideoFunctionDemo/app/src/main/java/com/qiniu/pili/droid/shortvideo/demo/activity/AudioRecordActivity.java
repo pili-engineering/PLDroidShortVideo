@@ -1,7 +1,8 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
 import android.app.Activity;
-import android.media.AudioFormat;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,9 +29,6 @@ import java.io.File;
 public class AudioRecordActivity extends Activity implements PLRecordStateListener, PLVideoSaveListener {
     private static final String TAG = "AudioRecordActivity";
 
-    public static final String ENCODING_MODE = "EncodingMode";
-    public static final String AUDIO_CHANNEL_NUM = "AudioChannelNum";
-
     private PLShortAudioRecorder mShortAudioRecorder;
 
     private SectionProgressBar mSectionProgressBar;
@@ -48,9 +46,13 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio_record);
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(ConfigActivity.SP_NAME, Context.MODE_PRIVATE);
 
-        int encodingModePos = getIntent().getIntExtra(ENCODING_MODE, 0);
-        int audioChannelNumPos = getIntent().getIntExtra(AUDIO_CHANNEL_NUM, 0);
+        boolean isAudioHWCodecEnable = prefs.getBoolean(ConfigActivity.KEY_AUDIO_ENCODE_HARDWARE_CODEC_ENABLE, ConfigActivity.DEFAULT_AUDIO_HARDWARE_ENCODE_ENABLE);
+        int audioChannelNumPos = prefs.getInt(ConfigActivity.KEY_AUDIO_CHANNEL_NUM_POS, ConfigActivity.DEFAULT_AUDIO_CHANNEL_NUM_POS);
+        int audioChannelNum = getResources().getIntArray(R.array.audio_channel_num)[audioChannelNumPos];
+        int samplingChannelNumPos = prefs.getInt(ConfigActivity.KEY_SAMPLING_CHANNEL_NUM_POS, ConfigActivity.DEFAULT_SAMPLING_CHANNEL_NUM_POS);
+        int samplingChannelNum = RecordSettings.SAMPLING_CHANNEL_NUM_ARRAY[samplingChannelNumPos];
 
         mSectionProgressBar = findViewById(R.id.record_progressbar);
         mRecordBtn = findViewById(R.id.record);
@@ -64,21 +66,20 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
         mShortAudioRecorder.setRecordStateListener(this);
 
         PLMicrophoneSetting microphoneSetting = new PLMicrophoneSetting();
-        microphoneSetting.setChannelConfig(RecordSettings.AUDIO_CHANNEL_NUM_ARRAY[audioChannelNumPos] == 1 ?
-                AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO);
+        microphoneSetting.setChannelConfig(samplingChannelNum);
 
         PLAudioEncodeSetting audioEncodeSetting = new PLAudioEncodeSetting();
-        audioEncodeSetting.setHWCodecEnabled(encodingModePos == 0);
-        audioEncodeSetting.setChannels(RecordSettings.AUDIO_CHANNEL_NUM_ARRAY[audioChannelNumPos]);
+        audioEncodeSetting.setHWCodecEnabled(isAudioHWCodecEnable);
+        audioEncodeSetting.setChannels(audioChannelNum);
 
         PLRecordSetting recordSetting = new PLRecordSetting();
-        recordSetting.setMaxRecordDuration(RecordSettings.DEFAULT_MAX_RECORD_DURATION);
+        recordSetting.setMaxRecordDuration(ConfigActivity.DEFAULT_MAX_RECORD_DURATION);
         recordSetting.setVideoCacheDir(Config.VIDEO_STORAGE_DIR);
         recordSetting.setVideoFilepath(Config.AUDIO_RECORD_FILE_PATH);
 
         mShortAudioRecorder.prepare(this, microphoneSetting, audioEncodeSetting, recordSetting);
 
-        mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+        mSectionProgressBar.setFirstPointTime(ConfigActivity.DEFAULT_MIN_RECORD_DURATION);
         mSectionProgressBar.setTotalTime(recordSetting.getMaxRecordDuration());
 
         mRecordBtn.setOnClickListener(v -> {
@@ -224,7 +225,7 @@ public class AudioRecordActivity extends Activity implements PLRecordStateListen
     private void onSectionCountChanged(final int count, final long totalTime) {
         runOnUiThread(() -> {
             mDeleteBtn.setEnabled(count > 0);
-            mConcatBtn.setEnabled(totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+            mConcatBtn.setEnabled(totalTime >= ConfigActivity.DEFAULT_MIN_RECORD_DURATION);
         });
     }
 }

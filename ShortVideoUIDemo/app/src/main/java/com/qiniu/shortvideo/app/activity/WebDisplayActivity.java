@@ -3,13 +3,14 @@ package com.qiniu.shortvideo.app.activity;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.qiniu.shortvideo.app.R;
 
@@ -36,10 +37,13 @@ public class WebDisplayActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setUseWideViewPort(true); //将图片调整到适合 webview 的大小
+        webSettings.setUseWideViewPort(true); // 将图片调整到适合 webview 的大小
         webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBlockNetworkImage(false);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
@@ -59,7 +63,9 @@ public class WebDisplayActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url); // 强制在当前 WebView 中加载 url
+                if (url.startsWith("http")) {
+                    return false;
+                }
                 return true;
             }
         });

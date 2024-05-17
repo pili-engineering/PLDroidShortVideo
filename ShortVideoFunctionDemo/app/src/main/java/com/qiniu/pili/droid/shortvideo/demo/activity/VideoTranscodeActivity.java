@@ -3,19 +3,18 @@ package com.qiniu.pili.droid.shortvideo.demo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
-
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.qiniu.android.utils.StringUtils;
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
@@ -26,7 +25,6 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
-import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 
@@ -57,6 +55,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
     private EditText mTranscodingBitrateText;
     private Spinner mTranscodingRotationSpinner;
+    private Switch mDecodeTypeSwitch;
     private EditText mTranscodingMaxFPSEditText;
 
     private TextView mMixAudioFileText;
@@ -92,10 +91,9 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         mTranscodingBitrateText = findViewById(R.id.et_bitrate);
         mTranscodingRotationSpinner = findViewById(R.id.spinner_rotation);
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecordSettings.ROTATION_LEVEL_TIPS_ARRAY);
-        mTranscodingRotationSpinner.setAdapter(adapter);
         mTranscodingRotationSpinner.setSelection(0);
+
+        mDecodeTypeSwitch = findViewById(R.id.decode_type_switch);
 
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mShortVideoTranscoder.cancelTranscode());
@@ -218,6 +216,8 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         int transcodingBitrate = Integer.parseInt(mTranscodingBitrateText.getText().toString()) * 1000;
         int transcodingRotationLevel = mTranscodingRotationSpinner.getSelectedItemPosition();
+        boolean decodeType = mDecodeTypeSwitch.isChecked();
+        mShortVideoTranscoder.setHwDecodeEnabled(decodeType);
         int transcodingWidth = Integer.parseInt(mTranscodingWidthEditText.getText().toString());
         int transcodingHeight = Integer.parseInt(mTranscodingHeightEditText.getText().toString());
         int transcodingMaxFPS = Integer.parseInt(mTranscodingMaxFPSEditText.getText().toString());
@@ -235,7 +235,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
 
         boolean startResult = mShortVideoTranscoder.transcode(
                 transcodingWidth, transcodingHeight, transcodingBitrate,
-                RecordSettings.ROTATION_LEVEL_ARRAY[transcodingRotationLevel],
+                getResources().getIntArray(R.array.rotation_level)[transcodingRotationLevel],
                 isReverse, new PLVideoSaveListener() {
                     @Override
                     public void onSaveVideoSuccess(final String filePath) {
@@ -288,6 +288,7 @@ public class VideoTranscodeActivity extends AppCompatActivity {
         PLWatermarkSetting watermarkSetting = new PLWatermarkSetting();
         watermarkSetting.setResourceId(R.drawable.qiniu_logo);
         watermarkSetting.setPosition(0.01f, 0.01f);
+        watermarkSetting.setSize(0.2f, 0.05f);
         watermarkSetting.setAlpha(128);
         return watermarkSetting;
     }

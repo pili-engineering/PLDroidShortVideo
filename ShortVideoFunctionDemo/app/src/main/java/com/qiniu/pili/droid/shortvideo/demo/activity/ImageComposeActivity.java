@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.qiniu.pili.droid.shortvideo.PLComposeItem;
 import com.qiniu.pili.droid.shortvideo.PLDisplayMode;
@@ -72,15 +70,10 @@ public class ImageComposeActivity extends AppCompatActivity {
 
         mEncodingSizeLevelSpinner = findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = findViewById(R.id.EncodingBitrateLevelSpinner);
+        mEncodingSizeLevelSpinner.setSelection(ConfigActivity.DEFAULT_VIDEO_ENCODE_SIZE_LEVEL_POS);
+        mEncodingBitrateLevelSpinner.setSelection(ConfigActivity.DEFAULT_VIDEO_ENCODE_BITRATE_LEVEL_POS);
+
         mAudioPathText = findViewById(R.id.AudioFileTextView);
-
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
-        mEncodingSizeLevelSpinner.setAdapter(adapter1);
-        mEncodingSizeLevelSpinner.setSelection(7);
-
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
-        mEncodingBitrateLevelSpinner.setAdapter(adapter2);
-        mEncodingBitrateLevelSpinner.setSelection(2);
 
         mShortVideoComposer = new PLShortVideoComposer(this);
 
@@ -265,6 +258,6 @@ public class ImageComposeActivity extends AppCompatActivity {
     }
 
     private int getEncodingBitrateLevel(int position) {
-        return RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[position];
+        return getResources().getIntArray(R.array.encode_bitrate_level)[position];
     }
 }

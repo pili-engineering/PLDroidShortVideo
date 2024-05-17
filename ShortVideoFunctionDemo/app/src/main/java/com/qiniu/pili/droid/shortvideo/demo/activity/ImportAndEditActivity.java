@@ -57,6 +57,12 @@ public class ImportAndEditActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickVideoRead(View v) {
+        if (isPermissionOK()) {
+            jumpToActivity(VideoReadActivity.class);
+        }
+    }
+
     private boolean isPermissionOK() {
         PermissionChecker checker = new PermissionChecker(this);
         boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();

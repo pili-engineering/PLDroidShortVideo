@@ -15,7 +15,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 36
-        versionName "3.4.1"
+        versionName "3.5.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -59,6 +59,6 @@ dependencies {
         implementation project(':library')
     } else {
         // 短视频 SDK jar 包，必须依赖
-        implementation files('libs/pldroid-shortvideo-3.4.1.jar')
+        implementation files('libs/pldroid-shortvideo-3.5.0.jar')
     }
 }

@@ -1,76 +1,12 @@
 package com.qiniu.pili.droid.shortvideo.demo.utils;
 
+import android.media.AudioFormat;
+import android.media.MediaRecorder;
+
 import com.qiniu.pili.droid.shortvideo.PLCameraSetting;
 import com.qiniu.pili.droid.shortvideo.PLVideoEncodeSetting;
 
 public class RecordSettings {
-
-    public static final long DEFAULT_MIN_RECORD_DURATION = 3 * 1000;
-    public static final long DEFAULT_MAX_RECORD_DURATION = 10 * 1000;
-
-    public static final String[] PREVIEW_SIZE_RATIO_TIPS_ARRAY = {
-            "4:3", "16:9"
-    };
-
-    public static final String[] ENCODING_MODE_LEVEL_TIPS_ARRAY = {
-            "HW",
-            "SW"
-    };
-
-    public static final String[] PREVIEW_SIZE_LEVEL_TIPS_ARRAY = {
-            "240P",
-            "360P",
-            "480P",
-            "720P",
-            "960P",
-            "1080P",
-            "1200P",
-    };
-
-    public static final String[] ENCODING_SIZE_LEVEL_TIPS_ARRAY = {
-            "240x240",
-            "320x240",
-            "352x352",
-            "640x352",
-            "360x360",
-            "480x360",
-            "640x360",
-            "480x480",
-            "640x480",
-            "848x480",
-            "544x544",
-            "720x544",
-            "720x720",
-            "960x720",
-            "1280x720",
-            "1088x1088",
-            "1440x1088"
-    };
-
-    public static final String[] ENCODING_BITRATE_LEVEL_TIPS_ARRAY = {
-            "500Kbps",
-            "800Kbps",
-            "1000Kbps",
-            "1200Kbps",
-            "1600Kbps",
-            "2000Kbps",
-            "2500Kbps",
-            "4000Kbps",
-            "8000Kbps"
-    };
-
-    public static final String[] ROTATION_LEVEL_TIPS_ARRAY = {
-            "0（可用作去除视频旋转信息）",
-            "90",
-            "180",
-            "270"
-    };
-
-    public static final String[] AUDIO_CHANNEL_NUM_TIPS_ARRAY = {
-            "单声道",
-            "双声道"
-    };
-
     public static final PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO[] PREVIEW_SIZE_RATIO_ARRAY = {
             PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO.RATIO_4_3,
             PLCameraSetting.CAMERA_PREVIEW_SIZE_RATIO.RATIO_16_9
@@ -157,23 +93,48 @@ public class RecordSettings {
             PLVideoEncodeSetting.VIDEO_ENCODING_SIZE_LEVEL.VIDEO_ENCODING_SIZE_LEVEL_1088P_2,
     };
 
-    public static final int[] ENCODING_BITRATE_LEVEL_ARRAY = {
-            500 * 1000,
-            800 * 1000,
-            1000 * 1000,
-            1200 * 1000,
-            1600 * 1000,
-            2000 * 1000,
-            2500 * 1000,
-            4000 * 1000,
-            8000 * 1000,
+    // PLMicrophoneSetting
+    public static final int[] SAMPLING_FORMAT_ARRAY = {
+            AudioFormat.ENCODING_INVALID,
+            AudioFormat.ENCODING_DEFAULT,
+            AudioFormat.ENCODING_PCM_16BIT,
+            AudioFormat.ENCODING_PCM_8BIT,
+            AudioFormat.ENCODING_PCM_FLOAT,
+            AudioFormat.ENCODING_AC3,
+            AudioFormat.ENCODING_E_AC3,
+            AudioFormat.ENCODING_DTS,
+            AudioFormat.ENCODING_DTS_HD,
+            AudioFormat.ENCODING_MP3,
+            AudioFormat.ENCODING_AAC_LC,
+            AudioFormat.ENCODING_AAC_HE_V1,
+            AudioFormat.ENCODING_AAC_HE_V2,
+            AudioFormat.ENCODING_IEC61937,
+            AudioFormat.ENCODING_DOLBY_TRUEHD,
+            AudioFormat.ENCODING_AAC_ELD,
+            AudioFormat.ENCODING_AAC_XHE,
+            AudioFormat.ENCODING_AC4,
+            AudioFormat.ENCODING_E_AC3_JOC,
+            AudioFormat.ENCODING_DOLBY_MAT,
+            AudioFormat.ENCODING_OPUS,
     };
 
-    public static final int[] ROTATION_LEVEL_ARRAY = {
-            0,
-            90,
-            180,
-            270,
+    public static final int[] SAMPLING_SOURCE_ARRAY = {
+            MediaRecorder.AudioSource.DEFAULT,
+            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_UPLINK,
+            MediaRecorder.AudioSource.VOICE_DOWNLINK,
+            MediaRecorder.AudioSource.VOICE_CALL,
+            MediaRecorder.AudioSource.CAMCORDER,
+            MediaRecorder.AudioSource.VOICE_RECOGNITION,
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            MediaRecorder.AudioSource.REMOTE_SUBMIX,
+            MediaRecorder.AudioSource.UNPROCESSED,
+            MediaRecorder.AudioSource.VOICE_PERFORMANCE,
+    };
+
+    public static final int[] SAMPLING_CHANNEL_NUM_ARRAY = {
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.CHANNEL_IN_STEREO
     };
 
     public static final double[] RECORD_SPEED_ARRAY = {
@@ -182,11 +143,6 @@ public class RecordSettings {
             1,
             2,
             4,
-    };
-
-    public static final int[] AUDIO_CHANNEL_NUM_ARRAY = {
-            1,
-            2,
     };
 
     public static PLCameraSetting.CAMERA_FACING_ID chooseCameraFacingId() {

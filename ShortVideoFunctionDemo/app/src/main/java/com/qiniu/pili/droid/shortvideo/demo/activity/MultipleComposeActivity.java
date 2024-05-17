@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Movie;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.qiniu.pili.droid.shortvideo.PLComposeItem;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
@@ -70,14 +68,8 @@ public class MultipleComposeActivity extends AppCompatActivity {
 
         mEncodingSizeLevelSpinner = findViewById(R.id.EncodingSizeLevelSpinner);
         mEncodingBitrateLevelSpinner = findViewById(R.id.EncodingBitrateLevelSpinner);
-
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_SIZE_LEVEL_TIPS_ARRAY);
-        mEncodingSizeLevelSpinner.setAdapter(adapter1);
-        mEncodingSizeLevelSpinner.setSelection(7);
-
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, RecordSettings.ENCODING_BITRATE_LEVEL_TIPS_ARRAY);
-        mEncodingBitrateLevelSpinner.setAdapter(adapter2);
-        mEncodingBitrateLevelSpinner.setSelection(2);
+        mEncodingSizeLevelSpinner.setSelection(ConfigActivity.DEFAULT_VIDEO_ENCODE_SIZE_LEVEL_POS);
+        mEncodingBitrateLevelSpinner.setSelection(ConfigActivity.DEFAULT_VIDEO_ENCODE_BITRATE_LEVEL_POS);
 
         mShortVideoComposer = new PLShortVideoComposer(this);
 
@@ -277,6 +269,6 @@ public class MultipleComposeActivity extends AppCompatActivity {
     }
 
     private int getEncodingBitrateLevel(int position) {
-        return RecordSettings.ENCODING_BITRATE_LEVEL_ARRAY[position];
+        return getResources().getIntArray(R.array.encode_bitrate_level)[position];
     }
 }

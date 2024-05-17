@@ -352,7 +352,7 @@ public class VideoMixRecordActivity extends AppCompatActivity implements
         PLVideoMixSetting mixSetting = new PLVideoMixSetting(cameraVideoRect, sampleVideoRect, sampleVideoPath, CAMERA_RECORD_CACHE_PATH);
         mMixRecorder.prepare(mCameraSurfaceView, mSampleSurfaceView, mixSetting, mCameraSetting, mMicrophoneSetting, mVideoEncodeSetting,
                 mAudioEncodeSetting, mFaceBeautySetting, mRecordSetting);
-        mMixRecorder.muteMicrophone(true);
+        mMixRecorder.muteMicrophone(false);
         mMixRecorder.muteSampleVideo(false);
 
         mSectionProgressBar.setTotalTime(this, mRecordSetting.getMaxRecordDuration());

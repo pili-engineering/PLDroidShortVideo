@@ -89,6 +89,14 @@
             android:layout_marginTop="15dp" />
     </LinearLayout>
 
+    <Switch
+        android:id="@+id/mute_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/brightness_panel"
+        android:padding="15dp"
+        android:text="静音"/>
+
     <LinearLayout
         android:layout_width="400dp"
         android:layout_height="wrap_content"

@@ -1,26 +1,27 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
+import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.GIF_SAVE_PATH;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.collection.LruCache;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.collection.LruCache;
 
 import com.qiniu.pili.droid.shortvideo.PLMediaFile;
 import com.qiniu.pili.droid.shortvideo.PLShortVideoComposer;
@@ -36,8 +37,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static com.qiniu.pili.droid.shortvideo.demo.utils.Config.GIF_SAVE_PATH;
 
 public class MakeGIFActivity extends AppCompatActivity {
     private static final String TAG = "MakeGIFActivity";
@@ -111,6 +110,7 @@ public class MakeGIFActivity extends AppCompatActivity {
         super.onDestroy();
         if (mMediaFile != null) {
             mMediaFile.release();
+            mMediaFile = null;
         }
     }
 
@@ -362,9 +362,13 @@ public class MakeGIFActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap doInBackground(Void... a) {
-            Bitmap bmp = mMediaFile.getVideoFrameByIndex(mIndex, true, THUMBNAIL_EDGE, THUMBNAIL_EDGE).toBitmap();
-            mBitmapCache.put(mIndex, bmp);
-            return bmp;
+            try {
+                Bitmap bmp = mMediaFile.getVideoFrameByIndex(mIndex, true, THUMBNAIL_EDGE, THUMBNAIL_EDGE).toBitmap();
+                mBitmapCache.put(mIndex, bmp);
+                return bmp;
+            } catch (Exception e) {
+                return BitmapFactory.decodeResource(getResources(), R.drawable.ic_img_not_found);
+            }
         }
 
         @Override

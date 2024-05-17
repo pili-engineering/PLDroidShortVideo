@@ -42,7 +42,6 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
-import com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.FocusIndicator;
@@ -134,7 +133,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         mProcessingDialog = new CustomProgressDialog(this);
         mProcessingDialog.setOnCancelListener(dialog -> mMixRecorder.cancel());
 
-        mSectionProgressBar.setFirstPointTime(RecordSettings.DEFAULT_MIN_RECORD_DURATION);
+        mSectionProgressBar.setFirstPointTime(ConfigActivity.DEFAULT_MIN_RECORD_DURATION);
         onSectionCountChanged(0, 0);
 
         mRecordBtn.setOnClickListener(v -> {
@@ -436,7 +435,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         mSectionBegan = true;
         mSectionBeginMs = System.currentTimeMillis();
         mSectionProgressBar.setCurrentState(SectionProgressBar.State.START);
-        updateRecordingBtns(true);
+        runOnUiThread(() -> updateRecordingBtns(true));
         Log.i(TAG, "record start time: " + System.currentTimeMillis());
     }
 
@@ -577,7 +576,7 @@ public class VideoMixRecordActivity extends Activity implements PLRecordStateLis
         runOnUiThread(() -> {
             mDeleteBtn.setEnabled(count > 0);
             updateCheckBoxClickable(count <= 0);
-            boolean isConcatBtnEnabled = (totalTime >= RecordSettings.DEFAULT_MIN_RECORD_DURATION)
+            boolean isConcatBtnEnabled = (totalTime >= ConfigActivity.DEFAULT_MIN_RECORD_DURATION)
                     || (mRecordSetting != null && totalTime >= mRecordSetting.getMaxRecordDuration());
             mConcatBtn.setEnabled(isConcatBtnEnabled);
         });

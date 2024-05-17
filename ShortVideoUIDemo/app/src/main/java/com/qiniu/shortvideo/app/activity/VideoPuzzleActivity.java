@@ -701,6 +701,7 @@ public class VideoPuzzleActivity extends AppCompatActivity {
 
     private void playPlayer1(boolean play) {
         if (play) {
+            mCover1.setVisibility(View.INVISIBLE);
             mPlayer1.start();
         } else {
             mPlayer1.pause();
@@ -710,6 +711,7 @@ public class VideoPuzzleActivity extends AppCompatActivity {
 
     private void playPlayer2(boolean play) {
         if (play) {
+            mCover2.setVisibility(View.INVISIBLE);
             mPlayer2.start();
         } else {
             mPlayer2.pause();
@@ -719,6 +721,7 @@ public class VideoPuzzleActivity extends AppCompatActivity {
 
     private void playPlayer3(boolean play) {
         if (play) {
+            mCover3.setVisibility(View.INVISIBLE);
             mPlayer3.start();
         } else {
             mPlayer3.pause();
@@ -728,6 +731,7 @@ public class VideoPuzzleActivity extends AppCompatActivity {
 
     private void playPlayer4(boolean play) {
         if (play) {
+            mCover4.setVisibility(View.INVISIBLE);
             mPlayer4.start();
         } else {
             mPlayer4.pause();

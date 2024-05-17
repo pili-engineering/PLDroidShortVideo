@@ -16,10 +16,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -64,6 +66,10 @@ public class VideoTrimActivity extends Activity {
     private int mSlicesTotalLength;
 
     private final Handler mHandler = new Handler();
+
+    private RadioButton mFastModeRadioBtn;
+    private RadioGroup mEncodeTypeRadioGroup;
+    private boolean mAccurateHwEncodeEnabled = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -134,6 +140,10 @@ public class VideoTrimActivity extends Activity {
         setContentView(R.layout.activity_trim);
         TextView duration = findViewById(R.id.duration);
         mPreview = findViewById(R.id.preview);
+        mFastModeRadioBtn = ((RadioButton) findViewById(R.id.mode_fast));
+        mEncodeTypeRadioGroup = findViewById(R.id.encode_type);
+        mFastModeRadioBtn.setOnCheckedChangeListener((buttonView, isChecked) -> mEncodeTypeRadioGroup.setVisibility(isChecked ? View.GONE : View.VISIBLE));
+        mEncodeTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> mAccurateHwEncodeEnabled = checkedId == R.id.hw_encode);
 
         mShortVideoTrimmer = new PLShortVideoTrimmer(this, videoPath, Config.TRIM_FILE_PATH);
         mMediaFile = new PLMediaFile(videoPath);
@@ -343,32 +353,11 @@ public class VideoTrimActivity extends Activity {
         mProcessingDialog.setProgress(0);
 
         PLShortVideoTrimmer.TRIM_MODE mode = ((RadioButton) findViewById(R.id.mode_fast)).isChecked() ? PLShortVideoTrimmer.TRIM_MODE.FAST : PLShortVideoTrimmer.TRIM_MODE.ACCURATE;
-        mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mode, new PLVideoSaveListener() {
-            @Override
-            public void onSaveVideoSuccess(String path) {
-                MediaStoreUtils.storeVideo(VideoTrimActivity.this, new File(path), "video/mp4");
-                mProcessingDialog.dismiss();
-                VideoEditActivity.start(VideoTrimActivity.this, path);
-            }
-
-            @Override
-            public void onSaveVideoFailed(final int errorCode) {
-                runOnUiThread(() -> {
-                    mProcessingDialog.dismiss();
-                    ToastUtils.toastErrorCode(errorCode);
-                });
-            }
-
-            @Override
-            public void onSaveVideoCanceled() {
-                mProcessingDialog.dismiss();
-            }
-
-            @Override
-            public void onProgressUpdate(final float percentage) {
-                runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
-            }
-        });
+        if (mode == PLShortVideoTrimmer.TRIM_MODE.ACCURATE) {
+            mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mAccurateHwEncodeEnabled, mVideoSaveListener);
+        } else {
+            mShortVideoTrimmer.trim(mSelectedBeginMs, mSelectedEndMs, mode, mVideoSaveListener);
+        }
     }
 
     public void onBack(View v) {
@@ -386,4 +375,31 @@ public class VideoTrimActivity extends Activity {
         TextView range = findViewById(R.id.range);
         range.setText("剪裁范围: " + formatTime(mSelectedBeginMs) + " - " + formatTime(mSelectedEndMs));
     }
+
+    private final PLVideoSaveListener mVideoSaveListener = new PLVideoSaveListener() {
+        @Override
+        public void onSaveVideoSuccess(String path) {
+            MediaStoreUtils.storeVideo(VideoTrimActivity.this, new File(path), "video/mp4");
+            mProcessingDialog.dismiss();
+            VideoEditActivity.start(VideoTrimActivity.this, path);
+        }
+
+        @Override
+        public void onSaveVideoFailed(final int errorCode) {
+            runOnUiThread(() -> {
+                mProcessingDialog.dismiss();
+                ToastUtils.toastErrorCode(errorCode);
+            });
+        }
+
+        @Override
+        public void onSaveVideoCanceled() {
+            mProcessingDialog.dismiss();
+        }
+
+        @Override
+        public void onProgressUpdate(final float percentage) {
+            runOnUiThread(() -> mProcessingDialog.setProgress((int) (100 * percentage)));
+        }
+    };
 }

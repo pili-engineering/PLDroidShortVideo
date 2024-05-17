@@ -119,6 +119,10 @@
             android:name=".activity.ImageComposeWithTransitionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.VideoReadActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name="com.qiniu.pili.droid.shortvideo.service.ScreenRecordService"

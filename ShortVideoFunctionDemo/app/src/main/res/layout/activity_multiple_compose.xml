@@ -52,6 +52,7 @@
 
             <Spinner
                 android:id="@+id/EncodingSizeLevelSpinner"
+                android:entries="@array/encode_size_level_tips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -72,6 +73,7 @@
 
             <Spinner
                 android:id="@+id/EncodingBitrateLevelSpinner"
+                android:entries="@array/encode_bitrate_level_tips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

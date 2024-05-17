@@ -74,5 +74,12 @@
             android:layout_marginTop="1dp"
             android:onClick="onClickExternalMediaRecord"
             app:text="外部裸数据导入" />
+
+        <com.qiniu.pili.droid.shortvideo.demo.view.ItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:onClick="onClickVideoRead"
+            app:text="视频帧读取" />
     </LinearLayout>
 </LinearLayout>

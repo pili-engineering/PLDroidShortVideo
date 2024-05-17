@@ -75,6 +75,35 @@
 
     </RadioGroup>
 
+    <RadioGroup
+        android:id="@+id/encode_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="编码方式："
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/hw_encode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="硬编"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/sw_encode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="软编"
+            android:textColor="@color/white" />
+    </RadioGroup>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

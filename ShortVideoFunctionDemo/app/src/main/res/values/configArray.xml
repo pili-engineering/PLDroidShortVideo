@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 通用 tips -->
+    <string-array name="turn_on_or_off_tips">
+        <item>关闭</item>
+        <item>开启</item>
+    </string-array>
+    <string-array name="channel_num_tips">
+        <item>单声道</item>
+        <item>双声道</item>
+    </string-array>
+
+    <!-- PLCameraSetting -->
+    <string-array name="preview_size_ratio_tips">
+        <item>4:3</item>
+        <item>16:9</item>
+    </string-array>
+    <string-array name="preview_size_level_tips">
+        <item>240P</item>
+        <item>360P</item>
+        <item>480P</item>
+        <item>720P</item>
+        <item>960P</item>
+        <item>1080P</item>
+        <item>1200P</item>
+    </string-array>
+
+    <!-- PLVideoEncodeSetting -->
+    <string-array name="encode_size_level_tips">
+        <item>240x240</item>
+        <item>320x240</item>
+        <item>352x352</item>
+        <item>640x352</item>
+        <item>360x360</item>
+        <item>480x360</item>
+        <item>640x360</item>
+        <item>480x480</item>
+        <item>640x480</item>
+        <item>848x480</item>
+        <item>544x544</item>
+        <item>720x544</item>
+        <item>720x720</item>
+        <item>960x720</item>
+        <item>1280x720</item>
+        <item>1088x1088</item>
+        <item>1440x1088</item>
+    </string-array>
+    <string-array name="encode_bitrate_level_tips">
+        <item>500Kbps</item>
+        <item>800Kbps</item>
+        <item>1000Kbps</item>
+        <item>1200Kbps</item>
+        <item>1600Kbps</item>
+        <item>2000Kbps</item>
+        <item>2500Kbps</item>
+        <item>4000Kbps</item>
+        <item>8000Kbps</item>
+    </string-array>
+    <integer-array name="encode_bitrate_level">
+        <item>500000</item>
+        <item>800000</item>
+        <item>1000000</item>
+        <item>1200000</item>
+        <item>1600000</item>
+        <item>2000000</item>
+        <item>2500000</item>
+        <item>4000000</item>
+        <item>8000000</item>
+    </integer-array>
+
+    <!-- PLMicrophoneSetting 采集参数 -->
+    <string-array name="sampling_format_tips">
+        <item>INVALID</item>
+        <item>DEFAULT</item>
+        <item>PCM 16BIT</item>
+        <item>PCM_8BIT</item>
+        <item>PCM_FLOAT</item>
+        <item>AC3</item>
+        <item>E_AC3</item>
+        <item>DTS</item>
+        <item>DTS_HD</item>
+        <item>MP3</item>
+        <item>AAC_LC</item>
+        <item>AAC_HE_V1</item>
+        <item>AAC_HE_V2</item>
+        <item>IEC61937</item>
+        <item>DOLBY_TRUEHD</item>
+        <item>AAC_ELD</item>
+        <item>AAC_XHE</item>
+        <item>AC4</item>
+        <item>E_AC3_JOC</item>
+        <item>DOLBY_MAT</item>
+        <item>OPUS</item>
+    </string-array>
+    <string-array name="sampling_source_tips">
+        <item>DEFAULT</item>
+        <item>MIC</item>
+        <item>VOICE_UPLINK</item>
+        <item>VOICE_DOWNLINK</item>
+        <item>VOICE_CALL</item>
+        <item>CAMCORDER</item>
+        <item>VOICE_RECOGNITION</item>
+        <item>VOICE_COMMUNICATION</item>
+        <item>REMOTE_SUBMIX</item>
+        <item>UNPROCESSED</item>
+        <item>VOICE_PERFORMANCE</item>
+    </string-array>
+
+    <!-- PLAudioEncodeSetting -->
+    <integer-array name="audio_channel_num">
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
+
+    <!-- PLWatermarkSetting -->
+    <string-array name="watermark_setting_type_tips">
+        <item>关闭</item>
+        <item>setResourceId</item>
+        <item>setBitmap</item>
+    </string-array>
+
+    <!-- 转码参数 -->
+    <string-array name="rotation_level_tips">
+        <item>0（可用作去除视频旋转信息）</item>
+        <item>90</item>
+        <item>180</item>
+        <item>270</item>
+    </string-array>
+    <integer-array name="rotation_level">
+        <item>0</item>
+        <item>90</item>
+        <item>180</item>
+        <item>270</item>
+    </integer-array>
+
+</resources>

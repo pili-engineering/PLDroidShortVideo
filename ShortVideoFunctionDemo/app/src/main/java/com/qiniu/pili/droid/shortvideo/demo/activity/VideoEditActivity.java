@@ -1,15 +1,18 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
+import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_SPEED_ARRAY;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +25,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +50,7 @@ import com.qiniu.pili.droid.shortvideo.demo.R;
 import com.qiniu.pili.droid.shortvideo.demo.utils.Config;
 import com.qiniu.pili.droid.shortvideo.demo.utils.GetPathFromUri;
 import com.qiniu.pili.droid.shortvideo.demo.utils.MediaStoreUtils;
+import com.qiniu.pili.droid.shortvideo.demo.utils.TextureReader;
 import com.qiniu.pili.droid.shortvideo.demo.utils.ToastUtils;
 import com.qiniu.pili.droid.shortvideo.demo.view.AudioMixSettingDialog;
 import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
@@ -64,17 +70,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.qiniu.pili.droid.shortvideo.demo.utils.RecordSettings.RECORD_SPEED_ARRAY;
 
 public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private static final String TAG = "VideoEditActivity";
@@ -113,12 +119,16 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private PLPaintView mPaintView;
     private ImageSelectorPanel mImageSelectorPanel;
     private GifSelectorPanel mGifSelectorPanel;
+    private AlertDialog mEncodeDecodeSettingDialog;
 
     private int mFgVolumeBeforeMute = 100;
     private long mMixDuration = 5000; // ms
     private boolean mIsMuted = false;
     private boolean mIsMixAudio = false;
     private boolean mIsUseWatermark = true;
+    private volatile boolean mCaptureFrame = false;
+    private boolean mIsUseMirror = false;
+    private boolean mIsHwDecodeEnable = true;
 
     private String mMp4path;
 
@@ -391,21 +401,18 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void addImageView(final Drawable drawable) {
         if (mCurView != null) {
             final FrameSelectorView selectedView = (FrameSelectorView) mCurView.getTag(R.id.selector_view);
-            selectedView.post(new Runnable() {
-                @Override
-                public void run() {
+            selectedView.post(() -> {
 
-                    saveViewTimeAndHideRect();
+                saveViewTimeAndHideRect();
 
-                    StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
-                    stickerImageView.setImageDrawable(drawable);
+                StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
+                stickerImageView.setImageDrawable(drawable);
 
-                    mShortVideoEditor.addImageView(stickerImageView);
-                    stickerImageView.setOnStickerOperateListener(new StickerOperateListener(stickerImageView));
+                mShortVideoEditor.addImageView(stickerImageView);
+                stickerImageView.setOnStickerOperateListener(new StickerOperateListener(stickerImageView));
 
-                    addSelectorView(stickerImageView);
-                    showViewBorder(stickerImageView);
-                }
+                addSelectorView(stickerImageView);
+                showViewBorder(stickerImageView);
             });
         } else {
             StickerImageView stickerImageView = (StickerImageView) View.inflate(VideoEditActivity.this, R.layout.sticker_image_view, null);
@@ -487,8 +494,34 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
 
                 @Override
                 public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
+                    if (mCaptureFrame) {
+                        int width = texHeight;
+                        int height = texWidth;
+                        mCaptureFrame = false;
+                        FileOutputStream fileOutputStream = null;
+                        try {
+                            GLES20.glFinish();
+                            TextureReader reader = new TextureReader(width, height, false);
+                            ByteBuffer byteBuffer = reader.read(texId);
+                            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                            bitmap.copyPixelsFromBuffer(byteBuffer);
+                            fileOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/gl_dump.jpg");
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (fileOutputStream != null) {
+                                try {
+                                    fileOutputStream.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
                     final int time = mShortVideoEditor.getCurrentPosition();
-                    //三秒之后，预览视频的水印坐标动态改变
+                    // 三秒之后，预览视频的水印坐标动态改变
                     if (time > 3000) {
                         mPreviewWatermarkSetting.setPosition(0.01f, 1);
                     } else {
@@ -583,7 +616,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void changeGifVisiable(final long timeMS) {
         for (final StickerImageView gifViews : mGifViewSettings.keySet()) {
             if (gifViews.getStartTime() == 0 && gifViews.getEndTime() == 0) {
-                //刚刚添加，未对时间进行赋值
+                // 刚刚添加，未对时间进行赋值
                 gifViews.setVisibility(View.VISIBLE);
                 continue;
             }
@@ -630,7 +663,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
     private void initGifViewGroup() {
         ViewGroup.LayoutParams surfaceLayout = mStickerViewGroup.getLayoutParams();
 
-        //根据视频所携带的角度进行调整
+        // 根据视频所携带的角度进行调整
         PLMediaFile mediaFile = new PLMediaFile(mMp4path);
         int outputWidth = mediaFile.getVideoWidth();
         int outputHeight = mediaFile.getVideoHeight();
@@ -640,7 +673,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             outputWidth = outputHeight;
             outputHeight = temp;
         }
-        //根据视频的宽高进行调整
+        // 根据视频的宽高进行调整
         if (outputWidth > outputHeight) {
             surfaceLayout.width = mPreviewView.getWidth();
             surfaceLayout.height = Math.round((float) outputHeight * mPreviewView.getWidth() / outputWidth);
@@ -648,7 +681,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             surfaceLayout.height = mPreviewView.getHeight();
             surfaceLayout.width = Math.round((float) outputWidth * mPreviewView.getHeight() / outputHeight);
         }
-        //移动 GIF 容器以覆盖预览画面
+        // 移动 GIF 容器以覆盖预览画面
         mStickerViewGroup.setLayoutParams(surfaceLayout);
         mStickerViewGroup.setTranslationX(mPreviewView.getWidth() - surfaceLayout.width);
         mStickerViewGroup.setTranslationY((mPreviewView.getHeight() - surfaceLayout.height) / 2);
@@ -797,6 +830,33 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
      */
     public void onClickToggleGifWatermark(View v) {
         setPanelVisibility(mGifSelectorPanel, true);
+    }
+
+    /**
+     * 截图
+     */
+    public void onClickCaptureFrame(View v) {
+        mCaptureFrame = true;
+    }
+
+    /**
+     * 镜像
+     */
+    public void onClickMirror(View v) {
+        mIsUseMirror = !mIsUseMirror;
+        mShortVideoEditor.setMirror(mIsUseMirror);
+    }
+
+    public void onClickEncodeDecodeSetting(View v) {
+        if (mEncodeDecodeSettingDialog == null) {
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_encode_decode_setting, null);
+            Switch swHWDecode = view.findViewById(R.id.switch_hw_decode);
+            swHWDecode.setOnCheckedChangeListener((buttonView, isChecked) -> mIsHwDecodeEnable = isChecked);
+            mEncodeDecodeSettingDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .create();
+        }
+        mEncodeDecodeSettingDialog.show();
     }
 
     /**
@@ -1085,6 +1145,10 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mScrollTimerTask.cancel();
             mScrollTimerTask = null;
         }
+        if (mEncodeDecodeSettingDialog != null) {
+            mEncodeDecodeSettingDialog.dismiss();
+            mEncodeDecodeSettingDialog = null;
+        }
     }
 
     /**
@@ -1123,6 +1187,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             mMainMixAudioFile.setDurationInVideo((int) (mInputMp4FileDurationMs * 1000 / mSpeed));
         }
         mSaveWatermarkSetting.setZOrderOnTop(true);
+        mShortVideoEditor.setHwDecodeEnabled(mIsHwDecodeEnable);
         mShortVideoEditor.save(new PLVideoFilterListener() {
             @Override
             public void onSurfaceCreated() {
@@ -1142,7 +1207,7 @@ public class VideoEditActivity extends Activity implements PLVideoSaveListener {
             @Override
             public int onDrawFrame(int texId, int texWidth, int texHeight, long timestampNs, float[] transformMatrix) {
                 long time = timestampNs / 1000000L;
-                //三秒之后，保存的视频中水印坐标动态改变
+                // 三秒之后，保存的视频中水印坐标动态改变
                 if (time > 3000) {
                     mSaveWatermarkSetting.setPosition(0.01f, 1);
                 } else {

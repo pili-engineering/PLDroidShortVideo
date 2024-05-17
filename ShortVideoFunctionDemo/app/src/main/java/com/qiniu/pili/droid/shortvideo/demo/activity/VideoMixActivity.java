@@ -1,5 +1,7 @@
 package com.qiniu.pili.droid.shortvideo.demo.activity;
 
+import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_INVALID_ARG;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,8 +41,6 @@ import com.qiniu.pili.droid.shortvideo.demo.view.CustomProgressDialog;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.qiniu.pili.droid.shortvideo.PLErrorCode.ERROR_INVALID_ARG;
 
 public class VideoMixActivity extends Activity {
     private static final String TAG = "VideoMixActivity";
@@ -151,11 +151,15 @@ public class VideoMixActivity extends Activity {
         mCurrentPlayMode = PLAY_MODE_TOGETHER;
 
         mPlayer1.seekTo(0);
-        mPlayer1.start();
-
         mPlayer2.seekTo(0);
-        mPlayer2.start();
         mCover2.setVisibility(View.GONE);
+        try {
+            // 为了尽可能的减少两个视频播放时的时差，这里等待 150 毫秒让播放器内部缓存一段数据
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+        }
+        mPlayer1.start();
+        mPlayer2.start();
     }
 
     public void playOneByOne() {

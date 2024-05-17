@@ -28,14 +28,6 @@
 
     </FrameLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="录制参数配置"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -49,13 +41,74 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
+                android:text="录制参数配置"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="最大录制时间(ms)"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/max_record_duration_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/black"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="可变帧率录制"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/record_speed_variable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="编码镜像"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/mirror_encode_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="镜头参数配置"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
                 android:text="预览比例"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/PreviewSizeRatioSpinner"
+                android:id="@+id/preview_size_ratio_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/preview_size_ratio_tips"
                 android:layout_marginLeft="10dp" />
 
             <TextView
@@ -66,36 +119,19 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/PreviewSizeLevelSpinner"
+                android:id="@+id/preview_size_level_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/preview_size_level_tips"
                 android:layout_marginLeft="10dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:text="音频声道"
+                android:text="视频编码参数配置"
+                android:textSize="20dp"
                 android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/AudioChannelNumSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:text="编码类型"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/EncodingModeLevelSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -105,9 +141,10 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/EncodingSizeLevelSpinner"
+                android:id="@+id/encoding_size_level_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/encode_size_level_tips"
                 android:layout_marginLeft="10dp" />
 
             <TextView
@@ -118,10 +155,308 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/EncodingBitrateLevelSpinner"
+                android:id="@+id/encoding_bitrate_level_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/encode_bitrate_level_tips"
                 android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="是否硬编"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/encoding_hardware_codec_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频编码参数配置"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="编码音频声道"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/audio_channel_num_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/channel_num_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="编码采样率(hz)"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/audio_sample_rate_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="numberDecimal"
+                android:textColor="@android:color/black"
+                android:textSize="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="编码码率"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/audio_bitrate_level_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/encode_bitrate_level_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="是否硬解"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/audio_encode_mode_level_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频采集参数配置"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频采集格式"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/sampling_format_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/sampling_format_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频采集源"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/sampling_source_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/sampling_source_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频采集声道"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/sampling_channel_num_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/channel_num_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="音频采集采样率(hz)"
+                android:inputType="numberDecimal"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/sampling_sample_rate_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/black"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="蓝牙SCO"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/sampling_bluetooth_sco_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="audio pts optimize"
+                android:textStyle="bold" />
+
+
+            <Switch
+                android:id="@+id/sampling_audio_pts_optimize_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="降噪"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/sampling_nse_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="acoustic echo canceler"
+                android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/sampling_aec_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印参数配置"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/watermark_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/watermark_setting_type_tips"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/watermark_alpha_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印透明度"
+                android:textStyle="bold" />
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.IndicatorSeekBar
+                android:id="@+id/watermark_alpha_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"/>
+
+            <TextView
+                android:id="@+id/watermark_width_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印宽"
+                android:textStyle="bold" />
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.IndicatorSeekBar
+                android:id="@+id/watermark_width_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"/>
+
+            <TextView
+                android:id="@+id/watermark_height_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印高"
+                android:textStyle="bold" />
+
+            <com.qiniu.pili.droid.shortvideo.demo.view.IndicatorSeekBar
+                android:id="@+id/watermark_height_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="水印位置(0~1)"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/watermark_positionX_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="@android:color/black"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"/>
+
+
+            <EditText
+                android:id="@+id/watermark_positionY_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/black"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"/>
 
         </LinearLayout>
 

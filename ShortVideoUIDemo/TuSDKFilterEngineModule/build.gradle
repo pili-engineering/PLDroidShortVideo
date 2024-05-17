@@ -3,15 +3,12 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 25
 
-
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -20,7 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -32,4 +28,5 @@ dependencies {
     api files('libs/TuSDKVideo-3.3.1.jar')
     compileOnly files('libs/universal-image-loader-1.9.4.jar')
     compileOnly 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
